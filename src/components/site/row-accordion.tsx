@@ -1,0 +1,104 @@
+"use client"
+
+import * as React from "react"
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { cn } from "@/lib/utils"
+
+export type AccordionRow = {
+  id: string
+  name: string
+  /** Sub-line under the row name. */
+  description?: string
+  /** Right-aligned annotation, e.g. "9 families". */
+  meta?: string
+  content: React.ReactNode
+}
+
+type RowAccordionProps = {
+  rows: AccordionRow[]
+  /** Fires as the pointer moves across rows. Used to cross-fade backdrops. */
+  onRowHover?: (id: string | null) => void
+  className?: string
+}
+
+/**
+ * The site's numbered disclosure list — one open row at a time, an index on the
+ * left that slides on hover, and a plus that rotates into a minus.
+ */
+export function RowAccordion({ rows, onRowHover, className }: RowAccordionProps) {
+  return (
+    <Accordion
+      multiple={false}
+      className={cn("border-t border-current/10", className)}
+      onMouseLeave={() => onRowHover?.(null)}
+    >
+      {rows.map((row, index) => (
+        <AccordionItem
+          key={row.id}
+          value={row.id}
+          className="border-b border-current/10 not-last:border-b"
+          onMouseEnter={() => onRowHover?.(row.id)}
+        >
+          <AccordionTrigger
+            showIcon={false}
+            className="group/row grid w-full grid-cols-[44px_1fr_auto] items-center gap-5 rounded-none px-3 py-5.5 text-left transition-colors duration-250 ease-expo hover:bg-blue/3 hover:no-underline"
+          >
+            <span className="tnum text-xs text-grey transition-transform duration-250 ease-expo group-hover/row:translate-x-2">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+
+            <span className="text-[clamp(1.15rem,2.1vw,1.9rem)] font-medium tracking-[-0.015em]">
+              {row.name}
+              {row.description && (
+                <span className="mt-0.75 block text-sm font-normal tracking-normal text-grey">
+                  {row.description}
+                </span>
+              )}
+            </span>
+
+            <span className="flex items-center gap-4 text-[13px] text-grey">
+              {row.meta && <span>{row.meta}</span>}
+              <span className="plus-glyph" aria-hidden="true" />
+            </span>
+          </AccordionTrigger>
+
+          <AccordionContent className="pt-1 pr-3 pb-8.5 pl-16 max-md:pl-3">
+            {row.content}
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  )
+}
+
+/** Three-column key/value block used inside the industry and brand panels. */
+export function PanelColumns({
+  groups,
+}: {
+  groups: { title: string; items: string[] }[]
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-7 max-md:grid-cols-1">
+      {groups.map((group) => (
+        <div key={group.title}>
+          <h4 className="mb-2.5 text-[11px] font-medium tracking-[0.16em] text-grey uppercase">
+            {group.title}
+          </h4>
+          <ul className="list-none text-[15px] leading-8">
+            {group.items.map((item) => (
+              <li key={item} className="text-ink/82">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
+}

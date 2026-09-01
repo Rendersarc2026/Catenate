@@ -1,0 +1,402 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   CATENATE DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Brand palette */
+  --brand-blue: #1b2a7a;
+  --brand-blue-deep: #101b52;
+  --brand-off: #f7f8fb;
+  --brand-ink: #1a1d2e;
+  --brand-grey: #767c93;
+  --brand-amber: #e8b98a;
+
+  /* Geometry */
+  --block-radius: 24px;
+  --section-pad: clamp(28px, 5vw, 80px);
+  --content-max: 1240px;
+  --nav-height: 78px;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* shadcn semantic layer, mapped onto the brand palette */
+  --background: #ffffff;
+  --foreground: var(--brand-ink);
+  --card: #ffffff;
+  --card-foreground: var(--brand-ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--brand-ink);
+  --primary: var(--brand-blue);
+  --primary-foreground: #ffffff;
+  --secondary: var(--brand-off);
+  --secondary-foreground: var(--brand-ink);
+  --muted: var(--brand-off);
+  --muted-foreground: var(--brand-grey);
+  --accent: var(--brand-off);
+  --accent-foreground: var(--brand-blue);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: rgb(26 29 46 / 0.1);
+  --input: rgb(26 29 46 / 0.12);
+  --ring: var(--brand-blue);
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand aliases usable as bg-blue / text-ink / border-grey ... */
+  --color-blue: var(--brand-blue);
+  --color-blue-deep: var(--brand-blue-deep);
+  --color-off: var(--brand-off);
+  --color-ink: var(--brand-ink);
+  --color-grey: var(--brand-grey);
+  --color-amber: var(--brand-amber);
+
+  --font-sans: var(--font-figtree), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-figtree), system-ui, -apple-system, sans-serif;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-block: var(--block-radius);
+
+  --ease-expo: var(--ease-out-expo);
+
+  --spacing-nav: var(--nav-height);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-size: 16px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--brand-blue);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .on-blue :focus-visible {
+    outline-color: #fff;
+  }
+}
+
+@layer components {
+  /* ---------- Sections ---------- */
+  /*
+   * Backgrounds run the full width of the viewport while the content inside
+   * stays in a centred column, so long-form text never runs the width of a
+   * large display.
+   */
+  .content-pad {
+    padding-inline: max(
+      var(--section-pad),
+      calc((100% - var(--content-max)) / 2)
+    );
+  }
+
+  .section {
+    position: relative;
+    padding-block: clamp(64px, 8vw, 120px);
+    padding-inline: max(
+      var(--section-pad),
+      calc((100% - var(--content-max)) / 2)
+    );
+  }
+
+  /* Lets a horizontal rail bleed past the content column on both sides. */
+  .section-flush {
+    padding-inline: 0;
+  }
+
+  .eyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.6;
+    margin-bottom: 20px;
+  }
+
+  .lead {
+    font-size: 17px;
+    color: var(--brand-grey);
+    max-width: 58ch;
+  }
+
+  .on-blue .lead {
+    color: rgb(255 255 255 / 0.72);
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.8s var(--ease-out-expo),
+      transform 0.8s var(--ease-out-expo);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.8s var(--ease-out-expo),
+      transform 0.8s var(--ease-out-expo);
+  }
+
+  .reveal-stagger.is-visible > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- Hero line mask ---------- */
+  .hero-line {
+    display: block;
+    overflow: hidden;
+  }
+
+  .hero-line > span {
+    display: block;
+    transform: translateY(105%);
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+
+  .is-ready .hero-line > span {
+    transform: translateY(0);
+  }
+
+  .is-ready .hero-line:nth-child(2) > span {
+    transition-delay: 0.06s;
+  }
+
+  .is-ready .hero-line:nth-child(3) > span {
+    transition-delay: 0.12s;
+  }
+
+  .hero-fade {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.9s var(--ease-out-expo) 0.3s,
+      transform 0.9s var(--ease-out-expo) 0.3s;
+  }
+
+  .is-ready .hero-fade {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- World map ---------- */
+  .dot-land {
+    fill: #fff;
+    opacity: 0.16;
+  }
+
+  .dot-live {
+    fill: #fff;
+    opacity: 0.92;
+    transition: opacity 0.25s var(--ease-out-expo);
+  }
+
+  .dot-halo {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1;
+    opacity: 0;
+    transition: opacity 0.25s var(--ease-out-expo);
+  }
+
+  /* ---------- Industry ticker ---------- */
+  .ticker-mask {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker-slide 46s linear infinite;
+  }
+
+  .ticker-mask:hover .ticker-track {
+    animation-play-state: paused;
+  }
+
+  /* ---------- Accordion plus glyph ---------- */
+  .plus-glyph {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    flex: none;
+  }
+
+  .plus-glyph::before,
+  .plus-glyph::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: var(--brand-grey);
+    transition:
+      transform 0.35s var(--ease-out-expo),
+      background 0.25s var(--ease-out-expo);
+  }
+
+  .plus-glyph::before {
+    width: 13px;
+    height: 1px;
+    transform: translate(-50%, -50%);
+  }
+
+  .plus-glyph::after {
+    width: 1px;
+    height: 13px;
+    transform: translate(-50%, -50%);
+  }
+
+  [aria-expanded="true"] .plus-glyph::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  [aria-expanded="true"] .plus-glyph::before,
+  [aria-expanded="true"] .plus-glyph::after {
+    background: var(--brand-blue);
+  }
+
+  .on-blue .plus-glyph::before,
+  .on-blue .plus-glyph::after {
+    background: rgb(255 255 255 / 0.6);
+  }
+
+  /* ---------- Horizontal rail ---------- */
+  .rail {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    padding-block: 0 8px;
+    padding-inline: max(
+      var(--section-pad),
+      calc((100% - var(--content-max)) / 2)
+    );
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---------- Footer wordmark ---------- */
+  .foot-mark {
+    font-size: clamp(4rem, 16vw, 13rem);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(255 255 255 / 0.18);
+    margin: 0 0 -0.14em;
+    user-select: none;
+  }
+
+  /* ---------- Multi-column index list ---------- */
+  .col-index {
+    columns: 3;
+    column-gap: 32px;
+  }
+
+  .col-index > li {
+    break-inside: avoid;
+  }
+}
+
+@keyframes ticker-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 820px) {
+  .col-index {
+    columns: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .reveal,
+  .reveal-stagger > *,
+  .hero-line > span,
+  .hero-fade {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
