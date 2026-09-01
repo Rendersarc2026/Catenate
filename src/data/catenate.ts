@@ -206,13 +206,38 @@ export const landRows: [number, number][][] = [
   [[20, 21]],
 ];
 
-export type Region = { name: string; points: [number, number][] };
+export type Region = {
+  name: string;
+  points: [number, number][];
+  coordinates: string;
+  markets?: string;
+};
 
 export const regions: Region[] = [
-  { name: "Oman", points: [[41, 12], [42, 13]] },
-  { name: "UAE", points: [[40, 11], [38, 10]] },
-  { name: "Qatar", points: [[39, 9], [36, 14]] },
-  { name: "UK", points: [[31, 6], [33, 7]] },
+  {
+    name: "Oman",
+    points: [[41, 12], [42, 13]],
+    coordinates: "23.5880, 58.3829",
+    markets: "Muscat & regional distribution",
+  },
+  {
+    name: "UAE",
+    points: [[40, 11], [38, 10]],
+    coordinates: "25.2048, 55.2708",
+    markets: "Dubai & Abu Dhabi hubs",
+  },
+  {
+    name: "Qatar",
+    points: [[39, 9], [36, 14]],
+    coordinates: "25.2854, 51.5310",
+    markets: "Doha operations",
+  },
+  {
+    name: "UK",
+    points: [[31, 6], [33, 7]],
+    coordinates: "51.5074, -0.1278",
+    markets: "London & UK specification",
+  },
 ];
 
 export const presence = {

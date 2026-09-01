@@ -2,30 +2,31 @@
 
 import * as React from "react"
 
+import { OrbitDotGlobe, type GlobeLocation } from "@/components/site/orbitdot-globe"
 import { Reveal } from "@/components/site/reveal"
-import { industries, landRows, presence, regions } from "@/data/catenate"
+import { industries, presence, regions } from "@/data/catenate"
 import { cn } from "@/lib/utils"
 
-/** Dot grid geometry, in the map's own viewBox units. */
-const GRID = { stepX: 10.2, stepY: 10.4, offsetX: 8, offsetY: 6 }
-
-const at = (column: number, row: number) => ({
-  cx: (GRID.offsetX + column * GRID.stepX).toFixed(1),
-  cy: (GRID.offsetY + row * GRID.stepY).toFixed(1),
-})
-
-/** Every land dot, derived once from the row spans. */
-const landDots = landRows.flatMap((spans, row) =>
-  spans.flatMap(([from, to]) =>
-    Array.from({ length: to - from + 1 }, (_, i) => at(from + i, row))
-  )
-)
-
 export function GlobalPresence() {
-  const [litRegion, setLitRegion] = React.useState<number | null>(null)
+  const [selectedRegion, setSelectedRegion] = React.useState<number | null>(null)
+  const [hoveredRegion, setHoveredRegion] = React.useState<number | null>(null)
+
+  const activeRegion = hoveredRegion !== null ? hoveredRegion : selectedRegion
+
+  const globeLocations: GlobeLocation[] = React.useMemo(
+    () =>
+      regions.map((region) => ({
+        name: region.name,
+        coordinates: region.coordinates,
+        color: "#e8b98a",
+        pulse: true,
+        showLabel: true,
+      })),
+    []
+  )
 
   return (
-    <section id="presence" className="section on-blue bg-blue text-white">
+    <section id="presence" className="section on-blue bg-blue text-white overflow-hidden">
       <Reveal className="mb-[clamp(34px,4vw,54px)] grid items-end gap-[clamp(28px,5vw,64px)] max-lg:grid-cols-1 lg:grid-cols-[1.25fr_1fr]">
         <div>
           <span className="eyebrow">{presence.eyebrow}</span>
@@ -36,62 +37,62 @@ export function GlobalPresence() {
         <p className="lead">{presence.lead}</p>
       </Reveal>
 
-      <Reveal className="grid items-center gap-[clamp(28px,4vw,56px)] border-b border-white/14 pb-[clamp(34px,4vw,54px)] max-lg:grid-cols-1 lg:grid-cols-[1.55fr_0.75fr]">
-        <svg
-          viewBox="0 0 660 300"
-          role="img"
-          aria-label="Map showing Catenate presence across four regions"
-          className="h-auto w-full"
-        >
-          {landDots.map((dot, i) => (
-            <circle key={i} className="dot-land" cx={dot.cx} cy={dot.cy} r="1.7" />
-          ))}
+      <Reveal className="grid items-center gap-[clamp(28px,4vw,56px)] border-b border-white/14 pb-[clamp(34px,4vw,54px)] max-lg:grid-cols-1 lg:grid-cols-[1.4fr_0.8fr]">
+        <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[480px] flex items-center justify-center">
+          <OrbitDotGlobe
+            oceanColor="#121e5e"
+            landColor="#ffffff"
+            dotSize={1.8}
+            dotDensity={3}
+            autoRotate={true}
+            activeLocationIndex={activeRegion}
+            onLocationSelect={(index) => {
+              setSelectedRegion((prev) => (prev === index ? null : index))
+            }}
+            locations={globeLocations}
+            className="w-full h-full"
+          />
+        </div>
 
-          {regions.flatMap((region, regionIndex) =>
-            region.points.map((point, pointIndex) => {
-              const { cx, cy } = at(point[0], point[1])
-              const dimmed = litRegion !== null && litRegion !== regionIndex
-              return (
-                <React.Fragment key={`${regionIndex}-${pointIndex}`}>
-                  <circle
-                    className="dot-halo"
-                    cx={cx}
-                    cy={cy}
-                    r="7"
-                    style={{ opacity: litRegion === regionIndex ? 0.45 : undefined }}
-                  />
-                  <circle
-                    className="dot-live"
-                    cx={cx}
-                    cy={cy}
-                    r="2.9"
-                    style={{ opacity: dimmed ? 0.28 : undefined }}
-                  />
-                </React.Fragment>
-              )
-            })
-          )}
-        </svg>
-
-        <ul className="list-none" onMouseLeave={() => setLitRegion(null)}>
-          {regions.map((region, index) => (
-            <li
-              key={region.name}
-              onMouseEnter={() => setLitRegion(index)}
-              className={cn(
-                "flex items-baseline gap-3.5 border-b border-white/14 py-3.25 transition-opacity duration-250 ease-expo last:border-b-0",
-                litRegion !== null && litRegion !== index && "opacity-40"
-              )}
-            >
-              <i
+        <ul className="list-none" onMouseLeave={() => setHoveredRegion(null)}>
+          {regions.map((region, index) => {
+            const isCurrent = activeRegion === index
+            const isSelected = selectedRegion === index
+            return (
+              <li
+                key={region.name}
+                onMouseEnter={() => setHoveredRegion(index)}
+                onClick={() =>
+                  setSelectedRegion((prev) => (prev === index ? null : index))
+                }
                 className={cn(
-                  "size-1.5 flex-none rounded-full bg-white opacity-50 transition-[opacity,transform] duration-250 ease-expo",
-                  litRegion === index && "scale-150 opacity-100"
+                  "group flex flex-col gap-1 border-b border-white/14 py-3.5 transition-all duration-250 ease-expo last:border-b-0 cursor-pointer select-none",
+                  activeRegion !== null && !isCurrent && "opacity-40",
+                  isSelected && "bg-white/5 -mx-3 px-3 rounded-xl border-transparent"
                 )}
-              />
-              <b className="flex-1 text-[15px] font-medium">{region.name}</b>
-            </li>
-          ))}
+              >
+                <div className="flex items-center gap-3.5">
+                  <i
+                    className={cn(
+                      "size-1.5 flex-none rounded-full bg-white opacity-50 transition-[opacity,transform,background-color] duration-250 ease-expo",
+                      isCurrent && "scale-150 opacity-100 bg-amber"
+                    )}
+                  />
+                  <b className="flex-1 text-[16px] font-medium tracking-[-0.01em]">
+                    {region.name}
+                  </b>
+                  <span className="text-xs text-white/45 group-hover:text-white/75 transition-colors font-mono">
+                    {region.coordinates}
+                  </span>
+                </div>
+                {region.markets && (
+                  <span className="pl-5 text-xs text-white/55">
+                    {region.markets}
+                  </span>
+                )}
+              </li>
+            )
+          })}
         </ul>
       </Reveal>
 
