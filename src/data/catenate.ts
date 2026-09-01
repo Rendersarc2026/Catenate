@@ -14,7 +14,6 @@ const placeholder = (seed: string, w: number, h: number, grayscale = false) =>
   `https://picsum.photos/seed/${seed}/${w}/${h}${grayscale ? "?grayscale" : ""}`;
 
 export const images = {
-  hero: placeholder("catenatehero", 1600, 1000),
   industry: (index: number) => placeholder(`catenateind${index}`, 1200, 800),
   project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),
   contactInquiry: placeholder("catenatesupport", 700, 525),

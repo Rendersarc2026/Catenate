@@ -47,28 +47,42 @@ export function RowAccordion({ rows, onRowHover, className }: RowAccordionProps)
         >
           <AccordionTrigger
             showIcon={false}
-            className="group/row grid w-full grid-cols-[44px_1fr_auto] items-center gap-5 rounded-none px-3 py-5.5 text-left transition-colors duration-250 ease-expo hover:bg-blue/3 hover:no-underline"
+            className="group/row grid w-full grid-cols-[1fr_auto] items-center gap-4 rounded-none px-3 py-5 text-left transition-colors duration-250 ease-expo hover:bg-blue/3 hover:no-underline sm:grid-cols-[44px_1fr_auto] sm:gap-5 sm:py-5.5"
           >
-            <span className="tnum text-xs text-grey transition-transform duration-250 ease-expo group-hover/row:translate-x-2">
+            {/* Narrow screens carry the index above the name instead of beside it. */}
+            <span className="tnum hidden text-xs text-grey transition-transform duration-250 ease-expo group-hover/row:translate-x-2 sm:block">
               {String(index + 1).padStart(2, "0")}
             </span>
 
-            <span className="text-[clamp(1.15rem,2.1vw,1.9rem)] font-medium tracking-[-0.015em]">
-              {row.name}
+            <span className="min-w-0">
+              <span className="tnum mb-1 block text-[11px] text-grey sm:hidden">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+
+              <span className="block text-[clamp(1.15rem,2.1vw,1.9rem)] font-medium tracking-[-0.015em]">
+                {row.name}
+              </span>
+
               {row.description && (
                 <span className="mt-0.75 block text-sm font-normal tracking-normal text-grey">
                   {row.description}
                 </span>
               )}
+
+              {row.meta && (
+                <span className="mt-1.5 block text-[13px] text-grey sm:hidden">
+                  {row.meta}
+                </span>
+              )}
             </span>
 
             <span className="flex items-center gap-4 text-[13px] text-grey">
-              {row.meta && <span>{row.meta}</span>}
+              {row.meta && <span className="hidden sm:inline">{row.meta}</span>}
               <span className="plus-glyph" aria-hidden="true" />
             </span>
           </AccordionTrigger>
 
-          <AccordionContent className="pt-1 pr-3 pb-8.5 pl-16 max-md:pl-3">
+          <AccordionContent className="pt-1 pr-3 pb-8.5 pl-3 sm:pl-16">
             {row.content}
           </AccordionContent>
         </AccordionItem>

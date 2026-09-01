@@ -118,9 +118,12 @@ export function SiteHeader() {
               onClick={() => toggle(section.key)}
               onMouseEnter={() => open && openWith(section.key)}
               className={cn(
-                "rounded-full px-3.5 py-2.25 text-[14.5px] font-medium whitespace-nowrap transition-[color,background-color] duration-300 ease-expo hover:bg-blue/6 hover:text-blue",
-                solid || open ? "text-grey" : "text-white/86",
-                activeKey === section.key && "bg-blue/6 text-blue"
+                "rounded-full px-3.5 py-2.25 text-[14.5px] font-medium whitespace-nowrap transition-[color,background-color] duration-300 ease-expo",
+                solid || open
+                  ? "text-grey hover:bg-blue/8 hover:text-blue"
+                  : "text-white/86 hover:bg-white/15 hover:text-white",
+                activeKey === section.key &&
+                  (solid || open ? "bg-blue/8 text-blue" : "bg-white/15 text-white")
               )}
             >
               {section.navLabel}
@@ -167,7 +170,7 @@ export function SiteHeader() {
         role="region"
         aria-label="Site sections"
         className={cn(
-          "content-pad absolute inset-x-0 top-nav grid grid-cols-1 bg-white pt-11 pb-13 shadow-[0_30px_60px_rgb(12_20_60/0.14)] transition-[opacity,transform,visibility] duration-350 ease-expo max-md:max-h-[calc(100vh-var(--nav-height))] max-md:overflow-y-auto max-md:pt-5 max-md:pb-8 md:grid-cols-[40%_60%]",
+          "content-pad absolute inset-x-0 top-nav grid grid-cols-1 bg-white pt-11 pb-13 shadow-[0_30px_60px_rgb(12_20_60/0.14)] transition-[opacity,transform,visibility] duration-350 ease-expo max-[960px]:max-h-[calc(100vh-var(--nav-height))] max-[960px]:overflow-y-auto max-[960px]:pt-5 max-[960px]:pb-8 min-[961px]:grid-cols-[40%_60%]",
           open
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-2.5 opacity-0"
@@ -195,7 +198,7 @@ export function SiteHeader() {
                 setActiveKey(section.key)
               }}
               className={cn(
-                "relative flex items-center gap-3 text-left text-[26px] leading-[2.2] font-medium tracking-[-0.02em] transition-colors duration-200 ease-expo max-md:border-b max-md:border-ink/8 max-md:py-3 max-md:text-xl max-md:leading-[1.6]",
+                "relative flex items-center gap-3 text-left text-[26px] leading-[2.2] font-medium tracking-[-0.02em] transition-colors duration-200 ease-expo max-[960px]:border-b max-[960px]:border-ink/8 max-[960px]:py-3 max-[960px]:text-xl max-[960px]:leading-[1.6]",
                 activeKey === section.key ? "text-blue" : "text-grey"
               )}
             >
@@ -215,7 +218,7 @@ export function SiteHeader() {
         <div
           key={activeKey ?? "empty"}
           className={cn(
-            "columns-2 gap-10 border-l border-ink/9 pl-[clamp(24px,4vw,56px)] transition-opacity duration-150 max-md:columns-1 max-md:border-l-0 max-md:pt-1.5 max-md:pb-5 max-md:pl-0",
+            "columns-2 gap-10 border-l border-ink/9 pl-[clamp(24px,4vw,56px)] transition-opacity duration-150 max-[960px]:columns-1 max-[960px]:border-l-0 max-[960px]:pt-1.5 max-[960px]:pb-5 max-[960px]:pl-0",
             active ? "opacity-100" : "opacity-0"
           )}
         >

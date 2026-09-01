@@ -42,7 +42,7 @@ export function ArrowButton({
       variant={variant}
       size={size}
       className={cn("group/button", className)}
-      {...(href ? { render: <a href={href} /> } : {})}
+      {...(href ? { render: <a href={href} />, nativeButton: false } : {})}
       {...props}
     >
       {children}

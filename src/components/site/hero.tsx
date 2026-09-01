@@ -1,10 +1,9 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
-
 import { ArrowButton } from "@/components/site/arrow-button"
-import { hero, images } from "@/data/catenate"
+import { HeroBackdrop } from "@/components/site/hero-backdrop"
+import { hero } from "@/data/catenate"
 
 /** Peak translation of the parallax layer, in px. */
 const PARALLAX_X = 18
@@ -76,18 +75,8 @@ export function Hero() {
       className={`${ready ? "is-ready " : ""}on-blue relative flex min-h-[min(94vh,860px)] flex-col items-center justify-start content-pad overflow-hidden pt-[150px] text-center text-white max-md:pt-[130px]`}
     >
       <div className="absolute inset-0 z-0">
-        <Image
-          src={images.hero}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover saturate-55 contrast-105"
-        />
+        <HeroBackdrop />
       </div>
-
-      {/* Warm-to-deep-blue scrim that carries the brand over any photograph. */}
-      <div className="absolute inset-0 z-1 bg-[linear-gradient(165deg,rgb(232_185_138/0.34)_0%,rgb(52_58_124/0.78)_40%,rgb(16_27_82/0.95)_100%)]" />
 
       <div ref={innerRef} className="relative z-2 my-auto max-w-[900px] will-change-transform">
         <span className="eyebrow hero-fade mb-7.5 text-[10.5px] tracking-[0.24em] opacity-62">
