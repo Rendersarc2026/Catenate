@@ -16,11 +16,11 @@
   --brand-grey: #767c93;
   --brand-amber: #e8b98a;
 
-  /* Geometry */
-  --block-radius: 24px;
-  --section-pad: clamp(28px, 5vw, 80px);
-  --content-max: 1240px;
-  --nav-height: 78px;
+  /* Geometry (scaled ~1.25x for expansive layout) */
+  --block-radius: 28px;
+  --section-pad: clamp(32px, 5vw, 96px);
+  --content-max: 1520px;
+  --nav-height: 84px;
 
   /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -158,6 +158,17 @@
   /* Lets a horizontal rail bleed past the content column on both sides. */
   .section-flush {
     padding-inline: 0;
+  }
+
+  /*
+   * Aligns the copy inside a full-bleed panel with the site's content column,
+   * leaving whatever sits to its right free to run to the viewport edge.
+   */
+  .pad-start {
+    padding-inline-start: max(
+      var(--section-pad),
+      calc((100% - var(--content-max)) / 2)
+    );
   }
 
   .eyebrow {
@@ -360,6 +371,55 @@
     user-select: none;
   }
 
+  /* ---------- Sector showcase ---------- */
+  /*
+   * Autoplay indicator along the top edge of the panel. It restarts whenever
+   * the active sector changes (the element is re-keyed) and holds where it is
+   * while the pointer rests on the panel.
+   */
+  .sector-progress {
+    transform: scaleX(1);
+    transform-origin: left;
+    animation: sector-progress var(--sector-dwell, 6500ms) linear both;
+  }
+
+  .sector-progress[data-paused="true"] {
+    animation-play-state: paused;
+  }
+
+  /* Sector copy cascades in on change, in the order it is read. */
+  .sector-copy > * {
+    animation: sector-copy-in 0.72s var(--ease-out-expo) both;
+  }
+
+  .sector-copy > *:nth-child(2) {
+    animation-delay: 0.05s;
+  }
+
+  .sector-copy > *:nth-child(3) {
+    animation-delay: 0.1s;
+  }
+
+  .sector-copy > *:nth-child(4) {
+    animation-delay: 0.15s;
+  }
+
+  .sector-copy > *:nth-child(5) {
+    animation-delay: 0.2s;
+  }
+
+  /*
+   * The queue advances by re-rendering one sector further on, then animating
+   * the track home from the offset the departing card left behind — so a slide
+   * only ever moves a transform, never layout.
+   */
+  .sector-track {
+    display: flex;
+    width: max-content;
+    gap: var(--card-gap);
+    transition: transform 0.78s var(--ease-out-expo);
+  }
+
   /* ---------- Multi-column index list ---------- */
   .col-index {
     columns: 3;
@@ -368,6 +428,26 @@
 
   .col-index > li {
     break-inside: avoid;
+  }
+}
+
+@keyframes sector-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes sector-copy-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -397,7 +477,8 @@
   .reveal,
   .reveal-stagger > *,
   .hero-line > span,
-  .hero-fade {
+  .hero-fade,
+  .sector-copy > * {
     opacity: 1 !important;
     transform: none !important;
   }

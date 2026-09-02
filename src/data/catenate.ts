@@ -14,6 +14,7 @@ const placeholder = (seed: string, w: number, h: number, grayscale = false) =>
   `https://picsum.photos/seed/${seed}/${w}/${h}${grayscale ? "?grayscale" : ""}`;
 
 export const images = {
+  heroBanner: "/images/hero-banner.jpg",
   industry: (index: number) => placeholder(`catenateind${index}`, 1200, 800),
   project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),
   contactInquiry: placeholder("catenatesupport", 700, 525),
@@ -153,9 +154,8 @@ export const megaMenu: MegaSection[] = [
 export const hero = {
   eyebrow: "Global distribution · Bonding · Sealing · Construction chemicals",
   headlineLines: [
-    "Connecting international legacy",
-    "brands from around the world",
-    "to your doorstep.",
+    "Connecting the world’s",
+    "leading brands to your doorstep.",
   ],
   body:
     "A global market intelligence & distribution platform built around Trusted Brands, Efficient Teams, Technical knowhow & Dependable Supply Chain.",
