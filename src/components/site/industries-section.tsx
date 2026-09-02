@@ -30,13 +30,14 @@ export function IndustriesSection() {
     <section id="industries" className="section relative bg-off">
       {/* Sector imagery fades in behind the list as each row is hovered. */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {industries.map((industry, index) => (
+        {industries.map((industry) => (
           <Image
             key={industry.name}
-            src={images.industry(index)}
+            src={images.industry(industry.slug)}
             alt=""
             fill
             sizes="100vw"
+            quality={70}
             className={cn(
               "object-cover transition-opacity duration-400 ease-expo",
               hovered === industry.name ? "opacity-12" : "opacity-0"

@@ -15,7 +15,8 @@ const placeholder = (seed: string, w: number, h: number, grayscale = false) =>
 
 export const images = {
   heroBanner: "/images/hero-banner.jpg",
-  industry: (index: number) => placeholder(`catenateind${index}`, 1200, 800),
+  /** Sector photography, keyed by the slug on each `Industry`. */
+  industry: (slug: string) => `/images/industries/${slug}.jpg`,
   project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),
   contactInquiry: placeholder("catenatesupport", 700, 525),
   contactChannel: placeholder("catenatechannel", 700, 525),
@@ -259,6 +260,8 @@ export const presence = {
 
 export type Industry = {
   name: string;
+  /** File stem under `/images/industries`. */
+  slug: string;
   challenge: string;
   systems: string[];
   reference: string;
@@ -267,6 +270,7 @@ export type Industry = {
 export const industries: Industry[] = [
   {
     name: "Building and infrastructure",
+    slug: "building-infrastructure",
     challenge:
       "Podium decks, basements, wet areas and facades under long warranty periods.",
     systems: ["Waterproofing systems", "Tiling and flooring", "Concrete repair", "Sealants"],
@@ -274,6 +278,7 @@ export const industries: Industry[] = [
   },
   {
     name: "Marine and offshore",
+    slug: "marine-offshore",
     challenge:
       "Constant salt exposure, movement and coating windows measured in hours.",
     systems: ["Metal pretreatment", "Structural adhesives", "PU sealants"],
@@ -281,12 +286,14 @@ export const industries: Industry[] = [
   },
   {
     name: "Oil, gas and petrochemical",
+    slug: "oil-gas-petrochemical",
     challenge: "Chemical attack, thermal cycling and permit-controlled application.",
     systems: ["Protective coatings", "Structural repair mortars", "Thread lockers"],
     reference: "Tank farm bund lining refurbishment",
   },
   {
     name: "Water and wastewater",
+    slug: "water-wastewater",
     challenge:
       "Potable contact approval and immersion performance are non-negotiable.",
     systems: ["Liquid membranes", "Pipe joining adhesives", "Repair mortars"],
@@ -294,6 +301,7 @@ export const industries: Industry[] = [
   },
   {
     name: "Food and beverage",
+    slug: "food-beverage",
     challenge:
       "Washdown temperatures, hygiene classification and food-contact compliance.",
     systems: ["Resin flooring", "Hygienic sealants", "Water-based adhesives"],
@@ -301,12 +309,14 @@ export const industries: Industry[] = [
   },
   {
     name: "Packaging and converting",
+    slug: "packaging-converting",
     challenge: "Line speed decides the adhesive before anything else does.",
     systems: ["Hot melt adhesives", "Water-based adhesives"],
     reference: "Carton line changeover, three plants",
   },
   {
     name: "Automotive and transport",
+    slug: "automotive-transport",
     challenge:
       "Bonded assemblies replacing mechanical fixing, with pretreatment to match.",
     systems: ["Structural adhesives", "Metal pretreatment", "Threadlocking"],
@@ -314,6 +324,7 @@ export const industries: Industry[] = [
   },
   {
     name: "Metals and fabrication",
+    slug: "metals-fabrication",
     challenge:
       "Cleaning, forming and coating handled as one sequence, not three purchases.",
     systems: ["Bonderite pretreatment", "Anaerobic adhesives", "Lubricants"],
@@ -321,6 +332,7 @@ export const industries: Industry[] = [
   },
   {
     name: "Furniture and woodworking",
+    slug: "furniture-woodworking",
     challenge:
       "Edge, panel and assembly bonding with finish quality visible on day one.",
     systems: ["Hot melt adhesives", "Water-based adhesives", "Construction adhesives"],
@@ -328,30 +340,35 @@ export const industries: Industry[] = [
   },
   {
     name: "Electronics and assembly",
+    slug: "electronics-assembly",
     challenge: "Small bond lines, fast fixture times and controlled outgassing.",
     systems: ["Cyanoacrylates", "Threadlockers", "Specialty adhesives"],
     reference: "Control panel assembly line",
   },
   {
     name: "Footwear and leather",
+    slug: "footwear-leather",
     challenge: "Flexibility and peel strength after thousands of cycles.",
     systems: ["Water-based adhesives", "Contact adhesives"],
     reference: "Footwear plant bonding trial",
   },
   {
     name: "HVAC and plumbing",
+    slug: "hvac-plumbing",
     challenge: "Pipe joining, pressure testing windows and potable water approval.",
     systems: ["Tangit solvent cement", "EZ-Weld cements", "Thread sealants"],
     reference: "District cooling network extension",
   },
   {
     name: "Healthcare and life sciences",
+    slug: "healthcare-life-sciences",
     challenge: "Low emission, cleanable surfaces and documented compliance.",
     systems: ["Resin flooring", "Low-VOC sealants", "Hygienic systems"],
     reference: "Hospital theatre block fit-out",
   },
   {
     name: "Retail and fit-out",
+    slug: "retail-fit-out",
     challenge: "Short programmes, fast cure and finishes that survive footfall.",
     systems: ["Tile adhesives", "Levelling compounds", "Construction adhesives"],
     reference: "Mall refurbishment, 60 units",

@@ -74,7 +74,7 @@ export function Hero() {
       data-ready={ready || undefined}
       className={`${
         ready ? "is-ready " : ""
-      }on-blue relative flex min-h-[min(100vh,940px)] flex-col items-center justify-between content-pad overflow-hidden pt-[165px] pb-10 text-center text-white bg-black max-md:pt-[130px] max-md:min-h-[820px]`}
+      }on-blue relative flex min-h-screen min-h-dvh flex-col items-center justify-between content-pad overflow-hidden pt-[150px] pb-8 sm:pb-12 text-center text-white bg-black max-md:pt-[120px]`}
     >
       <div className="absolute inset-0 z-0">
         <HeroBackdrop />

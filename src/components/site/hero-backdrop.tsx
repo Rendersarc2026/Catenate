@@ -1,17 +1,24 @@
 import Image from "next/image"
+import { images } from "@/data/catenate"
+
+interface HeroBackdropProps {
+  imageSrc?: string
+}
 
 /**
  * Hero backdrop.
  *
- * Renders the high-definition orbital Earth visual with seamless dark gradients
+ * Renders the high-definition orbital Earth visual banner with seamless dark gradients
  * ensuring clarity for the centered headline, navigation bar, and stats footer.
  */
-export function HeroBackdrop() {
+export function HeroBackdrop({
+  imageSrc = images.heroBanner,
+}: HeroBackdropProps) {
   return (
-    <div className="absolute inset-0 size-full overflow-hidden bg-black select-none">
-      {/* Orbital view of Earth from space */}
+    <div className="absolute inset-0 size-full overflow-hidden bg-black select-none pointer-events-none">
+      {/* Orbital view of Earth from space banner */}
       <Image
-        src="/images/hero-banner.jpg"
+        src={imageSrc}
         alt="Orbital view of Earth from space"
         fill
         priority
