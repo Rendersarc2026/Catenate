@@ -24,10 +24,10 @@ export default function Home() {
       <main>
         <Hero />
         <HeroStatement />
-        <GlobalPresence />
-        <IndustriesSection />
         <StatementSection />
         <PartnersStrip />
+        <GlobalPresence />
+        <IndustriesSection />
         <StrengthsSection />
         <TrustedBySection />
         <WhyCatenate />
