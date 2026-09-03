@@ -96,10 +96,10 @@ export function Hero() {
 
       {/* CTA Buttons positioned over the lower Earth curvature */}
       <div className="hero-fade relative z-2 mt-auto mb-10 pt-16 flex flex-wrap justify-center items-center gap-3.5">
-        <ArrowButton href="#presence" variant="onBlue" size="pill">
+        <ArrowButton href="/#presence" variant="onBlue" size="pill">
           Explore our global network
         </ArrowButton>
-        <ArrowButton href="#brands" variant="line" size="pill">
+        <ArrowButton href="/brands" variant="line" size="pill">
           Our portfolio
         </ArrowButton>
       </div>

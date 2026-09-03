@@ -1,4 +1,5 @@
 import Image from "next/image"
+import type { CSSProperties } from "react"
 
 import { ArrowButton, ChainGlyph } from "@/components/site/arrow-button"
 import { Reveal } from "@/components/site/reveal"
@@ -30,7 +31,7 @@ function BlurbGrid({ items }: { items: Blurb[] }) {
 
 export function StatementSection() {
   return (
-    <section className="section bg-white">
+    <section id="what-we-do" className="section bg-white">
       <Reveal className="flex flex-col items-center text-center">
         <span className="eyebrow">What we do</span>
         <h2 className="mb-5.5 max-w-[16ch] text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
@@ -41,7 +42,7 @@ export function StatementSection() {
           the two, carrying the range, the technical judgement and the stock depth
           that turn a product list into a specification a contractor can build to.
         </p>
-        <ArrowButton href="#brands">Explore the portfolio</ArrowButton>
+        <ArrowButton href="/brands">Explore the portfolio</ArrowButton>
       </Reveal>
     </section>
   )
@@ -90,28 +91,48 @@ export function StrengthsSection() {
 
 export function TrustedBySection() {
   return (
-    <section id="customers" className="section on-blue bg-blue text-white">
-      <Reveal className="mb-8.5">
+    <section id="customers" className="section bg-off">
+      <Reveal className="mb-[clamp(28px,4vw,52px)] text-center">
         <span className="eyebrow">Trusted by</span>
-        <h2 className="max-w-[24ch] text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
-          Specified by name, not by default.
-        </h2>
       </Reveal>
 
-      <Reveal stagger className="grid grid-cols-[repeat(auto-fill,minmax(214px,1fr))] gap-3">
+      {/*
+       * Hairlines run between logo rows only; the first row of each
+       * breakpoint drops its rule. Column counts only ever grow with the
+       * viewport, so the exemptions stack rather than fight each other.
+       */}
+      <Reveal
+        stagger
+        step={60}
+        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 [&>*:nth-child(-n+2)]:border-t-0 sm:[&>*:nth-child(3)]:border-t-0 lg:[&>*:nth-child(4)]:border-t-0 lg:[&>*:nth-child(5)]:border-t-0"
+      >
         {customers.map((customer) => (
           <div
             key={customer.name}
-            className="flex min-h-[150px] flex-col rounded-2xl p-5.5 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.18)] transition-[background-color,color,box-shadow] duration-300 ease-expo hover:bg-white hover:text-blue hover:shadow-none"
+            title={`${customer.name} — ${customer.sector}`}
+            className="flex items-center justify-center border-t border-ink/10 px-3 py-[clamp(22px,2.6vw,34px)]"
           >
-            <span className="mb-auto text-xs tracking-[0.1em] opacity-60">
-              {customer.sector}
-            </span>
-            <span className="mt-3.5 text-[17px] leading-[1.3] font-medium">
-              {customer.name}
+            <span
+              style={{ "--logo-scale": customer.logoScale ?? 1 } as CSSProperties}
+              className="relative block h-[calc(clamp(28px,3vw,38px)*var(--logo-scale))] w-full max-w-[calc(clamp(104px,12vw,150px)*var(--logo-scale))] opacity-90 transition-opacity duration-300 ease-expo hover:opacity-100"
+            >
+              <Image
+                src={customer.logo}
+                alt={`${customer.name} logo`}
+                fill
+                sizes="150px"
+                className="object-contain"
+              />
             </span>
           </div>
         ))}
+
+        {/*
+         * Ten logos leave the three-column row short; these carry its rule
+         * across the full width without adding a row at the other counts.
+         */}
+        <div aria-hidden className="hidden border-t border-ink/10 sm:block lg:hidden" />
+        <div aria-hidden className="hidden border-t border-ink/10 sm:block lg:hidden" />
       </Reveal>
     </section>
   )

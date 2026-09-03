@@ -42,45 +42,16 @@ export type MegaSection = {
 
 export const megaMenu: MegaSection[] = [
   {
-    key: "do",
-    navLabel: "What we do",
-    label: "What we do",
-    href: "#brands",
-    items: [
-      "Distribution and supply",
-      "System specification",
-      "Technical support and site inspection",
-      "Applicator training",
-      "Stock and logistics",
-    ],
-  },
-  {
-    key: "industries",
-    navLabel: "Industries",
-    label: "Industries we serve",
-    href: "#industries",
-    items: [
-      "Building and infrastructure",
-      "Marine and offshore",
-      "Oil, gas and petrochemical",
-      "Water and wastewater",
-      "Food and beverage",
-      "Packaging and converting",
-      "Automotive and transport",
-      "Metals and fabrication",
-      "Furniture and woodworking",
-      "Electronics and assembly",
-      "Footwear and leather",
-      "HVAC and plumbing",
-      "Healthcare and life sciences",
-      "Retail and fit-out",
-    ],
+    key: "home",
+    navLabel: "Home",
+    label: "Home",
+    href: "/",
   },
   {
     key: "brands",
     navLabel: "Brands",
     label: "Brands and Products",
-    href: "#brands",
+    href: "/brands",
     groups: [
       {
         title: "Henkel",
@@ -118,7 +89,7 @@ export const megaMenu: MegaSection[] = [
     key: "tech",
     navLabel: "Technologies",
     label: "Technologies and Approvals",
-    href: "#technologies",
+    href: "/technologies",
     items: [
       "Waterproofing systems",
       "Concrete repair and protection",
@@ -134,7 +105,7 @@ export const megaMenu: MegaSection[] = [
     key: "about",
     navLabel: "About",
     label: "About Catenate",
-    href: "#approvals",
+    href: "/about",
     items: [
       "Company",
       "Principals and partnerships",
@@ -993,19 +964,79 @@ export const technicalSupport: Blurb[] = [
   },
 ];
 
-export type Customer = { sector: string; name: string };
+export type Customer = {
+  sector: string;
+  name: string;
+  /** Wordmark in `public/images/logos`. */
+  logo: string;
+  /**
+   * Optical correction for the logo wall. Every mark is fitted to the same
+   * box, which leaves square lockups reading smaller than wide wordmarks;
+   * this nudges that box per logo. Defaults to 1.
+   */
+  logoScale?: number;
+};
+
+const logo = (file: string) => `/images/logos/${file}`;
 
 export const customers: Customer[] = [
-  { sector: "Contracting", name: "Larsen & Toubro (Oman) LLC" },
-  { sector: "Contracting", name: "STRABAG Oman LLC" },
-  { sector: "Contracting", name: "Galfar Engineering & Contracting SAOG" },
-  { sector: "Contracting", name: "Bahwan Engineering Company LLC" },
-  { sector: "Food and beverage", name: "Nestlé" },
-  { sector: "Food and beverage", name: "Coca-Cola Al Ahlia Beverages Company LLC" },
-  { sector: "Food and beverage", name: "Oman Refreshment Company (Pepsi Oman)" },
-  { sector: "Manufacturing", name: "Unilever Home & Personal Care Products Mfg LLC" },
-  { sector: "Manufacturing", name: "RAK Ceramics" },
-  { sector: "Manufacturing", name: "IFFCO Group" },
+  {
+    sector: "Contracting",
+    name: "Larsen & Toubro (Oman) LLC",
+    logo: logo("larsen-toubro.svg"),
+    logoScale: 1.2,
+  },
+  {
+    sector: "Contracting",
+    name: "STRABAG Oman LLC",
+    logo: logo("strabag.svg"),
+    logoScale: 0.9,
+  },
+  {
+    sector: "Contracting",
+    name: "Galfar Engineering & Contracting SAOG",
+    logo: logo("galfar.png"),
+    logoScale: 1.15,
+  },
+  {
+    sector: "Contracting",
+    name: "Bahwan Engineering Company LLC",
+    logo: logo("bahwan.svg"),
+  },
+  {
+    sector: "Food and beverage",
+    name: "Nestlé",
+    logo: logo("nestle.svg"),
+    logoScale: 1.3,
+  },
+  {
+    sector: "Food and beverage",
+    name: "Coca-Cola Al Ahlia Beverages Company LLC",
+    logo: logo("coca-cola.svg"),
+    logoScale: 0.95,
+  },
+  {
+    sector: "Food and beverage",
+    name: "Oman Refreshment Company (Pepsi Oman)",
+    logo: logo("oman-refreshment.png"),
+  },
+  {
+    sector: "Manufacturing",
+    name: "Unilever Home & Personal Care Products Mfg LLC",
+    logo: logo("unilever.svg"),
+    logoScale: 1.25,
+  },
+  {
+    sector: "Manufacturing",
+    name: "RAK Ceramics",
+    logo: logo("rak-ceramics.svg"),
+  },
+  {
+    sector: "Manufacturing",
+    name: "IFFCO Group",
+    logo: logo("iffco.svg"),
+    logoScale: 0.95,
+  },
 ];
 
 export const contactCards = [
@@ -1044,7 +1075,7 @@ export const company = {
 export const footerColumns = [
   {
     heading: "Brands",
-    links: brands.map((brand) => ({ label: brand.name, href: "#brands" })),
+    links: brands.map((brand) => ({ label: brand.name, href: "/brands" })),
   },
   {
     heading: "Systems",
@@ -1054,16 +1085,16 @@ export const footerColumns = [
       "Sealants and glazing",
       "Tiling and flooring",
       "Metal pretreatment",
-    ].map((label) => ({ label, href: "#technologies" })),
+    ].map((label) => ({ label, href: "/technologies" })),
   },
   {
     heading: "Company",
     links: [
-      { label: "Quality and HSE", href: "#approvals" },
-      { label: "Projects", href: "#projects" },
-      { label: "Industries", href: "#industries" },
-      { label: "Become a partner", href: "#contact" },
-      { label: "Careers", href: "#contact" },
+      { label: "Quality and HSE", href: "/about" },
+      { label: "Projects", href: "/#projects" },
+      { label: "Industries", href: "/#industries" },
+      { label: "Become a partner", href: "/#contact" },
+      { label: "Careers", href: "/#contact" },
     ],
   },
 ];

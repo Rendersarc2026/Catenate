@@ -5,9 +5,9 @@ import { SiteHeader } from "@/components/site/site-header";
 
 const shortcuts = [
   { label: "Industries we serve", href: "/#industries" },
-  { label: "Brands and products", href: "/#brands" },
+  { label: "Brands and products", href: "/brands" },
   { label: "Solutions finder", href: "/#finder" },
-  { label: "Approvals", href: "/#approvals" },
+  { label: "Approvals", href: "/about" },
 ];
 
 export default function NotFound() {

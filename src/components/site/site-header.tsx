@@ -1,34 +1,32 @@
 "use client"
 
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import * as React from "react"
 
-import { ArrowButton, ChainGlyph } from "@/components/site/arrow-button"
+import { ArrowButton } from "@/components/site/arrow-button"
 import { megaMenu } from "@/data/catenate"
 import { cn } from "@/lib/utils"
 
 /** Scroll depth at which the transparent nav takes on its solid backing. */
 const SOLID_AFTER = 80
-/** Hover dwell before the mega panel swaps, so a diagonal sweep doesn't thrash. */
-const HOVER_DWELL = 150
 
 export function SiteHeader() {
-  const [solid, setSolid] = React.useState(false)
+  /* Only the homepage puts a dark hero behind the nav; elsewhere it opens solid. */
+  const overHero = usePathname() === "/"
+  const [scrolled, setScrolled] = React.useState(false)
+  /* Small screens have no room for the nav row, so it collapses behind a toggle. */
   const [open, setOpen] = React.useState(false)
-  const [activeKey, setActiveKey] = React.useState<string | null>(null)
   const navRef = React.useRef<HTMLElement>(null)
-  const hoverTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
   React.useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > SOLID_AFTER)
+    const onScroll = () => setScrolled(window.scrollY > SOLID_AFTER)
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  const close = React.useCallback(() => {
-    setOpen(false)
-    setActiveKey(null)
-  }, [])
+  const close = React.useCallback(() => setOpen(false), [])
 
   React.useEffect(() => {
     if (!open) return
@@ -48,44 +46,7 @@ export function SiteHeader() {
     }
   }, [open, close])
 
-  React.useEffect(
-    () => () => {
-      if (hoverTimer.current) clearTimeout(hoverTimer.current)
-    },
-    []
-  )
-
-  const openWith = (key: string) => {
-    setActiveKey(key)
-    setOpen(true)
-  }
-
-  const toggle = (key: string) => {
-    if (open && activeKey === key) close()
-    else openWith(key)
-  }
-
-  const scheduleActive = (key: string) => {
-    if (hoverTimer.current) clearTimeout(hoverTimer.current)
-    hoverTimer.current = setTimeout(() => setActiveKey(key), HOVER_DWELL)
-  }
-
-  const onColumnKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return
-    event.preventDefault()
-
-    const links = Array.from(
-      event.currentTarget.querySelectorAll<HTMLButtonElement>("[data-mega-link]")
-    )
-    const current = links.indexOf(document.activeElement as HTMLButtonElement)
-    const delta = event.key === "ArrowDown" ? 1 : -1
-    const next = links[(current + delta + links.length) % links.length]
-
-    next?.focus()
-    setActiveKey(next?.dataset.megaLink ?? null)
-  }
-
-  const active = megaMenu.find((section) => section.key === activeKey)
+  const solid = scrolled || !overHero
 
   return (
     <header
@@ -99,43 +60,36 @@ export function SiteHeader() {
       )}
     >
       <div className="content-pad flex h-nav items-center justify-between gap-4.5">
-        <a
-          href="#hero"
+        <Link
+          href="/"
           className={cn(
             "text-[21px] font-semibold tracking-[-0.02em] transition-colors duration-300 ease-expo",
             solid || open ? "text-blue" : "text-white"
           )}
         >
           CATEN<span className="tracking-[-0.05em]">ATE</span>
-        </a>
+        </Link>
 
-        <nav className="hidden flex-none items-center gap-0.5 min-[961px]:flex" aria-label="Primary">
+        <nav
+          className="hidden flex-none items-center gap-0.5 min-[961px]:flex"
+          aria-label="Primary"
+        >
           {megaMenu.map((section) => (
-            <button
+            <Link
               key={section.key}
-              type="button"
-              aria-expanded={open && activeKey === section.key}
-              onClick={() => toggle(section.key)}
-              onMouseEnter={() => open && openWith(section.key)}
+              href={section.href}
               className={cn(
                 "rounded-full px-3.5 py-2.25 text-[14.5px] font-medium whitespace-nowrap transition-[color,background-color] duration-300 ease-expo",
                 solid || open
                   ? "text-grey hover:bg-blue/8 hover:text-blue"
-                  : "text-white/86 hover:bg-white/15 hover:text-white",
-                activeKey === section.key &&
-                  (solid || open ? "bg-blue/8 text-blue" : "bg-white/15 text-white")
+                  : "text-white/86 hover:bg-white/15 hover:text-white"
               )}
             >
               {section.navLabel}
-            </button>
+            </Link>
           ))}
 
-          <ArrowButton
-            href="#contact"
-            variant={solid || open ? "brand" : "brand"}
-            size="pill-sm"
-            className="ml-2.5"
-          >
+          <ArrowButton href="/#contact" size="pill-sm" className="ml-2.5">
             Request a specification
           </ArrowButton>
         </nav>
@@ -144,7 +98,7 @@ export function SiteHeader() {
           type="button"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
-          onClick={() => (open ? close() : openWith(megaMenu[0].key))}
+          onClick={() => setOpen((wasOpen) => !wasOpen)}
           className={cn(
             "grid size-10.5 place-items-center rounded-full transition-colors duration-300 ease-expo min-[961px]:hidden",
             solid || open
@@ -165,104 +119,38 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {/* Mega menu */}
-      <div
-        role="region"
-        aria-label="Site sections"
+      {/* The same nav, stacked, for the widths that hide the row above. */}
+      <nav
+        aria-label="Primary"
         className={cn(
-          "content-pad absolute inset-x-0 top-nav grid grid-cols-1 bg-white pt-11 pb-13 shadow-[0_30px_60px_rgb(12_20_60/0.14)] transition-[opacity,transform,visibility] duration-350 ease-expo max-[960px]:max-h-[calc(100vh-var(--nav-height))] max-[960px]:overflow-y-auto max-[960px]:pt-5 max-[960px]:pb-8 min-[961px]:grid-cols-[40%_60%]",
+          "content-pad absolute inset-x-0 top-nav flex flex-col bg-white pt-5 pb-8 shadow-[0_30px_60px_rgb(12_20_60/0.14)] transition-[opacity,transform,visibility] duration-350 ease-expo min-[961px]:hidden",
           open
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-2.5 opacity-0"
         )}
       >
-        <div
-          className="flex flex-col"
-          onMouseOver={(event) => {
-            const link = (event.target as HTMLElement).closest<HTMLButtonElement>(
-              "[data-mega-link]"
-            )
-            if (link?.dataset.megaLink) scheduleActive(link.dataset.megaLink)
-          }}
-          onKeyDown={onColumnKeyDown}
-        >
-          {megaMenu.map((section) => (
-            <button
-              key={section.key}
-              type="button"
-              data-mega-link={section.key}
-              tabIndex={open ? 0 : -1}
-              aria-expanded={activeKey === section.key}
-              onClick={() => {
-                if (hoverTimer.current) clearTimeout(hoverTimer.current)
-                setActiveKey(section.key)
-              }}
-              className={cn(
-                "relative flex items-center gap-3 text-left text-[26px] leading-[2.2] font-medium tracking-[-0.02em] transition-colors duration-200 ease-expo max-[960px]:border-b max-[960px]:border-ink/8 max-[960px]:py-3 max-[960px]:text-xl max-[960px]:leading-[1.6]",
-                activeKey === section.key ? "text-blue" : "text-grey"
-              )}
-            >
-              <ChainGlyph
-                className={cn(
-                  "opacity-100 transition-[opacity,transform] duration-200 ease-expo",
-                  activeKey === section.key
-                    ? "translate-x-0 opacity-100"
-                    : "-translate-x-2 opacity-0"
-                )}
-              />
-              <span>{section.label}</span>
-            </button>
-          ))}
-        </div>
+        {megaMenu.map((section) => (
+          <Link
+            key={section.key}
+            href={section.href}
+            tabIndex={open ? 0 : -1}
+            onClick={close}
+            className="border-b border-ink/8 py-3 text-xl leading-[1.6] font-medium tracking-[-0.02em] text-grey transition-colors duration-200 ease-expo hover:text-blue"
+          >
+            {section.label}
+          </Link>
+        ))}
 
-        <div
-          key={activeKey ?? "empty"}
-          className={cn(
-            "columns-2 gap-10 border-l border-ink/9 pl-[clamp(24px,4vw,56px)] transition-opacity duration-150 max-[960px]:columns-1 max-[960px]:border-l-0 max-[960px]:pt-1.5 max-[960px]:pb-5 max-[960px]:pl-0",
-            active ? "opacity-100" : "opacity-0"
-          )}
+        <ArrowButton
+          href="/#contact"
+          size="pill-sm"
+          className="mt-6 self-start"
+          tabIndex={open ? 0 : -1}
+          onClick={close}
         >
-          {active?.groups?.map((group) => (
-            <React.Fragment key={group.title}>
-              <div className="mt-3.5 mb-0.5 text-[11px] tracking-[0.16em] break-inside-avoid text-grey uppercase first:mt-0">
-                {group.title}
-              </div>
-              {group.items.map((item) => (
-                <MegaLink key={item} href="#brands" onNavigate={close}>
-                  {item}
-                </MegaLink>
-              ))}
-            </React.Fragment>
-          ))}
-
-          {active?.items?.map((item) => (
-            <MegaLink key={item} href={active.href} onNavigate={close}>
-              {item}
-            </MegaLink>
-          ))}
-        </div>
-      </div>
+          Request a specification
+        </ArrowButton>
+      </nav>
     </header>
-  )
-}
-
-function MegaLink({
-  href,
-  children,
-  onNavigate,
-}: {
-  href: string
-  children: React.ReactNode
-  onNavigate: () => void
-}) {
-  return (
-    <a
-      href={href}
-      onClick={onNavigate}
-      className="group/megalink relative block w-fit text-base leading-[2.6] break-inside-avoid text-ink/80 hover:text-blue"
-    >
-      {children}
-      <span className="absolute bottom-2 left-0 h-px w-full origin-left scale-x-0 bg-blue transition-transform duration-200 ease-expo group-hover/megalink:scale-x-100" />
-    </a>
   )
 }

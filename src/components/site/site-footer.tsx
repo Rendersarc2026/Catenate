@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { company, footerColumns } from "@/data/catenate"
 
 export function SiteFooter() {
@@ -32,9 +34,9 @@ export function SiteFooter() {
             <ul className="list-none text-[14.5px] leading-[2.1]">
               {column.links.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-white/76 hover:text-white">
+                  <Link href={link.href} className="text-white/76 hover:text-white">
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

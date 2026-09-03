@@ -1,5 +1,3 @@
-import { ApprovalsSection } from "@/components/site/approvals-section";
-import { BrandPortfolio } from "@/components/site/brand-portfolio";
 import { ContactSection } from "@/components/site/contact-section";
 import {
   PartnersStrip,
@@ -17,7 +15,6 @@ import { IndustriesSection } from "@/components/site/industries-section";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { SolutionsFinder } from "@/components/site/solutions-finder";
-import { TechnologiesSection } from "@/components/site/technologies-section";
 
 export default function Home() {
   return (
@@ -34,10 +31,7 @@ export default function Home() {
         <StrengthsSection />
         <TrustedBySection />
         <WhyCatenate />
-        <BrandPortfolio />
         <SolutionsFinder />
-        <TechnologiesSection />
-        <ApprovalsSection />
         <ProjectsRail />
         <TechnicalSupport />
         <ContactSection />

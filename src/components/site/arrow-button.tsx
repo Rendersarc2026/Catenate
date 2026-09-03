@@ -1,3 +1,4 @@
+import Link from "next/link"
 import * as React from "react"
 
 import { Button, type buttonVariants } from "@/components/ui/button"
@@ -42,7 +43,7 @@ export function ArrowButton({
       variant={variant}
       size={size}
       className={cn("group/button", className)}
-      {...(href ? { render: <a href={href} />, nativeButton: false } : {})}
+      {...(href ? { render: <Link href={href} />, nativeButton: false } : {})}
       {...props}
     >
       {children}
