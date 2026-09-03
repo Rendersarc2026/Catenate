@@ -112,7 +112,7 @@ export function Hero() {
     }
   }, [reducedMotion])
 
-  // Scroll-driven sticky cinematic banner reveal
+  // Scroll-driven sticky cinematic banner reveal with paced, smooth scroll dampening
   React.useEffect(() => {
     if (reducedMotion) {
       if (bannerContainerRef.current) {
@@ -158,9 +158,9 @@ export function Hero() {
     }
 
     const updateStyles = (p: number) => {
-      // 1. Landing CATENATE Wordmark (visible only on landing, fades out on scroll)
+      // 1. Landing CATENATE Wordmark (visible only on landing, fades out smoothly on scroll)
       if (wordmarkRef.current) {
-        const wmOpacity = Math.max(0, 1 - p * 3.4)
+        const wmOpacity = Math.max(0, 1 - p * 3.2)
         const wmScale = 1 + p * 0.12
         const wmTranslateY = -p * 45
         const wmBlur = p * 12
@@ -171,16 +171,16 @@ export function Hero() {
         wordmarkRef.current.style.visibility = wmOpacity <= 0.001 ? "hidden" : "visible"
       }
 
-      // 2. Landing Scroll Cue (fades out rapidly on first scroll)
+      // 2. Landing Scroll Cue (fades out gracefully on first scroll)
       if (landingScrollCueRef.current) {
-        const scOpacity = Math.max(0, 1 - p * 5.5)
+        const scOpacity = Math.max(0, 1 - p * 5.0)
         const scTranslateY = p * 20
         landingScrollCueRef.current.style.opacity = scOpacity.toFixed(3)
         landingScrollCueRef.current.style.transform = `translate3d(0, ${scTranslateY.toFixed(1)}px, 0)`
         landingScrollCueRef.current.style.visibility = scOpacity <= 0.001 ? "hidden" : "visible"
       }
 
-      // 3. Expanding Earth Banner Visual (reveals on scroll)
+      // 3. Expanding Earth Banner Visual (reveals smoothly on scroll)
       if (bannerContainerRef.current) {
         const bP = Math.min(Math.max((p - 0.08) / 0.62, 0), 1)
         const bannerScale = 0.88 + bP * 0.12 + (p > 0.7 ? (p - 0.7) * 0.04 : 0)
@@ -202,7 +202,7 @@ export function Hero() {
         bannerInnerRef.current.style.transform = `scale(${innerScale.toFixed(3)})`
       }
 
-      // 4. Foreground Headline & Buttons (reveals on scroll)
+      // 4. Foreground Headline & Buttons (reveals smoothly on scroll)
       if (contentRef.current) {
         const cP = Math.min(Math.max((p - 0.22) / 0.52, 0), 1)
         const contentTranslateY = (1 - cP) * 35
@@ -212,7 +212,7 @@ export function Hero() {
         contentRef.current.style.visibility = cP <= 0.001 ? "hidden" : "visible"
       }
 
-      // 5. Stats Row along bottom (reveals on scroll)
+      // 5. Stats Row along bottom (reveals smoothly on scroll)
       if (statsRef.current) {
         const sP = Math.min(Math.max((p - 0.32) / 0.52, 0), 1)
         const statsTranslateY = (1 - sP) * 30
@@ -225,9 +225,10 @@ export function Hero() {
     const tick = () => {
       currentProgress += (targetProgress - currentProgress) * 0.14
       updateStyles(currentProgress)
-      if (Math.abs(targetProgress - currentProgress) > 0.001) {
+      if (Math.abs(targetProgress - currentProgress) > 0.0005) {
         animFrame = requestAnimationFrame(tick)
       } else {
+        currentProgress = targetProgress
         updateStyles(targetProgress)
         animFrame = null
       }
@@ -262,7 +263,7 @@ export function Hero() {
       className={`${
         ready ? "is-ready " : ""
       }on-blue relative w-full bg-black ${
-        reducedMotion ? "min-h-screen" : "min-h-[210vh] sm:min-h-[250vh]"
+        reducedMotion ? "min-h-screen" : "min-h-[300vh] sm:min-h-[350vh]"
       }`}
     >
       {/* Sticky Hero Viewport */}
