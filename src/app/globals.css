@@ -359,6 +359,19 @@
     display: none;
   }
 
+  /* ---------- Hero background / landing wordmark ---------- */
+  .hero-wordmark {
+    font-size: clamp(3.6rem, 15vw, 14.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: #ffffff;
+    user-select: none;
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.25), 0 0 90px rgba(27, 42, 122, 0.65);
+    white-space: nowrap;
+    will-change: transform, opacity, filter;
+  }
+
   /* ---------- Footer wordmark ---------- */
   .foot-mark {
     /* Capped so the whole word fits the content column on one line. */
@@ -457,6 +470,67 @@
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes hero-wordmark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-glow-pulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes scroll-wheel {
+  0% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+}
+
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.2);
   }
 }
 

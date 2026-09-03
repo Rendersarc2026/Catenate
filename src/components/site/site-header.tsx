@@ -8,23 +8,42 @@ import { ArrowButton } from "@/components/site/arrow-button"
 import { megaMenu } from "@/data/catenate"
 import { cn } from "@/lib/utils"
 
-/** Scroll depth at which the transparent nav takes on its solid backing. */
-const SOLID_AFTER = 80
 
 export function SiteHeader() {
-  /* Only the homepage puts a dark hero behind the nav; elsewhere it opens solid. */
-  const overHero = usePathname() === "/"
+  const pathname = usePathname()
+  const isHome = pathname === "/"
   const [scrolled, setScrolled] = React.useState(false)
+  const [pastHero, setPastHero] = React.useState(!isHome)
   /* Small screens have no room for the nav row, so it collapses behind a toggle. */
   const [open, setOpen] = React.useState(false)
   const navRef = React.useRef<HTMLElement>(null)
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > SOLID_AFTER)
+    const onScroll = () => {
+      const scrollY = window.scrollY
+      setScrolled(scrollY > 30)
+
+      if (isHome) {
+        const heroEl = document.getElementById("hero")
+        if (heroEl) {
+          const heroBottom = heroEl.offsetTop + heroEl.offsetHeight - 90
+          setPastHero(scrollY >= heroBottom)
+        } else {
+          setPastHero(scrollY > 600)
+        }
+      } else {
+        setPastHero(true)
+      }
+    }
+
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+    window.addEventListener("resize", onScroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [isHome])
 
   const close = React.useCallback(() => setOpen(false), [])
 
@@ -46,14 +65,18 @@ export function SiteHeader() {
     }
   }, [open, close])
 
-  const solid = scrolled || !overHero
+  const isDarkNav = isHome && !pastHero
 
   return (
     <header
       ref={navRef}
       className={cn(
         "sticky top-0 z-120 -mb-nav h-nav transition-[background-color,box-shadow] duration-300 ease-expo",
-        solid &&
+        isDarkNav &&
+          scrolled &&
+          !open &&
+          "bg-black/60 shadow-[0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-[16px]",
+        !isDarkNav &&
           !open &&
           "bg-white/88 shadow-[0_1px_0_rgb(26_29_46/0.08)] backdrop-blur-[18px]",
         open && "bg-white"
@@ -64,7 +87,7 @@ export function SiteHeader() {
           href="/"
           className={cn(
             "text-[21px] font-semibold tracking-[-0.02em] transition-colors duration-300 ease-expo",
-            solid || open ? "text-blue" : "text-white"
+            isDarkNav && !open ? "text-white" : "text-blue"
           )}
         >
           CATEN<span className="tracking-[-0.05em]">ATE</span>
@@ -80,9 +103,9 @@ export function SiteHeader() {
               href={section.href}
               className={cn(
                 "rounded-full px-3.5 py-2.25 text-[14.5px] font-medium whitespace-nowrap transition-[color,background-color] duration-300 ease-expo",
-                solid || open
-                  ? "text-grey hover:bg-blue/8 hover:text-blue"
-                  : "text-white/86 hover:bg-white/15 hover:text-white"
+                isDarkNav && !open
+                  ? "text-white/86 hover:bg-white/15 hover:text-white"
+                  : "text-grey hover:bg-blue/8 hover:text-blue"
               )}
             >
               {section.navLabel}
@@ -101,9 +124,9 @@ export function SiteHeader() {
           onClick={() => setOpen((wasOpen) => !wasOpen)}
           className={cn(
             "grid size-10.5 place-items-center rounded-full transition-colors duration-300 ease-expo min-[961px]:hidden",
-            solid || open
-              ? "text-blue shadow-[inset_0_0_0_1px_rgb(27_42_122/0.18)]"
-              : "text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.3)]"
+            isDarkNav && !open
+              ? "text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.3)]"
+              : "text-blue shadow-[inset_0_0_0_1px_rgb(27_42_122/0.18)]"
           )}
         >
           <svg
