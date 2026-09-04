@@ -267,7 +267,7 @@ export function Hero() {
       }`}
     >
       {/* Sticky Hero Viewport */}
-      <div className="sticky top-0 h-screen h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center text-white bg-black pt-[130px] pb-6 sm:pt-[150px] sm:pb-10 content-pad select-none">
+      <div className="sticky top-0 h-screen h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center text-white bg-black pt-[100px] pb-6 sm:pt-[110px] sm:pb-8 content-pad select-none">
         {/* Ambient background glow & starfield */}
         <div
           className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_50%_40%,rgba(27,42,122,0.45),transparent_70%)] animate-[hero-glow-pulse_8s_ease-in-out_infinite]"
@@ -317,7 +317,7 @@ export function Hero() {
           </div>
         </div>
 
-        {/* 2. Revealed State: Expanding Earth Banner Visual (Reveals on scroll) */}
+        {/* 2. Revealed State: Expanding Pattern Banner Visual (Reveals on scroll) */}
         <div
           ref={bannerContainerRef}
           className="absolute inset-0 z-2 pointer-events-none overflow-hidden flex items-center justify-center will-change-transform opacity-0 invisible"
@@ -334,7 +334,7 @@ export function Hero() {
         {/* 3. Revealed State: Foreground White Headline & Action Buttons (Reveals on scroll) */}
         <div
           ref={contentRef}
-          className="relative z-10 max-w-[1050px] mx-auto mt-2 sm:mt-6 will-change-transform opacity-0 invisible pointer-events-none"
+          className="relative z-10 max-w-[1050px] mx-auto my-auto will-change-transform opacity-0 invisible pointer-events-none"
         >
           <div ref={mouseParallaxRef} className="will-change-transform">
             {/* White headline text */}
@@ -364,7 +364,7 @@ export function Hero() {
         {/* 4. Revealed State: Stats row anchored along the bottom (Reveals on scroll) */}
         <div
           ref={statsRef}
-          className="relative z-10 w-full max-w-[1220px] grid grid-cols-4 pt-4 mt-auto max-[720px]:grid-cols-2 max-[720px]:gap-y-6 will-change-transform opacity-0 invisible"
+          className="relative z-10 w-full max-w-[1220px] grid grid-cols-4 pt-4 shrink-0 max-[720px]:grid-cols-2 max-[720px]:gap-y-6 will-change-transform opacity-0 invisible"
         >
           {hero.stats.map((stat) => (
             <div

@@ -3,11 +3,58 @@
 import * as React from "react"
 
 /** Share of the scroll track spent growing to full screen. */
-const GROW_END = 0.3
+const GROW_END = 0.45
 /** Share of the scroll track spent held at full screen (the "hold" beat). */
-const HOLD_END = 0.7
+const HOLD_END = 0.75
 /** Upper bound on the enlarged text scale, before the width cap kicks in. */
-const MAX_SCALE = 1.5
+const MAX_SCALE = 1.35
+
+/** Scroll track bounds for letter-by-letter reveal */
+const REVEAL_START = 0.08
+const REVEAL_END = 0.68
+const FADE_WINDOW = 3.8
+
+interface CharItem {
+  char: string
+  globalIndex: number
+}
+
+interface WordItem {
+  chars: CharItem[]
+}
+
+function parseLine(text: string, startIndex: number): { words: WordItem[]; nextIndex: number } {
+  const rawWords = text.split(" ")
+  let curr = startIndex
+  const words: WordItem[] = []
+
+  rawWords.forEach((wordStr, wIdx) => {
+    const chars: CharItem[] = []
+    for (let i = 0; i < wordStr.length; i++) {
+      chars.push({
+        char: wordStr[i],
+        globalIndex: curr++,
+      })
+    }
+    words.push({ chars })
+    if (wIdx < rawWords.length - 1) {
+      curr++ // slot for space between words
+    }
+  })
+
+  return { words, nextIndex: curr }
+}
+
+const LINE_1_PARSED = parseLine(
+  "A global market intelligence & distribution platform built around",
+  0
+)
+const LINE_BREAK_PAUSE = 2
+const LINE_2_PARSED = parseLine(
+  "Trusted Brands, Efficient Teams, Technical knowhow & Dependable Supply Chain.",
+  LINE_1_PARSED.nextIndex + LINE_BREAK_PAUSE
+)
+const TOTAL_CHARS = LINE_2_PARSED.nextIndex
 
 function usePrefersReducedMotion() {
   const subscribe = React.useCallback((callback: () => void) => {
@@ -35,12 +82,10 @@ function ease(t: number) {
 }
 
 /**
- * Clean statement section with a white background placed right under the hero image.
- * Structured into exactly 2 lines.
- *
- * Pinned to the viewport while it scales up to full screen, holds there for a
- * couple of scroll beats, then scales back to its resting size as the next
- * section comes up underneath.
+ * Editorial showcase section:
+ * - 16:9 widescreen black box with rounded corners and elevation
+ * - Centered white headline statement with scroll-driven letter-by-letter reveal
+ * - Smooth expansion into full-screen as you scroll
  */
 export function HeroStatement() {
   const reducedMotion = usePrefersReducedMotion()
@@ -48,12 +93,16 @@ export function HeroStatement() {
   const trackRef = React.useRef<HTMLElement>(null)
   const panelRef = React.useRef<HTMLDivElement>(null)
   const contentRef = React.useRef<HTMLDivElement>(null)
+  const letterRefs = React.useRef<(HTMLSpanElement | null)[]>([])
+  const letterProgressRef = React.useRef<Float32Array | null>(null)
 
   React.useEffect(() => {
     if (reducedMotion) return
 
     const track = trackRef.current
     if (!track) return
+
+    letterProgressRef.current = new Float32Array(TOTAL_CHARS).fill(-1)
 
     let currentProgress = 0
     let targetProgress = 0
@@ -70,7 +119,7 @@ export function HeroStatement() {
     const maxScale = () => {
       const natural = contentRef.current?.offsetWidth ?? 0
       if (natural <= 0) return MAX_SCALE
-      return Math.min(MAX_SCALE, (window.innerWidth * 0.94) / natural)
+      return Math.min(MAX_SCALE, (window.innerWidth * 0.92) / natural)
     }
 
     let scaleCeiling = MAX_SCALE
@@ -78,20 +127,70 @@ export function HeroStatement() {
     const updateStyles = (p: number) => {
       const e = ease(phase(p))
 
+      // 1. Calculate resting 16:9 widescreen dimensions
+      const restingW = Math.min(1240, window.innerWidth * 0.88)
+      const idealH = restingW * (9 / 16)
+      const restingH = Math.max(Math.min(idealH, window.innerHeight * 0.7), 240)
+
+      const restingInsetX = Math.max(0, (window.innerWidth - restingW) / 2)
+      const restingInsetY = Math.max(0, (window.innerHeight - restingH) / 2)
+
+      const currentInsetX = (1 - e) * restingInsetX
+      const currentInsetY = (1 - e) * restingInsetY
+      const currentRadius = (1 - e) * 24
+
+      // 2. Black widescreen panel expansion
+      if (panelRef.current) {
+        panelRef.current.style.inset = `${currentInsetY.toFixed(1)}px ${currentInsetX.toFixed(1)}px`
+        panelRef.current.style.borderRadius = `${currentRadius.toFixed(1)}px`
+      }
+
+      // 3. Typography container scale & exit fade
+      const exitP = p > 0.82 ? Math.min((p - 0.82) / 0.18, 1) : 0
+      const exitFade = 1 - ease(exitP)
+
       if (contentRef.current) {
         const scale = 1 + (scaleCeiling - 1) * e
         contentRef.current.style.transform = `scale(${scale.toFixed(4)})`
+        contentRef.current.style.opacity = exitFade.toFixed(3)
       }
 
-      // Backing panel grows from a centred band out to a full-bleed screen.
-      if (panelRef.current) {
-        const insetX = (1 - e) * window.innerWidth * 0.06
-        const insetY = (1 - e) * window.innerHeight * 0.27
-        const radius = (1 - e) * 28
+      // 4. Letter-by-letter left-to-right reveal with subtle glowing wavefront
+      const r = Math.min(Math.max((p - REVEAL_START) / (REVEAL_END - REVEAL_START), 0), 1)
+      const cursor = r * TOTAL_CHARS
 
-        panelRef.current.style.inset = `${insetY.toFixed(1)}px ${insetX.toFixed(1)}px`
-        panelRef.current.style.borderRadius = `${radius.toFixed(1)}px`
-        panelRef.current.style.opacity = (0.35 + e * 0.65).toFixed(3)
+      if (letterProgressRef.current) {
+        const prev = letterProgressRef.current
+        for (let i = 0; i < TOTAL_CHARS; i++) {
+          const el = letterRefs.current[i]
+          if (!el) continue
+
+          const diff = cursor - i
+          const localProgress = Math.min(Math.max(diff / FADE_WINDOW, 0), 1)
+
+          if (Math.abs(localProgress - prev[i]) < 0.005) continue
+          prev[i] = localProgress
+
+          if (localProgress <= 0) {
+            el.style.opacity = "0.2"
+            el.style.color = "rgba(255, 255, 255, 0.2)"
+            el.style.textShadow = "none"
+          } else if (localProgress >= 1) {
+            el.style.opacity = "1"
+            el.style.color = "#ffffff"
+            el.style.textShadow = "0 0 1px rgba(255, 255, 255, 0.4)"
+          } else {
+            const opacity = 0.2 + 0.8 * localProgress
+            const glow = Math.sin(localProgress * Math.PI)
+            el.style.opacity = opacity.toFixed(3)
+            el.style.color = `rgba(255, 255, 255, ${opacity.toFixed(3)})`
+            if (glow > 0.05) {
+              el.style.textShadow = `0 0 ${(10 * glow).toFixed(1)}px rgba(255, 255, 255, ${(0.85 * glow).toFixed(2)}), 0 0 ${(22 * glow).toFixed(1)}px rgba(255, 255, 255, ${(0.45 * glow).toFixed(2)})`
+            } else {
+              el.style.textShadow = "none"
+            }
+          }
+        }
       }
     }
 
@@ -132,22 +231,21 @@ export function HeroStatement() {
     }
   }, [reducedMotion])
 
-  const heading = (
-    <h2 className="text-[clamp(1.35rem,2.25vw,2.2rem)] leading-[1.45] font-medium tracking-[-0.018em] text-ink">
-      <span className="block whitespace-normal md:whitespace-nowrap">
-        A global market intelligence &amp; distribution platform built around
-      </span>
-      <span className="block whitespace-normal md:whitespace-nowrap mt-2 md:mt-1.5">
-        Trusted Brands, Efficient Teams, Technical knowhow &amp; Dependable Supply Chain.
-      </span>
-    </h2>
-  )
-
+  // Reduced motion accessible fallback
   if (reducedMotion) {
     return (
-      <section className="content-pad bg-white py-[clamp(120px,14vw,220px)] border-b border-ink/8">
-        <div className="mx-auto flex max-w-[1420px] flex-col items-center text-center">
-          {heading}
+      <section className="content-pad bg-white py-16 sm:py-24 border-b border-ink/8">
+        <div className="mx-auto flex max-w-[1240px] flex-col items-center">
+          <div className="relative w-full aspect-[16/9] min-h-[320px] rounded-2xl sm:rounded-3xl bg-black overflow-hidden shadow-2xl flex items-center justify-center p-6 sm:p-12 text-center">
+            <h2 className="relative z-10 text-[clamp(1.1rem,1.55vw,1.65rem)] leading-[1.48] sm:leading-[1.54] font-medium tracking-[-0.015em] text-white text-balance max-w-[min(1080px,86vw)] px-4 sm:px-8">
+              <span className="block whitespace-normal lg:whitespace-nowrap">
+                A global market intelligence &amp; distribution platform built around
+              </span>
+              <span className="block whitespace-normal lg:whitespace-nowrap mt-2 sm:mt-2.5">
+                Trusted Brands, Efficient Teams, Technical knowhow &amp; Dependable Supply Chain.
+              </span>
+            </h2>
+          </div>
         </div>
       </section>
     )
@@ -159,18 +257,80 @@ export function HeroStatement() {
       className="relative bg-white border-b border-ink/8 min-h-[220vh] sm:min-h-[260vh]"
     >
       <div className="sticky top-0 flex h-screen h-dvh w-full items-center justify-center overflow-hidden content-pad">
-        {/* Backing panel: a centred band at rest, full-bleed while held. */}
+        {/* Backing Widescreen 16:9 Black Box that expands on scroll */}
         <div
           ref={panelRef}
-          className="absolute bg-off border border-ink/8 will-change-[inset,opacity]"
+          className="absolute bg-black will-change-[inset,border-radius] shadow-[0_25px_65px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
           aria-hidden="true"
         />
 
+        {/* White Headline Statement with letter-by-letter reveal */}
         <div
           ref={contentRef}
-          className="relative w-fit max-w-[1420px] text-center origin-center will-change-transform"
+          className="relative z-20 w-fit max-w-[min(1080px,86vw)] text-center origin-center will-change-transform px-4 sm:px-8 md:px-12 pointer-events-none"
         >
-          {heading}
+          <h2
+            className="text-[clamp(1.1rem,1.55vw,1.65rem)] leading-[1.48] sm:leading-[1.54] font-medium tracking-[-0.015em] text-white/20 text-balance select-none antialiased"
+            aria-label="A global market intelligence & distribution platform built around Trusted Brands, Efficient Teams, Technical knowhow & Dependable Supply Chain."
+          >
+            <span className="sr-only">
+              A global market intelligence &amp; distribution platform built around
+              Trusted Brands, Efficient Teams, Technical knowhow &amp; Dependable Supply Chain.
+            </span>
+            <span aria-hidden="true" className="block">
+              {/* Line 1 */}
+              <span className="block whitespace-normal lg:whitespace-nowrap">
+                {LINE_1_PARSED.words.map((word, wIdx) => (
+                  <React.Fragment key={wIdx}>
+                    <span className="inline-block whitespace-nowrap">
+                      {word.chars.map((item) => (
+                        <span
+                          key={item.globalIndex}
+                          ref={(el) => {
+                            letterRefs.current[item.globalIndex] = el
+                          }}
+                          className="inline-block align-baseline will-change-[color,opacity,text-shadow]"
+                          style={{
+                            color: "rgba(255, 255, 255, 0.2)",
+                            opacity: 0.2,
+                          }}
+                        >
+                          {item.char}
+                        </span>
+                      ))}
+                    </span>
+                    {wIdx < LINE_1_PARSED.words.length - 1 && " "}
+                  </React.Fragment>
+                ))}
+              </span>
+
+              {/* Line 2 */}
+              <span className="block whitespace-normal lg:whitespace-nowrap mt-2 sm:mt-2.5">
+                {LINE_2_PARSED.words.map((word, wIdx) => (
+                  <React.Fragment key={wIdx}>
+                    <span className="inline-block whitespace-nowrap">
+                      {word.chars.map((item) => (
+                        <span
+                          key={item.globalIndex}
+                          ref={(el) => {
+                            letterRefs.current[item.globalIndex] = el
+                          }}
+                          className="inline-block align-baseline will-change-[color,opacity,text-shadow]"
+                          style={{
+                            color: "rgba(255, 255, 255, 0.2)",
+                            opacity: 0.2,
+                          }}
+                        >
+                          {item.char}
+                        </span>
+                      ))}
+                    </span>
+                    {wIdx < LINE_2_PARSED.words.length - 1 && " "}
+                  </React.Fragment>
+                ))}
+              </span>
+            </span>
+          </h2>
         </div>
       </div>
     </section>

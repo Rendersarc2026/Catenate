@@ -83,18 +83,20 @@ export function SiteHeader() {
       )}
     >
       <div className="content-pad flex h-nav items-center justify-between gap-4.5">
-        <Link
-          href="/"
-          className={cn(
-            "text-[21px] font-semibold tracking-[-0.02em] transition-colors duration-300 ease-expo",
-            isDarkNav && !open ? "text-white" : "text-blue"
-          )}
-        >
-          CATEN<span className="tracking-[-0.05em]">ATE</span>
-        </Link>
+        <div className="flex flex-1 items-center justify-start">
+          <Link
+            href="/"
+            className={cn(
+              "text-[21px] font-semibold tracking-[-0.02em] transition-colors duration-300 ease-expo",
+              isDarkNav && !open ? "text-white" : "text-blue"
+            )}
+          >
+            CATEN<span className="tracking-[-0.05em]">ATE</span>
+          </Link>
+        </div>
 
         <nav
-          className="hidden flex-none items-center gap-0.5 min-[961px]:flex"
+          className="hidden flex-none items-center justify-center gap-0.5 min-[961px]:flex"
           aria-label="Primary"
         >
           {megaMenu.map((section) => (
@@ -111,24 +113,27 @@ export function SiteHeader() {
               {section.navLabel}
             </Link>
           ))}
-
-          <ArrowButton href="/#contact" size="pill-sm" className="ml-2.5">
-            Request a specification
-          </ArrowButton>
         </nav>
 
-        <button
-          type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((wasOpen) => !wasOpen)}
-          className={cn(
-            "grid size-10.5 place-items-center rounded-full transition-colors duration-300 ease-expo min-[961px]:hidden",
-            isDarkNav && !open
-              ? "text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.3)]"
-              : "text-blue shadow-[inset_0_0_0_1px_rgb(27_42_122/0.18)]"
-          )}
-        >
+        <div className="flex flex-1 items-center justify-end">
+          <div className="hidden min-[961px]:block">
+            <ArrowButton href="/#contact" size="pill-sm">
+              Request a specification
+            </ArrowButton>
+          </div>
+
+          <button
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((wasOpen) => !wasOpen)}
+            className={cn(
+              "grid size-10.5 place-items-center rounded-full transition-colors duration-300 ease-expo min-[961px]:hidden",
+              isDarkNav && !open
+                ? "text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.3)]"
+                : "text-blue shadow-[inset_0_0_0_1px_rgb(27_42_122/0.18)]"
+            )}
+          >
           <svg
             width="18"
             height="12"
@@ -140,6 +145,7 @@ export function SiteHeader() {
             <path d="M0 1h18M0 6h18M0 11h18" />
           </svg>
         </button>
+        </div>
       </div>
 
       {/* The same nav, stacked, for the widths that hide the row above. */}
