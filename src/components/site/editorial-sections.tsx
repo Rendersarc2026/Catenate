@@ -29,30 +29,33 @@ function BlurbGrid({ items }: { items: Blurb[] }) {
 /**
  * Numbered process-list treatment: an oversized index numeral on the left,
  * a heavy rule opening the row, and the copy split title/body across the
- * remaining two tracks. The rule spans only the text columns so the numeral
- * reads as a marker beside the row rather than a fourth item in it.
+ * remaining two tracks.
  *
- * Each row observes itself, so the entrance plays as the row arrives rather
- * than all eight firing off the list container. The choreography — rule wipe,
- * then masked numeral and title, then body — lives in globals.css.
+ * The numeral pins as the row scrolls past it, so it hangs beside its own
+ * copy for the length of the row and is then pushed out of frame by the next
+ * one. The pin needs three things together: `grid-rows-[auto_1fr]` to give
+ * row two the leftover height, `self-start` so the numeral has somewhere to
+ * travel inside that area, and a row tall enough to be worth pinning at all
+ * — hence the min-height, which is the dial to turn if the effect wants to
+ * be longer or shorter.
  */
 function StrengthRow({ index, item }: { index: number; item: Blurb }) {
   return (
     <Reveal
       bare
-      className="grid gap-x-[clamp(24px,4vw,72px)] py-[clamp(24px,2.6vw,40px)] lg:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)_minmax(0,1.15fr)]"
+      className="row-fade grid gap-x-[clamp(24px,4vw,72px)] py-[clamp(24px,2.6vw,40px)] lg:min-h-[48vh] lg:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_1fr]"
     >
       <div
         aria-hidden
-        className="s-rule mb-6 h-[3px] w-full bg-ink lg:col-span-2 lg:col-start-2 lg:mb-[clamp(18px,2vw,32px)]"
+        className="mb-6 h-[3px] w-full bg-ink lg:col-span-2 lg:col-start-2 lg:mb-[clamp(18px,2vw,32px)]"
       />
-      <span className="s-mask s-num tnum text-[clamp(2.6rem,5vw,4.6rem)] leading-[0.8] font-semibold tracking-[-0.045em] lg:row-start-2">
-        <span>{String(index + 1).padStart(2, "0")}</span>
+      <span className="tnum block self-start text-[clamp(2.6rem,5vw,4.6rem)] leading-[0.8] font-semibold tracking-[-0.045em] lg:sticky lg:top-[calc(var(--nav-height)+clamp(24px,5vh,64px))] lg:row-start-2">
+        {String(index + 1).padStart(2, "0")}
       </span>
-      <h3 className="s-mask s-title mt-4 text-balance text-[clamp(1.15rem,1.7vw,1.55rem)] leading-[1.15] font-medium tracking-[-0.02em] lg:row-start-2 lg:mt-0">
-        <span>{item.title}</span>
+      <h3 className="mt-4 self-start text-balance text-[clamp(1.15rem,1.7vw,1.55rem)] leading-[1.15] font-medium tracking-[-0.02em] lg:row-start-2 lg:mt-0">
+        {item.title}
       </h3>
-      <p className="s-body mt-3 max-w-[48ch] text-[15px] leading-[1.7] text-grey lg:row-start-2 lg:mt-0">
+      <p className="mt-3 max-w-[48ch] self-start text-[15px] leading-[1.7] text-grey lg:row-start-2 lg:mt-0">
         {item.body}
       </p>
     </Reveal>

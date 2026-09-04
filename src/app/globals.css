@@ -450,69 +450,18 @@
 
   /* ---------- Strength rows ---------- */
   /*
-   * Each row animates itself in as it arrives: the rule wipes across first,
-   * then the numeral and title ride up from behind their own masks, then the
-   * body settles. Delays live here rather than on Reveal's stagger so the
-   * rule can travel horizontally while everything else rises.
-   *
-   * The masks carry symmetric padding cancelled by a negative margin — the
-   * numeral's sub-1 leading and the title's descenders both overflow their
-   * line box, and would otherwise be shaved by the clip.
+   * The numeral pins while its row scrolls past it (see StrengthRow), so the
+   * row entrance fades rather than rises: a transform on the row would make
+   * the row the containing block for the sticky numeral inside it and kill
+   * the pin outright.
    */
-  .s-rule {
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 1s var(--ease-out-expo);
-  }
-
-  .is-visible .s-rule {
-    transform: scaleX(1);
-  }
-
-  /*
-   * `align-self` matters: as grid items these masks would otherwise stretch to
-   * the row height, and the child's translate is a percentage of the child,
-   * so a stretched mask never gets fully covered. The padding then buys back
-   * the room the numeral's sub-1 leading and the title's descenders overflow
-   * their line box by, which the clip would otherwise shave.
-   */
-  .s-mask {
-    display: block;
-    align-self: start;
-    overflow: hidden;
-    padding-block: 0.18em;
-    margin-block: -0.18em;
-  }
-
-  .s-mask > * {
-    display: block;
-    transform: translateY(150%);
-    transition: transform 0.9s var(--ease-out-expo);
-  }
-
-  .is-visible .s-mask > * {
-    transform: none;
-  }
-
-  .s-num > * {
-    transition-delay: 0.1s;
-  }
-
-  .s-title > * {
-    transition-delay: 0.18s;
-  }
-
-  .s-body {
+  .row-fade {
     opacity: 0;
-    transform: translateY(16px);
-    transition:
-      opacity 0.9s var(--ease-out-expo) 0.26s,
-      transform 0.9s var(--ease-out-expo) 0.26s;
+    transition: opacity 0.7s var(--ease-out-expo);
   }
 
-  .is-visible .s-body {
+  .row-fade.is-visible {
     opacity: 1;
-    transform: none;
   }
 
   /* ---------- Multi-column index list ---------- */
@@ -635,14 +584,9 @@
   .hero-line > span,
   .hero-fade,
   .sector-copy > *,
-  .s-mask > *,
-  .s-body {
+  .row-fade {
     opacity: 1 !important;
     transform: none !important;
-  }
-
-  .s-rule {
-    transform: scaleX(1) !important;
   }
 
   html {
