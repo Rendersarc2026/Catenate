@@ -107,14 +107,8 @@ function Statement() {
           className="my-[clamp(18px,2vw,26px)] block h-px w-[76px] bg-ink/25"
         />
         <p className="text-[14.5px] leading-[1.55] text-ink/85">
-          Manufacturers make chemistry.
-          <br />
-          Projects need systems.
-        </p>
-        <p className="text-justify text-[14.5px] leading-[1.55] text-ink/85">
-          Catenate sits between the two, carrying the range, the technical
-          judgement and the stock depth that turn a product list into a
-          specification a contractor can build to.
+          We bridge global manufacturers with project requirements through
+          products, expertise and supply.
         </p>
       </div>
     </div>
