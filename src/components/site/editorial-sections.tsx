@@ -1,10 +1,8 @@
 import Image from "next/image"
 import type { CSSProperties } from "react"
 
-import { ArrowButton, ChainGlyph } from "@/components/site/arrow-button"
 import { Reveal } from "@/components/site/reveal"
 import {
-  brands,
   customers,
   images,
   projects,
@@ -13,7 +11,6 @@ import {
   whyCatenate,
   type Blurb,
 } from "@/data/catenate"
-import { cn } from "@/lib/utils"
 
 /** Two-column list of short titled paragraphs, hairline-separated. */
 function BlurbGrid({ items }: { items: Blurb[] }) {
@@ -26,52 +23,6 @@ function BlurbGrid({ items }: { items: Blurb[] }) {
         </div>
       ))}
     </Reveal>
-  )
-}
-
-export function StatementSection() {
-  return (
-    <section id="what-we-do" className="section bg-white">
-      <Reveal className="flex flex-col items-center text-center">
-        <span className="eyebrow">What we do</span>
-        <h2 className="mb-5.5 max-w-[16ch] text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
-          One chain, from global brand to your doorstep.
-        </h2>
-        <p className="lead mx-auto mb-8">
-          Manufacturers make chemistry. Projects need systems. Catenate sits between
-          the two, carrying the range, the technical judgement and the stock depth
-          that turn a product list into a specification a contractor can build to.
-        </p>
-        <ArrowButton href="/brands">Explore the portfolio</ArrowButton>
-      </Reveal>
-    </section>
-  )
-}
-
-export function PartnersStrip() {
-  return (
-    <section className="content-pad bg-off py-13">
-      <Reveal className="flex flex-wrap items-center justify-center gap-[clamp(14px,2.4vw,34px)]">
-        {brands.map((brand, index) => (
-          <div key={brand.name} className="contents">
-            {index > 0 && <ChainGlyph className="text-grey" />}
-            <div className="text-center opacity-55 grayscale transition-[filter,opacity] duration-250 ease-expo hover:opacity-100 hover:grayscale-0">
-              <b
-                className={cn(
-                  "block text-[clamp(19px,2.2vw,26px)] leading-[1.2] font-semibold tracking-[-0.02em]",
-                  brand.wordmarkClass
-                )}
-              >
-                {brand.name}
-              </b>
-              <i className="mt-1.5 block text-[10px] tracking-[0.14em] not-italic text-grey uppercase">
-                Authorised distributor
-              </i>
-            </div>
-          </div>
-        ))}
-      </Reveal>
-    </section>
   )
 }
 

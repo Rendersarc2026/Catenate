@@ -384,6 +384,21 @@
     user-select: none;
   }
 
+  /* ---------- Principal wall ---------- */
+  /*
+   * The wall wipes in from the right edge of the pinned track: `--wall-in`
+   * runs 0 to 1 and opens the container's width, squeezing the columns in
+   * ahead of themselves. The names come up late in the run, so no clipped
+   * lettering shows while the columns are still narrow.
+   */
+  .wall-wipe {
+    width: calc(var(--wall-in, 1) * 100%);
+  }
+
+  .wall-name {
+    opacity: clamp(0, (var(--wall-in, 1) - 0.62) * 3.4, 1);
+  }
+
   /* ---------- Sector showcase ---------- */
   /*
    * Autoplay indicator along the top edge of the panel. It restarts whenever

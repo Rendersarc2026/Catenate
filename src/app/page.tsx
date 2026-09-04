@@ -1,8 +1,6 @@
 import { ContactSection } from "@/components/site/contact-section";
 import {
-  PartnersStrip,
   ProjectsRail,
-  StatementSection,
   StrengthsSection,
   TechnicalSupport,
   TrustedBySection,
@@ -15,6 +13,7 @@ import { IndustriesSection } from "@/components/site/industries-section";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { SolutionsFinder } from "@/components/site/solutions-finder";
+import { WhatWeDo } from "@/components/site/what-we-do";
 
 export default function Home() {
   return (
@@ -24,8 +23,7 @@ export default function Home() {
       <main>
         <Hero />
         <HeroStatement />
-        <StatementSection />
-        <PartnersStrip />
+        <WhatWeDo />
         <GlobalPresence />
         <IndustriesSection />
         <StrengthsSection />
