@@ -9,6 +9,12 @@ type RevealProps = React.ComponentProps<"div"> & {
   stagger?: boolean
   /** Delay between children, in ms. Only applies with `stagger`. */
   step?: number
+  /**
+   * Skip the default fade-up and only toggle `is-visible`, leaving the
+   * entrance to the caller's own CSS. For blocks that animate their parts
+   * separately, where a wrapper fade would muddy the choreography.
+   */
+  bare?: boolean
 }
 
 /**
@@ -19,6 +25,7 @@ export function Reveal({
   className,
   stagger = false,
   step = 80,
+  bare = false,
   children,
   ...props
 }: RevealProps) {
@@ -52,7 +59,7 @@ export function Reveal({
   return (
     <div
       ref={ref}
-      className={cn(stagger ? "reveal-stagger" : "reveal", className)}
+      className={cn(!bare && (stagger ? "reveal-stagger" : "reveal"), className)}
       {...props}
     >
       {children}
