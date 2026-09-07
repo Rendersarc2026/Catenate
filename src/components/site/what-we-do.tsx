@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import * as React from "react"
 
@@ -189,9 +190,22 @@ function Wall({ idle = false }: WallProps) {
                 onFocus={() => setOpen(index)}
                 /* Focus lands first on a tap, so a toggle here would undo it. */
                 onClick={() => setOpen(index)}
-                className="wall-name relative z-1 cursor-pointer text-[clamp(15px,1.5vw,22px)] leading-[1.2] whitespace-nowrap"
+                className="wall-name relative z-1 flex cursor-pointer items-center justify-center text-[clamp(15px,1.5vw,22px)] leading-[1.2] whitespace-nowrap"
               >
-                {brand.name}
+                {brand.logo ? (
+                  <Image
+                    src={brand.logo}
+                    alt={brand.name}
+                    width={220}
+                    height={64}
+                    style={{ transform: `scale(${brand.logoScale ?? 1})` }}
+                    /* Marks are supplied in their own colours; the wall runs
+                       dark, so they are knocked back to white to sit on it. */
+                    className="h-[clamp(20px,2.1vw,30px)] w-auto object-contain brightness-0 invert"
+                  />
+                ) : (
+                  brand.name
+                )}
               </button>
 
               {/*

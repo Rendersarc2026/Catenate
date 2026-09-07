@@ -376,6 +376,14 @@ export type Brand = {
   familyCount: string;
   /** Tailwind text colour for the partner strip wordmark. */
   wordmarkClass: string;
+  /**
+   * Principal wordmark in `public/images/logos`. Optional: the brand wall
+   * falls back to the name set in type when no file is supplied, so a logo
+   * appears as soon as the asset is dropped in.
+   */
+  logo?: string;
+  /** Optical correction against the shared logo box. Defaults to 1. */
+  logoScale?: number;
   groups: MegaGroup[];
 };
 

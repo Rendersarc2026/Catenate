@@ -7,12 +7,12 @@ export type SectorCategory = {
 export const SECTOR_CATEGORIES: SectorCategory[] = [
   {
     id: "all",
-    label: "All sectors",
+    label: "All Sectors (14)",
     slugs: [],
   },
   {
     id: "built-env",
-    label: "Infrastructure",
+    label: "Infrastructure & Built Env.",
     slugs: [
       "building-infrastructure",
       "water-wastewater",
@@ -22,7 +22,7 @@ export const SECTOR_CATEGORIES: SectorCategory[] = [
   },
   {
     id: "energy-marine",
-    label: "Energy & Metals",
+    label: "Energy, Marine & Metals",
     slugs: [
       "oil-gas-petrochemical",
       "marine-offshore",
@@ -31,7 +31,7 @@ export const SECTOR_CATEGORIES: SectorCategory[] = [
   },
   {
     id: "manufacturing",
-    label: "Manufacturing",
+    label: "Manufacturing & Mobility",
     slugs: [
       "automotive-transport",
       "electronics-assembly",
@@ -42,7 +42,7 @@ export const SECTOR_CATEGORIES: SectorCategory[] = [
   },
   {
     id: "life-sciences",
-    label: "Life Sciences",
+    label: "Life Sciences & Cleanrooms",
     slugs: [
       "healthcare-life-sciences",
       "food-beverage",

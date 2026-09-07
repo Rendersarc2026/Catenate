@@ -604,6 +604,15 @@
   }
 }
 
+/* Site Header Scroll Hide / Reveal */
+.site-header {
+  transition: translate 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 300ms ease,
+    box-shadow 300ms ease;
+  will-change: translate, transform;
+}
+
 /* Why Catenate Pillar Expansion */
 .pillar-card {
   transition: flex 600ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -630,6 +639,32 @@
   line-height: 0.82 !important;
   clip-path: inset(0 0 0% 0);
   transform: scale(1.24) translateZ(0);
+}
+
+/* Heading and body scale up on the same expo curve as the numeral, with a
+   light overshoot so the growth reads as a move rather than a size swap.
+   The copy trails the heading slightly to stagger the expansion. */
+.pillar-copy {
+  transform-origin: top center;
+  transform: scale(1) translateZ(0);
+  transition: transform 620ms cubic-bezier(0.34, 1.42, 0.42, 1),
+    color 420ms ease,
+    opacity 420ms ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.pillar-copy--title.is-expanded {
+  transform: scale(2) translateZ(0);
+}
+
+.pillar-copy--body {
+  transition-delay: 60ms;
+}
+
+.pillar-copy--body.is-expanded {
+  transform: scale(2) translateZ(0);
 }
 
 @media (prefers-reduced-motion: reduce) {

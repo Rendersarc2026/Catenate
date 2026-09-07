@@ -15,26 +15,46 @@ export function SiteHeader() {
   const hasHero = isHome || pathname === "/about"
   const [scrolled, setScrolled] = React.useState(false)
   const [pastHero, setPastHero] = React.useState(!hasHero)
+  const [visible, setVisible] = React.useState(true)
   /* Small screens have no room for the nav row, so it collapses behind a toggle. */
   const [open, setOpen] = React.useState(false)
   const navRef = React.useRef<HTMLElement>(null)
+  const lastScrollYRef = React.useRef(0)
 
   React.useEffect(() => {
+    lastScrollYRef.current = typeof window !== "undefined" ? window.scrollY : 0
+
     const onScroll = () => {
-      const scrollY = window.scrollY
-      setScrolled(scrollY > 30)
+      const currentScrollY = window.scrollY
+      setScrolled(currentScrollY > 30)
 
       if (hasHero) {
         const heroEl = document.getElementById("hero")
         if (heroEl) {
           const heroBottom = heroEl.offsetTop + heroEl.offsetHeight - 90
-          setPastHero(scrollY >= heroBottom)
+          setPastHero(currentScrollY >= heroBottom)
         } else {
-          setPastHero(scrollY > 600)
+          setPastHero(currentScrollY > 600)
         }
       } else {
         setPastHero(true)
       }
+
+      // Hide when scrolling down, show when scrolling up
+      const diff = currentScrollY - lastScrollYRef.current
+
+      if (currentScrollY <= 40) {
+        // At the very top: always visible
+        setVisible(true)
+      } else if (diff > 8 && currentScrollY > 90) {
+        // Scrolling down past 90px threshold: hide header with animation
+        setVisible(false)
+      } else if (diff < -6) {
+        // Scrolling up: reveal header smoothly
+        setVisible(true)
+      }
+
+      lastScrollYRef.current = currentScrollY
     }
 
     onScroll()
@@ -45,6 +65,14 @@ export function SiteHeader() {
       window.removeEventListener("resize", onScroll)
     }
   }, [hasHero])
+
+  // Accessibility: reveal header immediately if a user focuses inside it (Tab navigation)
+  React.useEffect(() => {
+    const onFocusIn = () => setVisible(true)
+    const headerEl = navRef.current
+    headerEl?.addEventListener("focusin", onFocusIn)
+    return () => headerEl?.removeEventListener("focusin", onFocusIn)
+  }, [])
 
   const close = React.useCallback(() => setOpen(false), [])
 
@@ -67,12 +95,15 @@ export function SiteHeader() {
   }, [open, close])
 
   const isDarkNav = hasHero && !pastHero
+  // Keep header visible if mobile menu is open
+  const isHidden = !visible && !open && scrolled
 
   return (
     <header
       ref={navRef}
       className={cn(
-        "sticky top-0 z-120 -mb-nav h-nav transition-[background-color,box-shadow] duration-300 ease-expo",
+        "site-header sticky top-0 z-120 -mb-nav h-nav",
+        isHidden ? "-translate-y-full pointer-events-none" : "translate-y-0 pointer-events-auto",
         isDarkNav &&
           scrolled &&
           !open &&
@@ -97,23 +128,44 @@ export function SiteHeader() {
         </div>
 
         <nav
-          className="hidden flex-none items-center justify-center gap-0.5 min-[961px]:flex"
+          className="hidden flex-none items-center justify-center gap-1 min-[961px]:flex"
           aria-label="Primary"
         >
-          {megaMenu.map((section) => (
-            <Link
-              key={section.key}
-              href={section.href}
-              className={cn(
-                "rounded-full px-3.5 py-2.25 text-[14.5px] font-medium whitespace-nowrap transition-[color,background-color] duration-300 ease-expo",
-                isDarkNav && !open
-                  ? "text-white/86 hover:bg-white/15 hover:text-white"
-                  : "text-grey hover:bg-blue/8 hover:text-blue"
-              )}
-            >
-              {section.navLabel}
-            </Link>
-          ))}
+          {megaMenu.map((section) => {
+            const isActive =
+              section.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(section.href)
+
+            return (
+              <Link
+                key={section.key}
+                href={section.href}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "relative rounded-full px-4 py-2 text-[14px] whitespace-nowrap transition-all duration-200 ease-out",
+                  isActive
+                    ? isDarkNav && !open
+                      ? "bg-white/16 text-white font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]"
+                      : "bg-blue/10 text-blue font-semibold shadow-[inset_0_0_0_1px_rgba(42,88,255,0.16)]"
+                    : isDarkNav && !open
+                      ? "text-white/75 hover:bg-white/10 hover:text-white font-medium"
+                      : "text-grey hover:bg-blue/8 hover:text-blue font-medium"
+                )}
+              >
+                <span>{section.navLabel}</span>
+                {isActive && (
+                  <span
+                    className={cn(
+                      "absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2.5px] w-5 rounded-full shadow-sm transition-all duration-300",
+                      isDarkNav && !open ? "bg-white" : "bg-blue"
+                    )}
+                    aria-hidden="true"
+                  />
+                )}
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="flex flex-1 items-center justify-end">
@@ -135,17 +187,17 @@ export function SiteHeader() {
                 : "text-blue shadow-[inset_0_0_0_1px_rgb(26_29_46/0.18)]"
             )}
           >
-          <svg
-            width="18"
-            height="12"
-            viewBox="0 0 18 12"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-          >
-            <path d="M0 1h18M0 6h18M0 11h18" />
-          </svg>
-        </button>
+            <svg
+              width="18"
+              height="12"
+              viewBox="0 0 18 12"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+            >
+              <path d="M0 1h18M0 6h18M0 11h18" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -159,17 +211,36 @@ export function SiteHeader() {
             : "invisible -translate-y-2.5 opacity-0"
         )}
       >
-        {megaMenu.map((section) => (
-          <Link
-            key={section.key}
-            href={section.href}
-            tabIndex={open ? 0 : -1}
-            onClick={close}
-            className="border-b border-ink/8 py-3 text-xl leading-[1.6] font-medium tracking-[-0.02em] text-grey transition-colors duration-200 ease-expo hover:text-blue"
-          >
-            {section.label}
-          </Link>
-        ))}
+        {megaMenu.map((section) => {
+          const isActive =
+            section.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(section.href)
+
+          return (
+            <Link
+              key={section.key}
+              href={section.href}
+              tabIndex={open ? 0 : -1}
+              onClick={close}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "flex items-center justify-between border-b border-ink/8 py-3.5 text-xl leading-[1.6] tracking-[-0.02em] transition-colors duration-200 ease-expo",
+                isActive
+                  ? "font-semibold text-blue"
+                  : "font-medium text-grey hover:text-blue"
+              )}
+            >
+              <span>{section.label}</span>
+              {isActive && (
+                <span
+                  className="size-2 rounded-full bg-blue"
+                  aria-hidden="true"
+                />
+              )}
+            </Link>
+          )
+        })}
 
         <ArrowButton
           href="/#contact"
