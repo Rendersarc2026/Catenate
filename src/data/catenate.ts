@@ -21,6 +21,7 @@ export const images = {
   contactInquiry: placeholder("catenatesupport", 700, 525),
   contactChannel: placeholder("catenatechannel", 700, 525),
   contactPartner: placeholder("catenatepartner", 700, 525),
+  contactBg: "/images/contact-bg.jpeg",
 } as const;
 
 /* ------------------------------------------------------------------ *
@@ -142,6 +143,21 @@ export const hero = {
     { value: "4", label: "Regions" },
     { value: "13", label: "Brands represented" },
     { value: "14", label: "Industries supplied" },
+  ],
+} as const;
+
+/* ------------------------------------------------------------------ *
+ * About Hero
+ * ------------------------------------------------------------------ */
+
+export const aboutHero = {
+  title: "About us",
+  subtitle: "Channel Partner Network to serve your needs",
+  image: "/images/about-hero.jpg",
+  stats: [
+    { value: "100K+", label: "Products distributed" },
+    { value: "100K+", label: "Square metres specified" },
+    { value: "100K+", label: "Channel network reach" },
   ],
 } as const;
 
@@ -1365,18 +1381,24 @@ export const customers: Customer[] = [
 export const contactCards = [
   {
     title: "Can't find what you're looking for?",
-    cta: "Submit your inquiry",
-    image: images.contactInquiry,
+    cta: "Submit your enquiry",
+    href: "#enquiry",
+    action: "enquiry",
+    image: images.contactBg,
   },
   {
     title: "Looking where to buy? Let us help you with that",
     cta: "Find a channel partner",
-    image: images.contactChannel,
+    href: "/about",
+    action: "navigate",
+    image: images.contactBg,
   },
   {
     title: "Channel Partner Network to serve your needs",
     cta: "Find out more",
-    image: images.contactPartner,
+    href: "/technologies",
+    action: "navigate",
+    image: images.contactBg,
   },
 ] as const;
 

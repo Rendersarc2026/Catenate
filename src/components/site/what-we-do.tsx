@@ -37,7 +37,7 @@ const WEIGHT_ASIDE = 0.78
  * The wall's colour ramp, walked from the palest column to the deepest. Read
  * between the stops so the gradient holds its shape whatever the brand count.
  */
-const RAMP = ["#6c7082", "#3a4c86", "#1e3795", "#002050", "#000c1e"]
+const RAMP = ["#6c7082", "#4a4e5e", "#33374a", "#1e2130", "#0b0d14"]
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 

@@ -16,7 +16,7 @@ type OptionProps<T extends string> = {
 
 /**
  * The primary choice: one tile per application, laid out as a spec index
- * rather than a card wall. Selection reads as a filled brand-blue tile.
+ * rather than a card wall. Selection reads as a filled brand-charcoal tile.
  */
 export function ApplicationGrid<T extends string>({
   options,
@@ -41,8 +41,8 @@ export function ApplicationGrid<T extends string>({
             className={cn(
               "group/tile flex items-center justify-between gap-4 rounded-xl px-5.5 py-4.5 text-left transition-[background-color,box-shadow,color] duration-300 ease-expo",
               selected
-                ? "bg-blue text-white shadow-[0_16px_36px_-20px_rgb(27_42_122/0.9)]"
-                : "bg-white text-ink shadow-[inset_0_0_0_1px_rgb(26_29_46/0.1)] hover:shadow-[inset_0_0_0_1px_rgb(27_42_122/0.42)]"
+                ? "bg-blue text-white shadow-[0_16px_36px_-20px_rgb(26_29_46/0.9)]"
+                : "bg-white text-ink shadow-[inset_0_0_0_1px_rgb(26_29_46/0.1)] hover:shadow-[inset_0_0_0_1px_rgb(26_29_46/0.42)]"
             )}
           >
             <span className="truncate text-[15.5px] leading-[1.45] font-medium">
@@ -55,7 +55,7 @@ export function ApplicationGrid<T extends string>({
                 "grid size-5 shrink-0 place-items-center rounded-full transition-colors duration-250 ease-expo",
                 selected
                   ? "bg-white text-blue"
-                  : "text-transparent shadow-[inset_0_0_0_1px_rgb(26_29_46/0.18)] group-hover/tile:shadow-[inset_0_0_0_1px_rgb(27_42_122/0.4)]"
+                  : "text-transparent shadow-[inset_0_0_0_1px_rgb(26_29_46/0.18)] group-hover/tile:shadow-[inset_0_0_0_1px_rgb(26_29_46/0.4)]"
               )}
             >
               <Check className="size-3 stroke-[2.75]" />
@@ -88,7 +88,7 @@ export function ConditionChips<T extends string>({
               "rounded-full px-4.5 py-2.5 text-[14.5px] leading-[1.4] transition-[background-color,box-shadow,color] duration-250 ease-expo",
               selected
                 ? "bg-blue text-white"
-                : "bg-white text-grey shadow-[inset_0_0_0_1px_rgb(26_29_46/0.12)] hover:text-ink hover:shadow-[inset_0_0_0_1px_rgb(27_42_122/0.42)]"
+                : "bg-white text-grey shadow-[inset_0_0_0_1px_rgb(26_29_46/0.12)] hover:text-ink hover:shadow-[inset_0_0_0_1px_rgb(26_29_46/0.42)]"
             )}
           >
             {option}

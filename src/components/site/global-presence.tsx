@@ -40,7 +40,7 @@ export function GlobalPresence() {
       <Reveal className="grid items-center gap-[clamp(28px,4vw,56px)] border-b border-ink/10 pb-[clamp(34px,4vw,54px)] max-lg:grid-cols-1 lg:grid-cols-[1.4fr_0.8fr]">
         <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[480px] flex items-center justify-center">
           <OrbitDotGlobe
-            oceanColor="#121e5e"
+            oceanColor="#1c1f2b"
             landColor="#ffffff"
             dotSize={1.8}
             dotDensity={3}
@@ -98,10 +98,12 @@ export function GlobalPresence() {
 
       <Reveal
         stagger
-        className="grid grid-cols-4 gap-6 border-b border-ink/10 py-[clamp(34px,4vw,54px)] text-left max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-10 max-lg:text-center"
+        className="grid grid-cols-4 gap-6 border-b border-ink/10 py-[clamp(34px,4vw,54px)] text-center max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-10"
       >
         {presence.stats.map((stat) => (
-          <div key={stat.label}>
+          /* Each figure is centred over its own label, so the four blocks
+             sit at even intervals whatever the label lengths. */
+          <div key={stat.label} className="flex flex-col items-center">
             <CountUp to={stat.to} suffix={stat.suffix} />
             <span className="mt-3 block text-xs tracking-[0.14em] text-grey uppercase">
               {stat.label}

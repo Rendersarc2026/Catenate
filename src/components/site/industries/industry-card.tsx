@@ -56,7 +56,7 @@ export function IndustryCard({
         "h-[460px] sm:h-[490px] md:h-[520px]",
         "rounded-[24px] overflow-hidden transition-all duration-500 ease-expo will-change-transform",
         isActive
-          ? "scale-100 opacity-100 z-20 ring-2 ring-white/60 shadow-[0_30px_70px_-15px_rgba(16,27,82,0.4)]"
+          ? "scale-100 opacity-100 z-20 ring-2 ring-white/60 shadow-[0_30px_70px_-15px_rgba(24,26,36,0.4)]"
           : "scale-[0.91] sm:scale-[0.93] opacity-60 hover:opacity-90 hover:scale-[0.95] z-10 shadow-lg"
       )}
     >
@@ -76,7 +76,7 @@ export function IndustryCard({
 
       {/* Multi-layered cinematic gradient scrims */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-black/80 via-black/35 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-[rgb(8_14_38)] via-[rgb(8_14_38/0.82)] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-[rgb(13_14_19)] via-[rgb(13_14_19/0.82)] to-transparent" />
 
       {/* Subtle Razor-Sharp Glass Inner Border */}
       <div className="pointer-events-none absolute inset-0 rounded-[24px] border border-white/20 transition-colors duration-300 group-hover:border-white/40" />

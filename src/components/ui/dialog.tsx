@@ -27,7 +27,7 @@ function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) 
     <DialogPrimitive.Backdrop
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 z-[290] bg-[rgb(10_16_46/0.58)] backdrop-blur-[6px] transition-opacity duration-500 ease-expo data-ending-style:opacity-0 data-starting-style:opacity-0",
+        "fixed inset-0 z-[290] bg-[rgb(15_17_23/0.58)] backdrop-blur-[6px] transition-opacity duration-500 ease-expo data-ending-style:opacity-0 data-starting-style:opacity-0",
         className
       )}
       {...props}
@@ -61,7 +61,7 @@ function DialogContent({
           initialFocus={panelRef}
           data-slot="dialog-content"
           className={cn(
-            "pointer-events-auto outline-none bg-clip-padding text-sm text-popover-foreground shadow-[0_50px_140px_-20px_rgb(8_14_44/0.5),0_0_0_1px_rgb(255_255_255/0.6)] transition-[opacity,scale,translate] duration-[620ms] ease-[cubic-bezier(0.22,1.24,0.36,1)] will-change-transform",
+            "pointer-events-auto outline-none bg-clip-padding text-sm text-popover-foreground shadow-[0_50px_140px_-20px_rgb(13_15_21/0.5),0_0_0_1px_rgb(255_255_255/0.6)] transition-[opacity,scale,translate] duration-[620ms] ease-[cubic-bezier(0.22,1.24,0.36,1)] will-change-transform",
             "data-starting-style:translate-y-7 data-starting-style:scale-[0.84] data-starting-style:opacity-0",
             "data-ending-style:translate-y-3 data-ending-style:scale-[0.94] data-ending-style:opacity-0",
             className
@@ -72,7 +72,7 @@ function DialogContent({
           {showCloseButton && (
             <DialogPrimitive.Close
               data-slot="dialog-close"
-              className="absolute top-5 right-5 z-2 grid size-9.5 place-items-center rounded-full bg-white/85 text-ink shadow-[0_2px_12px_rgb(12_20_60/0.18)] backdrop-blur-md transition-[background-color,transform] duration-300 ease-expo hover:scale-105 hover:bg-white"
+              className="absolute top-5 right-5 z-2 grid size-9.5 place-items-center rounded-full bg-white/85 text-ink shadow-[0_2px_12px_rgb(18_20_28/0.18)] backdrop-blur-md transition-[background-color,transform] duration-300 ease-expo hover:scale-105 hover:bg-white"
             >
               <XIcon className="size-4" />
               <span className="sr-only">Close</span>

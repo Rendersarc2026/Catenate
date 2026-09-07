@@ -12,8 +12,9 @@ import { cn } from "@/lib/utils"
 export function SiteHeader() {
   const pathname = usePathname()
   const isHome = pathname === "/"
+  const hasHero = isHome || pathname === "/about"
   const [scrolled, setScrolled] = React.useState(false)
-  const [pastHero, setPastHero] = React.useState(!isHome)
+  const [pastHero, setPastHero] = React.useState(!hasHero)
   /* Small screens have no room for the nav row, so it collapses behind a toggle. */
   const [open, setOpen] = React.useState(false)
   const navRef = React.useRef<HTMLElement>(null)
@@ -23,7 +24,7 @@ export function SiteHeader() {
       const scrollY = window.scrollY
       setScrolled(scrollY > 30)
 
-      if (isHome) {
+      if (hasHero) {
         const heroEl = document.getElementById("hero")
         if (heroEl) {
           const heroBottom = heroEl.offsetTop + heroEl.offsetHeight - 90
@@ -43,7 +44,7 @@ export function SiteHeader() {
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onScroll)
     }
-  }, [isHome])
+  }, [hasHero])
 
   const close = React.useCallback(() => setOpen(false), [])
 
@@ -65,7 +66,7 @@ export function SiteHeader() {
     }
   }, [open, close])
 
-  const isDarkNav = isHome && !pastHero
+  const isDarkNav = hasHero && !pastHero
 
   return (
     <header
@@ -131,7 +132,7 @@ export function SiteHeader() {
               "grid size-10.5 place-items-center rounded-full transition-colors duration-300 ease-expo min-[961px]:hidden",
               isDarkNav && !open
                 ? "text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.3)]"
-                : "text-blue shadow-[inset_0_0_0_1px_rgb(27_42_122/0.18)]"
+                : "text-blue shadow-[inset_0_0_0_1px_rgb(26_29_46/0.18)]"
             )}
           >
           <svg
@@ -152,7 +153,7 @@ export function SiteHeader() {
       <nav
         aria-label="Primary"
         className={cn(
-          "content-pad absolute inset-x-0 top-nav flex flex-col bg-white pt-5 pb-8 shadow-[0_30px_60px_rgb(12_20_60/0.14)] transition-[opacity,transform,visibility] duration-350 ease-expo min-[961px]:hidden",
+          "content-pad absolute inset-x-0 top-nav flex flex-col bg-white pt-5 pb-8 shadow-[0_30px_60px_rgb(18_20_28/0.14)] transition-[opacity,transform,visibility] duration-350 ease-expo min-[961px]:hidden",
           open
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-2.5 opacity-0"

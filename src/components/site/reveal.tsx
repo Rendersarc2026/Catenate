@@ -30,6 +30,12 @@ export function Reveal({
   ...props
 }: RevealProps) {
   const ref = React.useRef<HTMLDivElement>(null)
+  /*
+   * Held in state rather than toggled on the node: React owns `className`, so
+   * an imperatively added class is wiped by any later re-render that changes
+   * the prop — leaving an already-revealed block stuck at opacity 0.
+   */
+  const [visible, setVisible] = React.useState(false)
 
   React.useEffect(() => {
     const el = ref.current
@@ -45,7 +51,7 @@ export function Reveal({
               ;(child as HTMLElement).style.transitionDelay = `${i * step}ms`
             })
           }
-          entry.target.classList.add("is-visible")
+          setVisible(true)
           observer.unobserve(entry.target)
         }
       },
@@ -59,7 +65,11 @@ export function Reveal({
   return (
     <div
       ref={ref}
-      className={cn(!bare && (stagger ? "reveal-stagger" : "reveal"), className)}
+      className={cn(
+        !bare && (stagger ? "reveal-stagger" : "reveal"),
+        visible && "is-visible",
+        className
+      )}
       {...props}
     >
       {children}

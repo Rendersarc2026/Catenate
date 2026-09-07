@@ -450,7 +450,7 @@ export interface OrbitDotGlobeProps {
 }
 
 export function OrbitDotGlobe({
-  oceanColor = "#101b52",
+  oceanColor = "#1a1d2e",
   landColor = "#ffffff",
   dotSize = 1.8,
   dotDensity = 3,
@@ -670,8 +670,8 @@ export function OrbitDotGlobe({
             mobile ? 24 : 32
           ),
           new THREE.MeshPhongMaterial({
-            color: safeColor(oceanColor, "#101b52"),
-            specular: new THREE.Color("#253575"),
+            color: safeColor(oceanColor, "#1a1d2e"),
+            specular: new THREE.Color("#343848"),
             shininess: 6,
             depthWrite: true,
             depthTest: true,

@@ -64,7 +64,7 @@ function SectorModalContent({ industry }: { industry: Industry }) {
             settled ? "scale-100" : "scale-[1.12]"
           )}
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(12_20_60/0.8)] via-transparent to-[rgb(12_20_60/0.3)]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(18_20_28/0.8)] via-transparent to-[rgb(18_20_28/0.3)]" />
 
         {/* Floating badge inside image */}
         <div className="absolute bottom-6 left-6 right-6 z-10 text-white">

@@ -11,7 +11,7 @@ const SUPPORT_HREF = "/#contact"
 const STEP_ID = "finder-step-3"
 const STEP_LABEL = "Your recommended solution"
 
-/** Shared shell: the brand-blue block that carries the third step. */
+/** Shared shell: the dark brand block that carries the third step. */
 function SolutionBlock({
   heading,
   children,

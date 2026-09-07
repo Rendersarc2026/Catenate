@@ -9,11 +9,14 @@
    CATENATE DESIGN TOKENS
    ============================================================ */
 :root {
-  /* Brand palette */
-  --brand-blue: #1b2a7a;
-  --brand-blue-deep: #101b52;
+  /* Brand palette — monochrome; --brand-blue keeps its name as the
+     primary-surface token, but carries a charcoal, not a blue. */
+  --brand-blue: #2c303f;
+  --brand-blue-deep: #1a1d2e;
   --brand-off: #f7f8fb;
   --brand-ink: #1a1d2e;
+  /* Dark neutral for accents and hover states, between ink and grey. */
+  --brand-graphite: #3a3f52;
   --brand-grey: #767c93;
   --brand-amber: #e8b98a;
 
@@ -73,6 +76,7 @@
   --color-blue-deep: var(--brand-blue-deep);
   --color-off: var(--brand-off);
   --color-ink: var(--brand-ink);
+  --color-graphite: var(--brand-graphite);
   --color-grey: var(--brand-grey);
   --color-amber: var(--brand-amber);
 
@@ -367,7 +371,7 @@
     line-height: 0.9;
     color: #ffffff;
     user-select: none;
-    text-shadow: 0 0 40px rgba(255, 255, 255, 0.25), 0 0 90px rgba(27, 42, 122, 0.65);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.25), 0 0 90px rgba(44, 48, 63, 0.65);
     white-space: nowrap;
     will-change: transform, opacity, filter;
   }
@@ -563,6 +567,34 @@
     opacity: 0.9;
     transform: scale(1.2);
   }
+}
+
+@keyframes horizon-glow-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.04) translateY(-3px);
+  }
+}
+
+@keyframes celestial-drift {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.012);
+  }
+}
+
+.animate-horizon-pulse {
+  animation: horizon-glow-pulse 7s ease-in-out infinite;
+}
+
+.animate-celestial-drift {
+  animation: celestial-drift 14s ease-in-out infinite;
 }
 
 @media (max-width: 820px) {

@@ -59,21 +59,21 @@ export function HeroBackdrop({ className, imageSrc }: HeroBackdropProps = {}) {
       >
         <defs>
           <linearGradient id="hb-field" x1="0" y1="0" x2="0.5" y2="1">
-            <stop offset="0" stopColor="#333d80" />
-            <stop offset="0.4" stopColor="#1c2764" />
-            <stop offset="1" stopColor="#0a1038" />
+            <stop offset="0" stopColor="#3d4152" />
+            <stop offset="0.4" stopColor="#262a37" />
+            <stop offset="1" stopColor="#14161f" />
           </linearGradient>
 
           {/* Warm key light, carrying the brand's amber accent. */}
           <radialGradient id="hb-warm" cx="0.14" cy="0.02" r="0.8">
             <stop offset="0" stopColor="#e8b98a" stopOpacity="0.62" />
             <stop offset="0.38" stopColor="#a8809e" stopOpacity="0.2" />
-            <stop offset="1" stopColor="#101b52" stopOpacity="0" />
+            <stop offset="1" stopColor="#1a1d2e" stopOpacity="0" />
           </radialGradient>
 
           <radialGradient id="hb-cool" cx="0.92" cy="0.28" r="0.62">
-            <stop offset="0" stopColor="#4a5fe0" stopOpacity="0.38" />
-            <stop offset="1" stopColor="#101b52" stopOpacity="0" />
+            <stop offset="0" stopColor="#8b90a3" stopOpacity="0.38" />
+            <stop offset="1" stopColor="#1a1d2e" stopOpacity="0" />
           </radialGradient>
 
           <pattern id="hb-grid" width="64" height="64" patternUnits="userSpaceOnUse">
@@ -118,15 +118,15 @@ export function HeroBackdrop({ className, imageSrc }: HeroBackdropProps = {}) {
 
           {/* Seats the copy and the stat bar on a darker ground. */}
           <linearGradient id="hb-seat" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#0a1038" stopOpacity="0" />
-            <stop offset="0.5" stopColor="#0a1038" stopOpacity="0.3" />
-            <stop offset="1" stopColor="#0a1038" stopOpacity="0.85" />
+            <stop offset="0" stopColor="#14161f" stopOpacity="0" />
+            <stop offset="0.5" stopColor="#14161f" stopOpacity="0.3" />
+            <stop offset="1" stopColor="#14161f" stopOpacity="0.85" />
           </linearGradient>
 
           {/* Keeps the headline off the busiest part of the drawing. */}
           <radialGradient id="hb-copy" cx="0.5" cy="0.42" r="0.46">
-            <stop offset="0" stopColor="#131c50" stopOpacity="0.5" />
-            <stop offset="1" stopColor="#131c50" stopOpacity="0" />
+            <stop offset="0" stopColor="#1d2030" stopOpacity="0.5" />
+            <stop offset="1" stopColor="#1d2030" stopOpacity="0" />
           </radialGradient>
         </defs>
 

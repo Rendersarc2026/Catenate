@@ -13,7 +13,7 @@ type FinderStepProps = {
   /** The step's question, or its answer once there is one. */
   heading: string
   state?: StepState
-  /** `dark` is the treatment used inside the blue recommendation block. */
+  /** `dark` is the treatment used inside the recommendation block. */
   tone?: "light" | "dark"
   /** Control shown beside the heading, e.g. "Start over". */
   action?: React.ReactNode

@@ -269,7 +269,7 @@ export function Hero() {
       <div className="sticky top-0 h-screen h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center text-white bg-black pt-[100px] pb-6 sm:pt-[110px] sm:pb-8 content-pad select-none">
         {/* Ambient background glow & starfield */}
         <div
-          className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_50%_40%,rgba(27,42,122,0.45),transparent_70%)] animate-[hero-glow-pulse_8s_ease-in-out_infinite]"
+          className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_50%_40%,rgba(44,48,63,0.45),transparent_70%)] animate-[hero-glow-pulse_8s_ease-in-out_infinite]"
           aria-hidden="true"
         />
 
@@ -324,7 +324,7 @@ export function Hero() {
         >
           <div
             ref={bannerInnerRef}
-            className="relative size-full overflow-hidden rounded-[inherit] shadow-[0_20px_60px_rgba(0,0,0,0.8)] will-change-transform bg-[#0a1038]"
+            className="relative size-full overflow-hidden rounded-[inherit] shadow-[0_20px_60px_rgba(0,0,0,0.8)] will-change-transform bg-[#14161f]"
           />
         </div>
 

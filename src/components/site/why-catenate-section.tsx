@@ -8,7 +8,7 @@ import { whyCatenate, type WhyCatenatePillar } from "@/data/catenate";
 import { cn } from "@/lib/utils";
 
 export function WhyCatenate() {
-  // Default to index 1 ("02") to match the reference design where "02" is highlighted in blue
+  // Default to index 1 ("02"), which the reference design shows highlighted.
   const [activeIndex, setActiveIndex] = React.useState<number>(1);
   const [selectedPillar, setSelectedPillar] =
     React.useState<WhyCatenatePillar | null>(null);
@@ -46,7 +46,7 @@ export function WhyCatenate() {
               onMouseEnter={() => setActiveIndex(index)}
               onFocus={() => setActiveIndex(index)}
               aria-label={`Pillar ${formattedNumber}: ${item.title}`}
-              className="group flex flex-col items-center text-center cursor-pointer rounded-2xl p-2 outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
+              className="group flex flex-col items-center text-center cursor-pointer rounded-2xl p-2 outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-graphite focus-visible:ring-offset-4"
             >
               {/* Sliced Numeral Container with Expand on Hover */}
               <div
@@ -56,7 +56,7 @@ export function WhyCatenate() {
                 <span
                   className={cn(
                     "pillar-num font-heading font-extrabold leading-[0.8] tracking-[-0.04em]",
-                    isSelected ? "text-blue-600" : "text-[#cbd5e1] group-hover:text-blue-600"
+                    isSelected ? "text-graphite" : "text-[#d3d5dc] group-hover:text-graphite"
                   )}
                 >
                   {formattedNumber}
@@ -69,7 +69,7 @@ export function WhyCatenate() {
                   "mt-3 text-[17px] sm:text-[18px] font-bold leading-snug tracking-[-0.015em] transition-colors duration-200",
                   isSelected
                     ? "text-ink"
-                    : "text-ink/90 group-hover:text-blue-600"
+                    : "text-ink/90 group-hover:text-graphite"
                 )}
               >
                 {item.title}

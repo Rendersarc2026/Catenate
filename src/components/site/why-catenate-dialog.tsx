@@ -51,7 +51,7 @@ export function PillarDetailDialog({
           <div className="flex flex-col justify-between p-6 sm:p-8 md:p-10">
             <div>
               <div className="mb-3 flex items-center gap-2">
-                <span className="text-[11px] font-semibold tracking-wider text-blue-600 uppercase">
+                <span className="text-[11px] font-semibold tracking-wider text-graphite uppercase">
                   Pillar {formattedIndex}
                 </span>
                 <span className="text-xs text-grey/40">/</span>

@@ -20,10 +20,10 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
 
         /* --- Catenate brand variants ------------------------------------ */
-        /** Solid brand blue. The primary call to action on light sections. */
-        brand: "bg-blue text-white hover:bg-[#243494]",
-        /** White on a blue section. */
-        onBlue: "bg-white text-blue hover:bg-[#eef0fa]",
+        /** Solid brand charcoal. The primary call to action on light sections. */
+        brand: "bg-blue text-white hover:bg-[#3a3f52]",
+        /** White on a dark brand section. */
+        onBlue: "bg-white text-blue hover:bg-[#f1f2f5]",
         /** Hairline outline over imagery. */
         line:
           "bg-transparent text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.3)] hover:bg-white/10 hover:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5)]",

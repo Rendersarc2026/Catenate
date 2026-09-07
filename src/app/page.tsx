@@ -12,6 +12,7 @@ import { HeroStatement } from "@/components/site/hero-statement";
 import { IndustriesSection } from "@/components/site/industries-section";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
+import { SolutionsFinderTeaser } from "@/components/site/solutions-finder-teaser";
 import { WhatWeDo } from "@/components/site/what-we-do";
 
 export default function Home() {
@@ -30,6 +31,7 @@ export default function Home() {
         <WhyCatenate />
         <ProjectsRail />
         <TechnicalSupport />
+        <SolutionsFinderTeaser />
         <ContactSection />
       </main>
 
