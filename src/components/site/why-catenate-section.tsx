@@ -20,11 +20,9 @@ export function WhyCatenate() {
     >
       <div className="mx-auto flex w-full max-w-[1600px] 2xl:max-w-[1720px] px-6 sm:px-8 xl:px-12 flex-col items-center">
         {/* Section Header: Centered display heading */}
-        <Reveal className="mb-14 flex flex-col items-center text-center sm:mb-20 lg:mb-24">
-          <h2 className="text-center text-[clamp(2.8rem,5.4vw,4.6rem)] font-bold leading-[1.02] tracking-[-0.035em] text-ink">
-            Why
-            <br />
-            Catenate
+        <Reveal className="mb-12 flex flex-col items-center text-center sm:mb-16 lg:mb-20">
+          <h2 className="text-center text-[clamp(2.2rem,4.2vw,3.8rem)] font-medium leading-tight tracking-[-0.03em] text-ink whitespace-nowrap">
+            Why Catenate
           </h2>
         </Reveal>
 
