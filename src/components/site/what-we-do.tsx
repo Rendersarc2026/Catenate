@@ -138,13 +138,7 @@ type WallProps = {
 
 function Wall({ idle = false }: WallProps) {
   const [open, setOpen] = React.useState<number | null>(null)
-  const [wasIdle, setWasIdle] = React.useState(idle)
-
-  /* A column left open as the wall goes idle would never be closed by a leave. */
-  if (idle !== wasIdle) {
-    setWasIdle(idle)
-    if (idle) setOpen(null)
-  }
+  const openIndex = idle ? null : open
 
   return (
     <div
@@ -161,14 +155,14 @@ function Wall({ idle = false }: WallProps) {
       )}
     >
       {brands.map((brand, index) => {
-        const isOpen = open === index
+        const isOpen = openIndex === index
 
         return (
           <div
             key={brand.name}
             style={{
               flexGrow:
-                open === null ? WEIGHT_EVEN : isOpen ? WEIGHT_OPEN : WEIGHT_ASIDE,
+                openIndex === null ? WEIGHT_EVEN : isOpen ? WEIGHT_OPEN : WEIGHT_ASIDE,
             }}
             onPointerEnter={(event) => {
               /* Touch fires a pointerenter on tap; leave those to the click. */

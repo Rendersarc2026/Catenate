@@ -102,6 +102,12 @@ export const megaMenu: MegaSection[] = [
     ],
   },
   {
+    key: "finder",
+    navLabel: "Solutions Finder",
+    label: "Solutions Finder",
+    href: "/solutions-finder",
+  },
+  {
     key: "about",
     navLabel: "About",
     label: "About Catenate",
@@ -589,100 +595,390 @@ export const conditions = [
 export type Application = (typeof applications)[number];
 export type Condition = (typeof conditions)[number];
 
-export type SystemStep = { stage: string; product: string; principal: string };
+export type SystemStep = {
+  stage: string;
+  product: string;
+  principal: string;
+  /** One line on what the product is there to do. */
+  role: string;
+};
+
 export type SystemBuildUp = { standard: string; steps: SystemStep[] };
 
-const step = (stage: string, product: string, principal: string): SystemStep => ({
+const step = (
+  stage: string,
+  product: string,
+  principal: string,
+  role: string
+): SystemStep => ({
   stage,
   product,
   principal,
+  role,
 });
+
+/**
+ * The conditions each application is specified against. Not every condition
+ * belongs to every job, so the finder only offers the ones that do.
+ */
+export const applicationConditions: Record<Application, readonly Condition[]> = {
+  Waterproofing: [
+    "Submerged",
+    "External exposed",
+    "Internal wet",
+    "High traffic",
+    "High temperature",
+    "Potable water contact",
+    "Food contact",
+  ],
+  Tiling: [
+    "Submerged",
+    "External exposed",
+    "Internal wet",
+    "High traffic",
+    "Food contact",
+  ],
+  Flooring: [
+    "External exposed",
+    "Internal wet",
+    "High traffic",
+    "High temperature",
+    "Food contact",
+  ],
+  "Concrete repair": [
+    "Submerged",
+    "External exposed",
+    "Internal wet",
+    "High traffic",
+    "High temperature",
+    "Potable water contact",
+  ],
+  "Pipe joining": [
+    "Submerged",
+    "External exposed",
+    "Internal wet",
+    "High temperature",
+    "Potable water contact",
+    "Food contact",
+  ],
+  "Sealing and glazing": [
+    "Submerged",
+    "External exposed",
+    "Internal wet",
+    "High temperature",
+    "Food contact",
+  ],
+  "Metal pretreatment": [
+    "External exposed",
+    "Internal wet",
+    "High temperature",
+    "Food contact",
+  ],
+  "Industrial assembly": [
+    "External exposed",
+    "Internal wet",
+    "High temperature",
+    "Food contact",
+  ],
+  "Fastening and tools": [
+    "External exposed",
+    "Internal wet",
+    "High traffic",
+    "High temperature",
+  ],
+};
 
 export const systems: Record<Application, SystemBuildUp> = {
   Waterproofing: {
     standard: "EN 13707 / EN 14891",
     steps: [
-      step("Substrate repair", "Polybit structural repair mortar", "Henkel"),
-      step("Primer", "Polybit bituminous primer", "Henkel"),
-      step("Membrane", "Polybit torch-applied membrane", "Henkel"),
-      step("Detailing", "Polybit sealing tape and PU sealant", "Henkel"),
-      step("Protection", "Polybit protection board", "Henkel"),
+      step(
+        "Substrate repair",
+        "Polybit structural repair mortar",
+        "Henkel",
+        "Makes the deck good before anything is applied."
+      ),
+      step(
+        "Primer",
+        "Polybit bituminous primer",
+        "Henkel",
+        "Binds dust and keys the surface to the membrane."
+      ),
+      step(
+        "Membrane",
+        "Polybit torch-applied membrane",
+        "Henkel",
+        "The waterproofing layer itself."
+      ),
+      step(
+        "Detailing",
+        "Polybit sealing tape and PU sealant",
+        "Henkel",
+        "Seals upstands, penetrations and movement joints."
+      ),
+      step(
+        "Protection",
+        "Polybit protection board",
+        "Henkel",
+        "Shields the membrane through backfill and follow-on trades."
+      ),
     ],
   },
   Tiling: {
     standard: "EN 12004 / EN 13888",
     steps: [
-      step("Surface preparation", "Ceresit primer", "Henkel"),
-      step("Levelling", "Ceresit levelling compound", "Henkel"),
-      step("Adhesive", "Ceresit CM flexible adhesive", "Henkel"),
-      step("Grout", "Ceresit CE epoxy grout", "Henkel"),
-      step("Perimeter seal", "GE sanitary silicone", "GE Sealants"),
+      step(
+        "Surface preparation",
+        "Ceresit primer",
+        "Henkel",
+        "Regulates absorption so the adhesive cures evenly."
+      ),
+      step(
+        "Levelling",
+        "Ceresit levelling compound",
+        "Henkel",
+        "Brings the substrate flat within tolerance."
+      ),
+      step(
+        "Adhesive",
+        "Ceresit CM flexible adhesive",
+        "Henkel",
+        "Bonds the tile and absorbs substrate movement."
+      ),
+      step(
+        "Grout",
+        "Ceresit CE epoxy grout",
+        "Henkel",
+        "Fills and seals the joints between tiles."
+      ),
+      step(
+        "Perimeter seal",
+        "GE sanitary silicone",
+        "GE Sealants",
+        "Takes up movement at every change of plane."
+      ),
     ],
   },
   Flooring: {
     standard: "EN 13813",
     steps: [
-      step("Preparation", "Mechanical profiling and repair mortar", "Henkel"),
-      step("Primer", "Polybit epoxy primer", "Henkel"),
-      step("Body coat", "Polybit resin flooring system", "Henkel"),
-      step("Topcoat", "Polybit epoxy or PU topcoat", "Henkel"),
-      step("Joints", "Loctite PU joint sealant", "Henkel"),
+      step(
+        "Preparation",
+        "Mechanical profiling and repair mortar",
+        "Henkel",
+        "Opens the surface profile and makes good defects."
+      ),
+      step(
+        "Primer",
+        "Polybit epoxy primer",
+        "Henkel",
+        "Seals the slab and locks the body coat down."
+      ),
+      step(
+        "Body coat",
+        "Polybit resin flooring system",
+        "Henkel",
+        "Builds the wearing thickness of the floor."
+      ),
+      step(
+        "Topcoat",
+        "Polybit epoxy or PU topcoat",
+        "Henkel",
+        "Sets the finish, chemical and wear resistance."
+      ),
+      step(
+        "Joints",
+        "Loctite PU joint sealant",
+        "Henkel",
+        "Carries movement across bay and perimeter joints."
+      ),
     ],
   },
   "Concrete repair": {
     standard: "EN 1504",
     steps: [
-      step("Preparation", "Breakout and reinforcement cleaning", "Henkel"),
-      step("Bond coat", "Polybit bonding primer", "Henkel"),
-      step("Repair mortar", "Polybit structural repair mortar", "Henkel"),
-      step("Protection", "Polybit protective coating", "Henkel"),
+      step(
+        "Preparation",
+        "Breakout and reinforcement cleaning",
+        "Henkel",
+        "Removes unsound concrete and cleans the steel."
+      ),
+      step(
+        "Bond coat",
+        "Polybit bonding primer",
+        "Henkel",
+        "Ties the repair mortar to the parent concrete."
+      ),
+      step(
+        "Repair mortar",
+        "Polybit structural repair mortar",
+        "Henkel",
+        "Rebuilds the section back to profile."
+      ),
+      step(
+        "Protection",
+        "Polybit protective coating",
+        "Henkel",
+        "Slows carbonation and chloride ingress."
+      ),
     ],
   },
   "Pipe joining": {
     standard: "EN 14680 / ASTM D2564",
     steps: [
-      step("Cleaning", "EZ-Weld cleaner", "Weld-On"),
-      step("Priming", "EZ-Weld primer", "Weld-On"),
-      step("Solvent cement", "Tangit or EZ-Weld cement", "Henkel / Weld-On"),
-      step("Thread sealing", "Loctite thread sealant", "Henkel"),
+      step(
+        "Cleaning",
+        "EZ-Weld cleaner",
+        "Weld-On",
+        "Takes soil and surface film off the joint."
+      ),
+      step(
+        "Priming",
+        "EZ-Weld primer",
+        "Weld-On",
+        "Softens the pipe wall so the cement can weld."
+      ),
+      step(
+        "Solvent cement",
+        "Tangit or EZ-Weld cement",
+        "Henkel / Weld-On",
+        "Fuses socket and spigot into a single joint."
+      ),
+      step(
+        "Thread sealing",
+        "Loctite thread sealant",
+        "Henkel",
+        "Seals threaded transitions without tape."
+      ),
     ],
   },
   "Sealing and glazing": {
     standard: "EN 15651 / ISO 11600",
     steps: [
-      step("Cleaning", "Surface cleaner and activator", "Würth"),
-      step("Backer", "Closed cell backer rod", "Würth"),
-      step("Sealant", "GE weather sealant", "GE Sealants"),
-      step("Interior joints", "Polybit hybrid sealant", "Henkel"),
+      step(
+        "Cleaning",
+        "Surface cleaner and activator",
+        "Würth",
+        "Prepares the joint faces for adhesion."
+      ),
+      step(
+        "Backer",
+        "Closed cell backer rod",
+        "Würth",
+        "Sets the joint depth and stops three-sided adhesion."
+      ),
+      step(
+        "Sealant",
+        "GE weather sealant",
+        "GE Sealants",
+        "Weatherproofs the joint and carries movement."
+      ),
+      step(
+        "Interior joints",
+        "Polybit hybrid sealant",
+        "Henkel",
+        "Seals internal junctions and perimeter details."
+      ),
     ],
   },
   "Metal pretreatment": {
     standard: "ISO 12944",
     steps: [
-      step("Cleaning", "Bonderite alkaline cleaner", "Henkel"),
-      step("Conversion", "Bonderite conversion coating", "Henkel"),
-      step("Rinse and dry", "Bonderite process chemistry", "Henkel"),
-      step("Bonding or coating", "Loctite structural adhesive", "Henkel"),
+      step(
+        "Cleaning",
+        "Bonderite alkaline cleaner",
+        "Henkel",
+        "Strips oil and swarf off the metal."
+      ),
+      step(
+        "Conversion",
+        "Bonderite conversion coating",
+        "Henkel",
+        "Lays down the corrosion-resistant bonding layer."
+      ),
+      step(
+        "Rinse and dry",
+        "Bonderite process chemistry",
+        "Henkel",
+        "Controls the rinse so no residue is left behind."
+      ),
+      step(
+        "Bonding or coating",
+        "Loctite structural adhesive",
+        "Henkel",
+        "Bonds or coats the treated surface."
+      ),
     ],
   },
   "Industrial assembly": {
     standard: "ISO 10365",
     steps: [
-      step("Surface preparation", "Bonderite cleaner", "Henkel"),
-      step("Structural bond", "Loctite structural adhesive", "Henkel"),
-      step("Threadlocking", "Loctite anaerobic threadlocker", "Henkel"),
-      step("Line bonding", "Technomelt hot melt", "Henkel"),
+      step(
+        "Surface preparation",
+        "Bonderite cleaner",
+        "Henkel",
+        "Degreases the parts before bonding."
+      ),
+      step(
+        "Structural bond",
+        "Loctite structural adhesive",
+        "Henkel",
+        "Carries the load between assembled parts."
+      ),
+      step(
+        "Threadlocking",
+        "Loctite anaerobic threadlocker",
+        "Henkel",
+        "Stops fasteners backing off under vibration."
+      ),
+      step(
+        "Line bonding",
+        "Technomelt hot melt",
+        "Henkel",
+        "Bonds at line speed on the assembly run."
+      ),
     ],
   },
   "Fastening and tools": {
     standard: "ETA assessed",
     steps: [
-      step("Drilling and cleaning", "Würth tooling and blow-out pump", "Würth"),
-      step("Chemical anchor", "Würth injection resin", "Würth"),
-      step("Mechanical anchor", "Würth through-bolt", "Würth"),
-      step("Protection", "Würth corrosion protection", "Würth"),
+      step(
+        "Drilling and cleaning",
+        "Würth tooling and blow-out pump",
+        "Würth",
+        "Forms and clears the hole to the approval."
+      ),
+      step(
+        "Chemical anchor",
+        "Würth injection resin",
+        "Würth",
+        "Bonds the threaded rod into the substrate."
+      ),
+      step(
+        "Mechanical anchor",
+        "Würth through-bolt",
+        "Würth",
+        "Expands into the hole for immediate load."
+      ),
+      step(
+        "Protection",
+        "Würth corrosion protection",
+        "Würth",
+        "Protects the fixing where it stays exposed."
+      ),
     ],
   },
+};
+
+/** Reads back as "Waterproofing for externally exposed areas". */
+export const conditionPhrases: Record<Condition, string> = {
+  Submerged: "permanently submerged areas",
+  "External exposed": "externally exposed areas",
+  "Internal wet": "internal wet areas",
+  "High traffic": "high-traffic areas",
+  "High temperature": "high-temperature service",
+  "Potable water contact": "potable water contact",
+  "Food contact": "food-contact areas",
 };
 
 export const conditionNotes: Record<Condition, string> = {

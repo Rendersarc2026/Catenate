@@ -465,7 +465,10 @@ export function OrbitDotGlobe({
 }: OrbitDotGlobeProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const labelLayerRef = React.useRef<HTMLDivElement>(null);
-  const [status, setStatus] = React.useState<"loading" | "ready" | "unsupported" | "error">("loading");
+  const [status, setStatus] = React.useState<"loading" | "ready" | "unsupported" | "error">(() => {
+    if (typeof window === "undefined") return "loading";
+    return supportsWebGL() ? "loading" : "unsupported";
+  });
   const [activePopoverIndex, setActivePopoverIndex] = React.useState<number | null>(null);
   const activePopoverIndexRef = React.useRef<number | null>(null);
   const activeMarkerRef = React.useRef<MarkerRecord | null>(null);
@@ -556,7 +559,6 @@ export function OrbitDotGlobe({
       return;
     }
     if (!supportsWebGL()) {
-      queueMicrotask(() => setStatus("unsupported"));
       return;
     }
     const mobile = isMobileDevice();
@@ -620,7 +622,6 @@ export function OrbitDotGlobe({
         .filter((loc): loc is ParsedLocation => loc !== null);
     })();
 
-    queueMicrotask(() => setStatus("loading"));
     labelLayer.innerHTML = "";
 
     async function initialize() {
@@ -1245,19 +1246,21 @@ export function OrbitDotGlobe({
           finishPinch,
         };
 
-        const clock = new THREE.Clock();
+        let lastTime = performance.now();
+        const startTime = lastTime;
 
         function animate() {
           if (disposed || !renderer || !scene || !camera || !globeGroup) {
             return;
           }
           animationFrame = requestAnimationFrame(animate);
+          const now = performance.now();
+          const delta = Math.min((now - lastTime) * 0.001, 0.05);
+          lastTime = now;
           if (!visible) {
-            clock.getDelta();
             return;
           }
-          const delta = Math.min(clock.getDelta(), 0.05);
-          const elapsed = clock.elapsedTime;
+          const elapsed = (now - startTime) * 0.001;
 
           // Programmatic target rotation if activeLocationIndex is set
           const activeIdx = activeLocationIndexRef.current;
@@ -1340,12 +1343,14 @@ export function OrbitDotGlobe({
           renderer.render(scene, camera);
         }
 
-        queueMicrotask(() => setStatus("ready"));
+        if (!disposed) {
+          setStatus("ready");
+        }
         animate();
       } catch (error) {
         console.error(`[${BUILD_ID}]`, error);
         if (!disposed) {
-          queueMicrotask(() => setStatus("error"));
+          setStatus("error");
         }
       }
     }

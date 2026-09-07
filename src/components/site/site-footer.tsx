@@ -4,23 +4,29 @@ import { company, footerColumns } from "@/data/catenate"
 
 export function SiteFooter() {
   return (
-    <footer className="content-pad overflow-hidden bg-blue-deep pt-[clamp(56px,6vw,86px)] pb-[clamp(20px,2.5vw,40px)] text-white">
-      <div className="grid grid-cols-[1.3fr_repeat(3,1fr)] gap-8.5 border-b border-white/14 pb-13 max-lg:grid-cols-2">
+    <footer className="content-pad overflow-hidden bg-black pt-[clamp(56px,6vw,86px)] pb-[clamp(20px,2.5vw,40px)] text-white">
+      <div className="grid grid-cols-[1.3fr_repeat(3,1fr)] gap-8.5 border-b border-white/12 pb-13 max-lg:grid-cols-2">
         <div>
-          <h4 className="mb-4 text-[11px] font-medium tracking-[0.16em] text-white/50 uppercase">
+          <h4 className="mb-4 text-[11px] font-medium tracking-[0.16em] text-white uppercase">
             Catenate
           </h4>
-          <address className="text-[14.5px] leading-[1.9] not-italic text-white/76">
+          <address className="text-[14.5px] leading-[1.9] not-italic text-white/80">
             {company.address.map((line) => (
               <span key={line} className="block">
                 {line}
               </span>
             ))}
             <br />
-            <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="block hover:text-white">
+            <a
+              href={`tel:${company.phone.replace(/\s/g, "")}`}
+              className="block w-fit text-white/75 transition-colors duration-150 ease-out hover:text-white focus-visible:text-white"
+            >
               {company.phone}
             </a>
-            <a href={`mailto:${company.email}`} className="block hover:text-white">
+            <a
+              href={`mailto:${company.email}`}
+              className="block w-fit text-white/75 transition-colors duration-150 ease-out hover:text-white focus-visible:text-white"
+            >
               {company.email}
             </a>
           </address>
@@ -28,13 +34,16 @@ export function SiteFooter() {
 
         {footerColumns.map((column) => (
           <div key={column.heading}>
-            <h4 className="mb-4 text-[11px] font-medium tracking-[0.16em] text-white/50 uppercase">
+            <h4 className="mb-4 text-[11px] font-medium tracking-[0.16em] text-white uppercase">
               {column.heading}
             </h4>
             <ul className="list-none text-[14.5px] leading-[2.1]">
               {column.links.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-white/76 hover:text-white">
+                  <Link
+                    href={link.href}
+                    className="inline-block text-white/75 transition-colors duration-150 ease-out hover:text-white focus-visible:text-white"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -44,7 +53,7 @@ export function SiteFooter() {
         ))}
       </div>
 
-      <div className="tnum flex flex-wrap justify-between gap-5 py-5.5 text-xs text-white/45">
+      <div className="tnum flex flex-wrap justify-between gap-5 py-5.5 text-xs text-white/50">
         <span>{company.legal}</span>
         <span>© {new Date().getFullYear()} Catenate. All rights reserved.</span>
       </div>

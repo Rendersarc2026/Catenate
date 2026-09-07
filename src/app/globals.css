@@ -571,6 +571,22 @@
   }
 }
 
+/* Why Catenate Sliced & Expanding Numeral Animation */
+.pillar-num {
+  clip-path: inset(0 0 42% 0);
+  transform-origin: top center;
+  transition: clip-path 450ms var(--ease-out-expo),
+    transform 450ms var(--ease-out-expo),
+    color 250ms ease;
+}
+
+.group:hover .pillar-num,
+.group:focus-visible .pillar-num,
+.pillar-num.is-expanded {
+  clip-path: inset(0 0 0% 0);
+  transform: scale(1.08) translateY(-2px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
