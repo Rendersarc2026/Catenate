@@ -27,14 +27,11 @@ export function GlobalPresence() {
 
   return (
     <section id="presence" className="section bg-white text-ink overflow-hidden">
-      <Reveal className="mb-[clamp(34px,4vw,54px)] grid items-end gap-[clamp(28px,5vw,64px)] max-lg:grid-cols-1 lg:grid-cols-[1.25fr_1fr]">
-        <div>
-          <span className="eyebrow">{presence.eyebrow}</span>
-          <h2 className="max-w-[17ch] text-balance text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
-            {presence.heading}
-          </h2>
-        </div>
-        <p className="lead">{presence.lead}</p>
+      <Reveal className="mb-[clamp(34px,4vw,54px)] flex flex-col items-center text-center">
+        <span className="eyebrow">{presence.eyebrow}</span>
+        <h2 className="mx-auto max-w-[24ch] text-balance text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
+          {presence.heading}
+        </h2>
       </Reveal>
 
       <Reveal className="grid items-center gap-[clamp(28px,4vw,56px)] border-b border-ink/10 pb-[clamp(34px,4vw,54px)] max-lg:grid-cols-1 lg:grid-cols-[1.4fr_0.8fr]">
