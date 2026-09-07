@@ -922,26 +922,53 @@ export const strengths: Blurb[] = [
   },
 ];
 
-export const whyCatenate: Blurb[] = [
+export type WhyCatenatePillar = Blurb & {
+  headline: string;
+  detail: string;
+  image: string;
+  tag: string;
+};
+
+export const whyCatenate: WhyCatenatePillar[] = [
   {
-    title: "Compatible by system, not by shelf",
-    body: "Primer, membrane, screed and adhesive are selected as one chain so nothing fails at an interface.",
+    title: "System Compatibility",
+    headline: "Compatible by system, not by shelf.",
+    body: "Primer, membrane, screed and adhesive selected as one chain so nothing fails at an interface.",
+    detail: "We engineer chemical and mechanical compatibility across the entire building envelope. When primer, screed, waterproofing membrane, and wear layers are specified as a unified system from proven principals, interlayer failure is eliminated before work begins.",
+    image: "/images/industries/building-infrastructure.jpg",
+    tag: "Interlayer Integrity",
   },
   {
-    title: "Held stock across the full range",
-    body: "Depth in the fast-moving lines and access to the specialist ones, released against programme.",
+    title: "Held Stock Depth",
+    headline: "Committed inventory across the full catalogue.",
+    body: "Depth in fast-moving lines and access to specialist ones, released against programme.",
+    detail: "Critical infrastructure schedules cannot stall on bespoke chemistry lead times. We maintain committed inventory across rapid-turnaround commodities and heavy-duty specialty formulations, staged locally and released against project milestones.",
+    image: "/images/industries/metals-fabrication.jpg",
+    tag: "Milestone Logistics",
   },
   {
-    title: "Approvals carried, not claimed",
-    body: "Every system supplied arrives with its certificates, test reports and data sheets in order.",
+    title: "Certified Approvals",
+    headline: "Approvals carried, not claimed.",
+    body: "Every system supplied arrives with certificates, test reports and data sheets in order.",
+    detail: "Class-A developers and engineering consultants demand verifiable provenance. Every delivery note is backed by complete technical data sheets, independent laboratory pull-off assays, fire ratings, and environmental compliance documentation ready for audit.",
+    image: "/images/industries/laboratory-microscope.jpg",
+    tag: "Audit-Ready Provenance",
   },
   {
-    title: "On site before the first coat",
+    title: "On-Site Validation",
+    headline: "On site before the first coat is applied.",
     body: "Substrate readings, mock-ups and applicator briefings ahead of application, not after a defect.",
+    detail: "Field failure prevention happens before application begins. Our technical specialists inspect substrate moisture, surface profiles, and ambient conditions, conducting on-site mockups and direct applicator briefings before a single bucket is opened.",
+    image: "/images/industries/marine-offshore.jpg",
+    tag: "Field Quality Assurance",
   },
   {
-    title: "One accountable line",
-    body: "A single point of responsibility across five principals and twenty-eight product families.",
+    title: "One Accountable Line",
+    headline: "A single point of technical responsibility.",
+    body: "Direct responsibility across five world-class principals and twenty-eight product families.",
+    detail: "No finger-pointing between manufacturers when multiple chemistries intersect. Catenate acts as your single technical and commercial point of responsibility, guaranteeing cohesive performance from sub-grade foundations to the finished surface.",
+    image: "/images/industries/oil-gas-petrochemical.jpg",
+    tag: "Unified Warranty",
   },
 ];
 

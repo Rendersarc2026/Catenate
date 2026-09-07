@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { ArrowButton } from "@/components/site/arrow-button"
-import { HeroBackdrop } from "@/components/site/hero-backdrop"
 import { hero } from "@/data/catenate"
 
 /** Peak translation of the mouse parallax layer, in px. */
@@ -325,10 +324,8 @@ export function Hero() {
         >
           <div
             ref={bannerInnerRef}
-            className="relative size-full overflow-hidden rounded-[inherit] shadow-[0_20px_60px_rgba(0,0,0,0.8)] will-change-transform"
-          >
-            <HeroBackdrop />
-          </div>
+            className="relative size-full overflow-hidden rounded-[inherit] shadow-[0_20px_60px_rgba(0,0,0,0.8)] will-change-transform bg-[#0a1038]"
+          />
         </div>
 
         {/* 3. Revealed State: Foreground White Headline & Action Buttons (Reveals on scroll) */}

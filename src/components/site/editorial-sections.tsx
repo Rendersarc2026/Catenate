@@ -8,7 +8,6 @@ import {
   projects,
   strengths,
   technicalSupport,
-  whyCatenate,
   type Blurb,
 } from "@/data/catenate"
 
@@ -83,7 +82,7 @@ export function TrustedBySection() {
   return (
     <section id="customers" className="section bg-off">
       <Reveal className="mb-[clamp(28px,4vw,52px)] text-center">
-        <span className="eyebrow">Trusted by</span>
+        <h2 className="eyebrow text-[22px] font-medium text-black opacity-100">Trusted by</h2>
       </Reveal>
 
       {/*
@@ -128,41 +127,7 @@ export function TrustedBySection() {
   )
 }
 
-export function WhyCatenate() {
-  return (
-    <div className="content-pad bg-white py-6">
-      <Reveal className="rounded-block bg-[linear-gradient(135deg,var(--brand-blue)_0%,var(--brand-blue-deep)_100%)] px-[clamp(28px,4.5vw,64px)] py-[clamp(44px,5.5vw,76px)] text-white">
-        <div className="on-blue grid items-start gap-[clamp(32px,5vw,72px)] max-lg:grid-cols-1 lg:grid-cols-[1fr_1.15fr]">
-          <div>
-            <span className="eyebrow">Why Catenate</span>
-            <h2 className="text-balance text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
-              Specification is the product. Everything else is logistics.
-            </h2>
-          </div>
-
-          <ul className="list-none">
-            {whyCatenate.map((item, index) => (
-              <li
-                key={item.title}
-                className="flex gap-5 border-t border-white/14 py-5 first:border-t-0 first:pt-0"
-              >
-                <span className="tnum grid size-8 flex-none place-items-center rounded-full border border-white/20 text-[13px] font-medium">
-                  {index + 1}
-                </span>
-                <div>
-                  <h3 className="mb-1 text-[17px] leading-[1.3] font-medium">
-                    {item.title}
-                  </h3>
-                  <p className="max-w-[46ch] text-[15px] text-white/66">{item.body}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Reveal>
-    </div>
-  )
-}
+export { WhyCatenate } from "./why-catenate-section"
 
 export function ProjectsRail() {
   return (
