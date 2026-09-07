@@ -438,7 +438,7 @@ export const brands: Brand[] = [
     familyCount: "1 family",
     wordmarkClass: "text-[#0b5fa5]",
     logo: "/images/logos/weld-on.png",
-    logoScale: 1,
+    logoScale: 0.88,
     groups: [
       {
         title: "EZ-Weld",

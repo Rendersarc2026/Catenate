@@ -199,14 +199,14 @@ function Wall({ idle = false }: WallProps) {
                    * knockout to white would erase the wordmark. Each sits on a
                    * light plate instead, which keeps the mark as supplied.
                    */
-                  <span className="inline-flex min-w-[clamp(96px,10vw,150px)] items-center justify-center rounded-[5px] bg-white px-[clamp(10px,1.1vw,16px)] py-[clamp(6px,0.8vw,10px)] shadow-sm">
+                  <span className="inline-flex min-w-[clamp(64px,6.5vw,98px)] items-center justify-center rounded-[4px] bg-white px-[clamp(7px,0.75vw,11px)] py-[clamp(4px,0.5vw,7px)] shadow-sm">
                     <Image
                       src={brand.logo}
                       alt={brand.name}
                       width={220}
                       height={64}
                       style={{ transform: `scale(${brand.logoScale ?? 1})` }}
-                      className="h-[clamp(19px,2vw,29px)] w-auto object-contain"
+                      className="h-[clamp(13px,1.3vw,19px)] w-auto object-contain"
                     />
                   </span>
                 ) : (
