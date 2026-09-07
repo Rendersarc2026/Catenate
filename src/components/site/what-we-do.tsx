@@ -223,11 +223,12 @@ function Wall({ idle = false }: WallProps) {
                   {brand.groups.map((group) => (
                     <li
                       key={group.title}
-                      className="flex items-baseline gap-3 border-t border-white/16 py-2 text-[13px] text-white/70"
+                      className="flex items-center gap-2.5 border-t border-white/16 py-2 text-[13px] text-white/70"
                     >
-                      <span className="tnum text-[10px] text-white/45">
-                        {String(group.items.length).padStart(2, "0")}
-                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="size-1.5 shrink-0 rounded-full bg-white/50"
+                      />
                       {group.title}
                     </li>
                   ))}

@@ -49,7 +49,7 @@ function StrengthRow({ index, item }: { index: number; item: Blurb }) {
         aria-hidden
         className="mb-6 h-[3px] w-full bg-ink lg:col-span-2 lg:col-start-2 lg:mb-[clamp(18px,2vw,32px)]"
       />
-      <span className="tnum block self-start text-[clamp(2.6rem,5vw,4.6rem)] leading-[0.8] font-semibold tracking-[-0.045em] lg:sticky lg:top-[calc(var(--nav-height)+clamp(24px,5vh,64px))] lg:row-start-2">
+      <span className="tnum block self-start text-[clamp(4.5rem,10.5vw,11rem)] leading-[0.8] font-semibold tracking-[-0.045em] lg:sticky lg:top-[calc(var(--nav-height)+clamp(24px,5vh,64px))] lg:row-start-2">
         {String(index + 1).padStart(2, "0")}
       </span>
       <h3 className="mt-4 self-start text-balance text-[clamp(1.15rem,1.7vw,1.55rem)] leading-[1.15] font-medium tracking-[-0.02em] lg:row-start-2 lg:mt-0">
