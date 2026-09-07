@@ -128,7 +128,7 @@ export function SiteHeader() {
         </div>
 
         <nav
-          className="hidden flex-none items-center justify-center gap-1 min-[961px]:flex"
+          className="hidden flex-none items-center justify-center gap-7 min-[961px]:flex"
           aria-label="Primary"
         >
           {megaMenu.map((section) => {
@@ -143,26 +143,30 @@ export function SiteHeader() {
                 href={section.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "relative rounded-full px-4 py-2 text-[14px] whitespace-nowrap transition-all duration-200 ease-out",
+                  "group relative px-1 py-1.5 text-[14.5px] whitespace-nowrap transition-colors duration-200 ease-out",
                   isActive
                     ? isDarkNav && !open
-                      ? "bg-white/16 text-white font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]"
-                      : "bg-blue/10 text-blue font-semibold shadow-[inset_0_0_0_1px_rgba(42,88,255,0.16)]"
+                      ? "text-white font-medium"
+                      : "text-blue font-semibold"
                     : isDarkNav && !open
-                      ? "text-white/75 hover:bg-white/10 hover:text-white font-medium"
-                      : "text-grey hover:bg-blue/8 hover:text-blue font-medium"
+                      ? "text-white/70 hover:text-white font-normal"
+                      : "text-grey hover:text-blue font-normal"
                 )}
               >
                 <span>{section.navLabel}</span>
-                {isActive && (
-                  <span
-                    className={cn(
-                      "absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2.5px] w-5 rounded-full shadow-sm transition-all duration-300",
-                      isDarkNav && !open ? "bg-white" : "bg-blue"
-                    )}
-                    aria-hidden="true"
-                  />
-                )}
+                <span
+                  className={cn(
+                    "absolute -bottom-1 inset-x-0 h-[2px] rounded-full transition-all duration-250 ease-out",
+                    isActive
+                      ? isDarkNav && !open
+                        ? "bg-white opacity-100 scale-x-100"
+                        : "bg-blue opacity-100 scale-x-100"
+                      : isDarkNav && !open
+                        ? "bg-white/40 opacity-0 scale-x-0 group-hover:opacity-100 group-hover:scale-x-100"
+                        : "bg-blue/30 opacity-0 scale-x-0 group-hover:opacity-100 group-hover:scale-x-100"
+                  )}
+                  aria-hidden="true"
+                />
               </Link>
             )
           })}

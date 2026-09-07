@@ -29,14 +29,12 @@ export function IndustriesSection() {
       {/* Header Statement */}
       <div className="content-pad">
         <Reveal className="relative z-2 text-center">
-          <h2 className="mx-auto max-w-[20ch] text-[clamp(2rem,3.6vw,3.2rem)] leading-[1.15] font-medium tracking-[-0.02em] text-ink">
-            The sector decides the specification.
+          <h2 className="mx-auto max-w-[28ch] text-[clamp(2rem,3.6vw,3.2rem)] leading-[1.15] font-medium tracking-[-0.02em] text-ink text-balance">
+            Every sector demands a different solution.
           </h2>
 
-          <p className="lead mx-auto mt-3.5 max-w-[62ch] text-[16px] text-grey">
-            Every operating environment commands verified chemistries, certified
-            compliance, and precise application windows. Explore our engineering
-            solutions across each domain.
+          <p className="lead mx-auto mt-3.5 max-w-[50ch] text-[16px] text-grey text-balance">
+            Explore engineering solutions built for your industry.
           </p>
         </Reveal>
 

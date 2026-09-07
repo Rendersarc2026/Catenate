@@ -394,6 +394,8 @@ export const brands: Brand[] = [
       "Umbrella principal across construction, industrial and consumer bonding",
     familyCount: "9 families",
     wordmarkClass: "text-[#e1000f]",
+    logo: "/images/logos/henkel.svg",
+    logoScale: 1.15,
     groups: [
       {
         title: "Construction systems",
@@ -435,6 +437,8 @@ export const brands: Brand[] = [
     description: "Solvent cement systems for pressure pipework",
     familyCount: "1 family",
     wordmarkClass: "text-[#0b5fa5]",
+    logo: "/images/logos/weld-on.png",
+    logoScale: 1,
     groups: [
       {
         title: "EZ-Weld",
@@ -447,6 +451,8 @@ export const brands: Brand[] = [
     description: "Fixings, tools and building chemicals for the working site",
     familyCount: "7 families",
     wordmarkClass: "text-[#cc0000]",
+    logo: "/images/logos/wurth.svg",
+    logoScale: 1,
     groups: [
       {
         title: "Fixing",
@@ -476,6 +482,8 @@ export const brands: Brand[] = [
     description: "Silicone and polyurethane sealing for envelope and interior",
     familyCount: "3 families",
     wordmarkClass: "text-[#3874c8]",
+    logo: "/images/logos/ge-sealants.png",
+    logoScale: 1.3,
     groups: [
       {
         title: "Range",
@@ -494,6 +502,8 @@ export const brands: Brand[] = [
       "Concrete, waterproofing and building-finish systems for refurbishment and new build",
     familyCount: "8 families",
     wordmarkClass: "text-[#d50032]",
+    logo: "/images/logos/sika.svg",
+    logoScale: 1.25,
     groups: [
       {
         title: "Structural",

@@ -193,16 +193,22 @@ function Wall({ idle = false }: WallProps) {
                 className="wall-name relative z-1 flex cursor-pointer items-center justify-center text-[clamp(15px,1.5vw,22px)] leading-[1.2] whitespace-nowrap"
               >
                 {brand.logo ? (
-                  <Image
-                    src={brand.logo}
-                    alt={brand.name}
-                    width={220}
-                    height={64}
-                    style={{ transform: `scale(${brand.logoScale ?? 1})` }}
-                    /* Marks are supplied in their own colours; the wall runs
-                       dark, so they are knocked back to white to sit on it. */
-                    className="h-[clamp(20px,2.1vw,30px)] w-auto object-contain brightness-0 invert"
-                  />
+                  /*
+                   * Principal marks carry their own colours and several are
+                   * reversed out (a white name inside a coloured shape), so a
+                   * knockout to white would erase the wordmark. Each sits on a
+                   * light plate instead, which keeps the mark as supplied.
+                   */
+                  <span className="inline-flex min-w-[clamp(96px,10vw,150px)] items-center justify-center rounded-[5px] bg-white px-[clamp(10px,1.1vw,16px)] py-[clamp(6px,0.8vw,10px)] shadow-sm">
+                    <Image
+                      src={brand.logo}
+                      alt={brand.name}
+                      width={220}
+                      height={64}
+                      style={{ transform: `scale(${brand.logoScale ?? 1})` }}
+                      className="h-[clamp(19px,2vw,29px)] w-auto object-contain"
+                    />
+                  </span>
                 ) : (
                   brand.name
                 )}
