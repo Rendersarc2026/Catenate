@@ -1,71 +1,43 @@
 "use client"
 
-import Image from "next/image"
-import Link from "next/link"
 import * as React from "react"
 
-import { brands } from "@/data/catenate"
-import { cn } from "@/lib/utils"
+import { DistributorWall } from "./what-we-do/distributor-wall"
 
 /*
- * "What we do" plays as three beats inside one pinned track. The statement
- * holds the screen first; it gives way to the line "Authorised distributor
- * of", which the wall of principals then answers — riding in whole from the
- * right edge and sweeping over the line until it owns the viewport. Once the wall
- * has settled it takes the pointer, and the column under it opens into the
- * distributor's detail.
+ * "What we do" sequence inside one pinned track:
+ * 1. Statement ("What we do -> One chain...") holds the screen first.
+ * 2. On scroll, "Authorised Distributor of" comes in from the right side with animation.
+ * 3. Once "Authorised Distributor of" has reached, the 5 distributor wall sweeps in
+ *    from the right side across the viewport.
+ * 4. Once settled, pointer interaction is armed so columns can be expanded.
  */
 
 /** Share of the track the statement holds before it starts leaving. */
-const INTRO_HOLD = 0.14
-/** Where the statement has fully left. */
-const INTRO_END = 0.3
-/** The stretch of track the distributor line spends arriving. */
-const LEAD_START = 0.26
-const LEAD_END = 0.4
-/** The stretch the wall spends coming across from the right edge. */
-const WIPE_START = 0.44
-const WIPE_END = 0.76
-/** Progress past which the wall is settled enough to accept a pointer. */
-const ARM_AT = 0.8
+const INTRO_HOLD = 0.12
+/** Where the statement finishes leaving. */
+const INTRO_END = 0.30
 
-/** Flex weights: an untouched wall is even, an open one favours its column. */
-const WEIGHT_EVEN = 1
-const WEIGHT_OPEN = 2.6
-const WEIGHT_ASIDE = 0.78
+/** Where "Authorised Distributor of" starts arriving from the right edge. */
+const LEAD_START = 0.16
+/** Where "Authorised Distributor of" has fully reached its position. */
+const LEAD_REACHED = 0.42
 
-/**
- * The wall's colour ramp, walked from the palest column to the deepest. Read
- * between the stops so the gradient holds its shape whatever the brand count.
- */
-const RAMP = ["#6c7082", "#4a4e5e", "#33374a", "#1e2130", "#0b0d14"]
+/** Where the 5 distributors begin sweeping across from the right edge. */
+const WALL_START = 0.50
+/** Where the wall has fully crossed and covered the viewport. */
+const WALL_END = 0.80
+/** Progress past which the wall is settled enough to accept pointer interaction. */
+const ARM_AT = 0.82
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 
-/** easeOutCubic — quick off the mark, settles softly. */
+/** easeOutCubic — for the arriving heading to decelerate into place. */
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 
-/** easeInOutCubic — for the statement, which both arrives and leaves. */
+/** easeInOutCubic — for smooth cinematic sweeps. */
 const easeInOut = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
-
-function mix(a: string, b: string, t: number) {
-  const channels = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
-  const [ar, ag, ab] = channels(a)
-  const [br, bg, bb] = channels(b)
-  const to = (from: number, target: number) =>
-    Math.round(from + (target - from) * t)
-      .toString(16)
-      .padStart(2, "0")
-  return `#${to(ar, br)}${to(ag, bg)}${to(ab, bb)}`
-}
-
-/** Colour for the nth column of `count`, read along the ramp. */
-function tone(index: number, count: number) {
-  const at = count < 2 ? 0 : (index / (count - 1)) * (RAMP.length - 1)
-  const low = Math.min(Math.floor(at), RAMP.length - 2)
-  return mix(RAMP[low], RAMP[low + 1], at - low)
-}
 
 function usePrefersReducedMotion() {
   const subscribe = React.useCallback((callback: () => void) => {
@@ -117,155 +89,15 @@ function Statement() {
 }
 
 /* ------------------------------------------------------------------ *
- * Beat two — the line the wall finishes
+ * Beat two — the lead heading that arrives from the right
  * ------------------------------------------------------------------ */
 
 function DistributorLead() {
   return (
-    <p className="content-pad w-full text-[clamp(1.9rem,4.2vw,3.4rem)] leading-[1.15] tracking-[-0.02em]">
-      Authorised Distributor of
-    </p>
-  )
-}
-
-/* ------------------------------------------------------------------ *
- * Beat three — the wall of principals
- * ------------------------------------------------------------------ */
-
-type WallProps = {
-  /** Set while the wall is still coming across, so it ignores the pointer. */
-  idle?: boolean
-}
-
-function Wall({ idle = false }: WallProps) {
-  const [open, setOpen] = React.useState<number | null>(null)
-  const openIndex = idle ? null : open
-
-  return (
-    <div
-      onPointerLeave={(event) => {
-        /* A tap ends with a leave; only a mouse leaving should shut a column. */
-        if (event.pointerType === "mouse") setOpen(null)
-      }}
-      onKeyDown={(event) => {
-        if (event.key === "Escape") setOpen(null)
-      }}
-      className={cn(
-        "flex size-full max-md:flex-col",
-        idle && "pointer-events-none"
-      )}
-    >
-      {brands.map((brand, index) => {
-        const isOpen = openIndex === index
-
-        return (
-          <div
-            key={brand.name}
-            style={{
-              flexGrow:
-                openIndex === null ? WEIGHT_EVEN : isOpen ? WEIGHT_OPEN : WEIGHT_ASIDE,
-            }}
-            onPointerEnter={(event) => {
-              /* Touch fires a pointerenter on tap; leave those to the click. */
-              if (event.pointerType === "mouse") setOpen(index)
-            }}
-            className="relative basis-0 overflow-hidden transition-[flex-grow] duration-700 ease-expo"
-          >
-            <div
-              style={{ background: tone(index, brands.length) }}
-              className="relative flex size-full items-center justify-center px-4 text-center text-white"
-            >
-              {/* Darkens the palest columns just enough to hold the copy. */}
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "pointer-events-none absolute inset-0 bg-black/25 transition-opacity duration-700 ease-expo",
-                  isOpen ? "opacity-100" : "opacity-0"
-                )}
-              />
-
-              <button
-                type="button"
-                aria-expanded={isOpen}
-                onFocus={() => setOpen(index)}
-                /* Focus lands first on a tap, so a toggle here would undo it. */
-                onClick={() => setOpen(index)}
-                className="relative z-1 flex cursor-pointer items-center justify-center text-[clamp(15px,1.5vw,22px)] leading-[1.2] whitespace-nowrap"
-              >
-                {brand.logo ? (
-                  /*
-                   * Principal marks carry their own colours and several are
-                   * reversed out (a white name inside a coloured shape), so a
-                   * knockout to white would erase the wordmark. Each sits on a
-                   * light plate instead, which keeps the mark as supplied.
-                   */
-                  <span className="inline-flex h-[clamp(46px,4.6vw,64px)] w-[clamp(150px,15vw,200px)] items-center justify-center rounded-[6px] bg-white px-[clamp(12px,1.2vw,20px)] shadow-sm">
-                    <Image
-                      src={brand.logo}
-                      alt={brand.name}
-                      width={220}
-                      height={64}
-                      style={{ transform: `scale(${brand.logoScale ?? 1})` }}
-                      className="h-[clamp(24px,2.6vw,36px)] w-full object-contain"
-                    />
-                  </span>
-                ) : (
-                  brand.name
-                )}
-              </button>
-
-              {/*
-               * The detail hangs off the centre line rather than sharing it, so
-               * every name keeps its place in the row whichever column is open.
-               */}
-              <div
-                inert={!isOpen}
-                className={cn(
-                  "absolute top-1/2 left-1/2 z-1 mt-[clamp(32px,3.8vw,52px)] w-[min(330px,68vw)] -translate-x-1/2 text-left transition-[opacity,translate] duration-700 ease-expo",
-                  isOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-                )}
-              >
-                <p className="text-[10px] tracking-[0.16em] text-white/55 uppercase">
-                  Authorised distributor · {brand.familyCount}
-                </p>
-                <p className="mt-2.5 text-[14px] leading-[1.5] text-white/80">
-                  {brand.description}
-                </p>
-
-                {/* The first thing to go where a stacked row is short. */}
-                <ul className="mt-4 list-none max-md:hidden">
-                  {brand.groups.map((group) => (
-                    <li
-                      key={group.title}
-                      className="flex items-center gap-2.5 border-t border-white/16 py-2 text-[13px] text-white/70"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="size-1.5 shrink-0 rounded-full bg-white/50"
-                      />
-                      {group.title}
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href="/brands"
-                  className="mt-5 inline-flex items-center gap-2 text-[13px] tracking-[0.02em] text-white transition-opacity duration-250 ease-expo hover:opacity-70"
-                >
-                  Explore the range
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    className="size-3.5 fill-none stroke-current stroke-[1.6]"
-                  >
-                    <path d="M5 12h14M13 6l6 6-6 6" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-        )
-      })}
+    <div className="content-pad w-full">
+      <h2 className="text-[clamp(2.4rem,5.6vw,4.4rem)] leading-[1.05] tracking-[-0.03em]">
+        Authorised Distributor of
+      </h2>
     </div>
   )
 }
@@ -302,31 +134,32 @@ export function WhatWeDo() {
     }
 
     const paint = (p: number) => {
+      // 1. Statement leaves (drifts slightly left and fades)
       const leaving = easeInOut(clamp01((p - INTRO_HOLD) / (INTRO_END - INTRO_HOLD)))
-
       if (introRef.current) {
         introRef.current.style.opacity = (1 - leaving).toFixed(3)
-        introRef.current.style.transform = `translate3d(0, ${(-32 * leaving).toFixed(1)}px, 0) scale(${(1 - 0.04 * leaving).toFixed(4)})`
+        introRef.current.style.transform = `translate3d(${(-48 * leaving).toFixed(1)}px, 0, 0) scale(${(1 - 0.03 * leaving).toFixed(4)})`
         introRef.current.style.visibility = leaving >= 1 ? "hidden" : "visible"
       }
 
-      /* The line arrives as the statement clears, then simply waits to be
-       * covered — the wall is what finishes the sentence. */
-      const arriving = easeOut(clamp01((p - LEAD_START) / (LEAD_END - LEAD_START)))
+      // 2. "Authorised Distributor of" comes in from the right side with animation
+      const leadArriving = easeOut(clamp01((p - LEAD_START) / (LEAD_REACHED - LEAD_START)))
+      const leadLeaving = easeInOut(clamp01((p - WALL_START) / (WALL_END - WALL_START)))
 
       if (leadRef.current) {
-        leadRef.current.style.opacity = arriving.toFixed(3)
-        leadRef.current.style.transform = `translate3d(0, ${(22 * (1 - arriving)).toFixed(1)}px, 0)`
+        const slideX = (1 - leadArriving) * 100
+        const pushX = -48 * leadLeaving
+        leadRef.current.style.transform = `translate3d(${slideX.toFixed(2)}%, 0, 0) translate3d(${pushX.toFixed(1)}px, 0, 0)`
+        leadRef.current.style.opacity = (leadArriving * (1 - 0.5 * leadLeaving)).toFixed(3)
+        leadRef.current.style.visibility =
+          leadArriving <= 0 || leadLeaving >= 1 ? "hidden" : "visible"
       }
 
-      /* One custom property carries the wipe: it drives how far the wall has
-       * travelled in from the right edge.
-       * Eased both ends: the columns ease off the right edge while the line is
-       * still readable, sweep across it, then settle. */
-      const across = easeInOut(clamp01((p - WIPE_START) / (WIPE_END - WIPE_START)))
-      wipeRef.current?.style.setProperty("--wall-in", across.toFixed(4))
+      // 3. The 5 distributors come after "Authorised Distributor of" has reached
+      const wallAcross = easeInOut(clamp01((p - WALL_START) / (WALL_END - WALL_START)))
+      wipeRef.current?.style.setProperty("--wall-in", wallAcross.toFixed(4))
 
-      /* One state change at the threshold, rather than one per frame. */
+      // 4. Settled check for pointer interactions
       const settled = p >= ARM_AT
       if (settled !== live) {
         live = settled
@@ -370,7 +203,7 @@ export function WhatWeDo() {
           <DistributorLead />
         </div>
         <div className="h-[min(760px,140vh)] w-full">
-          <Wall />
+          <DistributorWall />
         </div>
       </section>
     )
@@ -380,10 +213,10 @@ export function WhatWeDo() {
     <section
       ref={trackRef}
       id="what-we-do"
-      className="relative min-h-[340vh] bg-white"
+      className="relative min-h-[380vh] bg-white"
     >
       <div className="sticky top-0 h-dvh w-full overflow-hidden">
-        {/* The two beats of copy share the centre line; only one is ever up. */}
+        {/* Beat one: What we do statement */}
         <div
           ref={introRef}
           className="absolute inset-0 flex origin-center items-center justify-center will-change-[opacity,transform]"
@@ -391,23 +224,26 @@ export function WhatWeDo() {
           <Statement />
         </div>
 
+        {/* Beat two: Authorised Distributor of arrives from the right side */}
         <div
           ref={leadRef}
-          style={{ opacity: 0 }}
+          style={{
+            transform: "translate3d(100%, 0, 0)",
+            opacity: 0,
+            visibility: "hidden",
+          }}
           className="absolute inset-0 flex items-center will-change-[opacity,transform]"
         >
           <DistributorLead />
         </div>
 
-        {/* Full width and parked off the right edge, drawn back across by
-         * --wall-in, so the columns come over the statement as one block.
-         * The pinned track above clips whatever is still outside. */}
+        {/* Beat three: The 5 distributor wall sweeps in from the right edge after lead has reached */}
         <div
           ref={wipeRef}
           style={{ "--wall-in": 0 } as React.CSSProperties}
-          className="wall-wipe absolute inset-0 z-1"
+          className="wall-wipe absolute inset-0 z-10"
         >
-          <Wall idle={!armed} />
+          <DistributorWall idle={!armed} />
         </div>
       </div>
     </section>
