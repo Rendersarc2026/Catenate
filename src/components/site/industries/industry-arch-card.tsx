@@ -7,6 +7,8 @@ import { Globe, Maximize2 } from "lucide-react";
 import { images, type Industry } from "@/data/catenate";
 import { cn } from "@/lib/utils";
 
+const LABEL_ROW = 28;
+
 interface IndustryArchCardProps {
   industry: Industry;
   index: number;
@@ -15,6 +17,7 @@ interface IndustryArchCardProps {
   isActive: boolean;
   cardWidth: number;
   cardHeight: number;
+  maxCardHeight: number;
   onSelectIndex: (index: number) => void;
   onOpenDetail: (industry: Industry) => void;
 }
@@ -27,6 +30,7 @@ export const IndustryArchCard = React.memo(function IndustryArchCard({
   isActive,
   cardWidth,
   cardHeight,
+  maxCardHeight,
   onSelectIndex,
   onOpenDetail,
 }: IndustryArchCardProps) {
@@ -64,8 +68,8 @@ export const IndustryArchCard = React.memo(function IndustryArchCard({
 
   return (
     <div
-      className="group flex flex-col shrink-0 select-none cursor-pointer outline-none transform-gpu"
-      style={{ width: `${cardWidth}px` }}
+      className="group flex flex-col justify-end shrink-0 select-none cursor-pointer outline-none transform-gpu"
+      style={{ width: `${cardWidth}px`, height: `${maxCardHeight + LABEL_ROW}px` }}
       onClick={handleClick}
       role="button"
       tabIndex={0}
@@ -79,8 +83,9 @@ export const IndustryArchCard = React.memo(function IndustryArchCard({
     >
       {/* Hovering label above the card top-left matching reference design */}
       <div
+        style={{ height: `${LABEL_ROW}px` }}
         className={cn(
-          "mb-2.5 flex items-center gap-1.5 text-left transition-colors duration-300 ease-expo motion-reduce:transition-none pl-0.5",
+          "flex items-center gap-1.5 text-left transition-colors duration-300 ease-expo motion-reduce:transition-none pl-0.5 shrink-0",
           isActive
             ? "text-ink font-medium"
             : "text-ink/65 group-hover:text-ink font-normal"
@@ -120,7 +125,9 @@ export const IndustryArchCard = React.memo(function IndustryArchCard({
           alt={industry.name}
           fill
           sizes="(max-width: 640px) 220px, (max-width: 1024px) 250px, 280px"
-          priority={index >= 1 && index <= 5}
+          // The visible cards are the ones near the centre of the arch, not a
+          // fixed index range -- the rendered window slides as the deck cycles.
+          priority={distanceFromCenter <= 2}
           className={cn(
             "object-cover transition-transform duration-700 ease-expo motion-reduce:transition-none",
             isActive

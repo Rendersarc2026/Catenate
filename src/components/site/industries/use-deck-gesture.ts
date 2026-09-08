@@ -1,10 +1,12 @@
 import * as React from "react";
 
+// Keep in sync with the deck's slide timing.
+export const SLIDE_MS = 550;
+
 interface UseDeckGestureOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
   trackRef: React.RefObject<HTMLDivElement | null>;
   activeIndex: number;
-  itemCount: number;
   cardWidth: number;
   baseTranslate: number;
   onSelectIndex: (index: number) => void;
@@ -14,7 +16,6 @@ export function useDeckGesture({
   containerRef,
   trackRef,
   activeIndex,
-  itemCount,
   cardWidth,
   baseTranslate,
   onSelectIndex,
@@ -51,6 +52,13 @@ export function useDeckGesture({
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
+
+    // Never start a drag from an interactive control (nav arrows, badge
+    // buttons). Their pointer events bubble to the deck, and a few px of
+    // pointer drift would otherwise be read as a swipe -- stealing the click
+    // and paging the deck the wrong way.
+    if ((e.target as Element | null)?.closest?.("button")) return;
+
     pointerStartRef.current = {
       startX: e.clientX,
       startY: e.clientY,
@@ -59,7 +67,13 @@ export function useDeckGesture({
     currentDragXRef.current = 0;
     hasDraggedRef.current = false;
 
-    containerRef.current?.setPointerCapture?.(e.pointerId);
+    // Guarded: capture can throw if the pointer is already gone (fast taps,
+    // synthetic events), which would abort the handler mid-drag-setup.
+    try {
+      containerRef.current?.setPointerCapture?.(e.pointerId);
+    } catch {
+      // Non-fatal -- the drag still works without capture.
+    }
     setIsDragging(true);
 
     if (trackRef.current) {
@@ -101,14 +115,8 @@ export function useDeckGesture({
       rAFRef.current = requestAnimationFrame(() => {
         rAFRef.current = null;
         if (!trackRef.current) return;
-        let delta = currentDragXRef.current;
-        // Elastic rubber band resistance at boundaries
-        if (
-          (activeIndex === 0 && delta > 0) ||
-          (activeIndex === itemCount - 1 && delta < 0)
-        ) {
-          delta *= 0.32;
-        }
+        // Infinite deck: no boundaries, so no rubber-band resistance.
+        const delta = currentDragXRef.current;
         trackRef.current.style.transform = `translate3d(${baseTranslate + delta}px, 0, 0)`;
       });
     }
@@ -136,7 +144,7 @@ export function useDeckGesture({
     // Restore smooth CSS transition synchronized with cards
     if (trackRef.current) {
       trackRef.current.style.transition =
-        "transform 550ms cubic-bezier(0.16, 1, 0.3, 1)";
+        `transform ${SLIDE_MS}ms cubic-bezier(0.16, 1, 0.3, 1)`;
     }
 
     const threshold = cardWidth * 0.22;
@@ -145,11 +153,7 @@ export function useDeckGesture({
 
     let nextIndex = activeIndex;
     if (isFarDrag || isFastFlick) {
-      if (deltaX < 0 && activeIndex < itemCount - 1) {
-        nextIndex = activeIndex + 1;
-      } else if (deltaX > 0 && activeIndex > 0) {
-        nextIndex = activeIndex - 1;
-      }
+      nextIndex = deltaX < 0 ? activeIndex + 1 : activeIndex - 1;
     }
 
     if (nextIndex !== activeIndex) {
@@ -182,16 +186,12 @@ export function useDeckGesture({
     const WHEEL_THRESHOLD = 45;
 
     if (accumulatedDeltaRef.current > WHEEL_THRESHOLD) {
-      if (activeIndex < itemCount - 1) {
-        onSelectIndex(activeIndex + 1);
-        isWheelLockedRef.current = true;
-      }
+      onSelectIndex(activeIndex + 1);
+      isWheelLockedRef.current = true;
       accumulatedDeltaRef.current = 0;
     } else if (accumulatedDeltaRef.current < -WHEEL_THRESHOLD) {
-      if (activeIndex > 0) {
-        onSelectIndex(activeIndex - 1);
-        isWheelLockedRef.current = true;
-      }
+      onSelectIndex(activeIndex - 1);
+      isWheelLockedRef.current = true;
       accumulatedDeltaRef.current = 0;
     }
 

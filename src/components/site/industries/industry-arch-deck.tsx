@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Industry } from "@/data/catenate";
 import { cn } from "@/lib/utils";
 import { IndustryArchCard } from "./industry-arch-card";
-import { useDeckGesture } from "./use-deck-gesture";
+import { SLIDE_MS, useDeckGesture } from "./use-deck-gesture";
 
 interface IndustryArchDeckProps {
   industries: readonly Industry[];
@@ -45,9 +45,9 @@ export function IndustryArchDeck({
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        if (activeIndex > 0) onSelectIndex(activeIndex - 1);
+        onSelectIndex(activeIndex - 1);
       } else if (e.key === "ArrowRight") {
-        if (activeIndex < industries.length - 1) onSelectIndex(activeIndex + 1);
+        onSelectIndex(activeIndex + 1);
       }
     };
 
@@ -62,24 +62,128 @@ export function IndustryArchDeck({
   const cardGap = isMobile ? 14 : isTablet ? 18 : 22;
   const maxCardHeight = isMobile ? 320 : isTablet ? 370 : 410;
 
-  // Parabolic arch height calculation
+  // Parabolic arch height: normalise the falloff across the visible span so the
+  // curve keeps descending instead of clamping into a flat row of equal cards.
+  const minCardHeight = Math.round(maxCardHeight * 0.34);
   const getCardHeight = React.useCallback(
     (dist: number) => {
       if (dist === 0) return maxCardHeight;
-      const drop = Math.min(
-        maxCardHeight * 0.58,
-        Math.pow(dist, 1.25) * (maxCardHeight * 0.108),
-      );
+      const span = 5;
+      const t = Math.min(dist / span, 1);
+      const drop = (maxCardHeight - minCardHeight) * (1 - Math.cos((t * Math.PI) / 2));
       return Math.round(maxCardHeight - drop);
     },
-    [maxCardHeight],
+    [maxCardHeight, minCardHeight],
   );
 
-  // Compute base centered translation
+  // Infinite deck: activeIndex is unbounded (it may go negative or past the
+  // end). Rather than laying out all N cards and translating across them, we
+  // render a fixed window of virtual slots centred on activeIndex and map each
+  // slot back onto a real industry with a modulo. The track's translation is
+  // then relative to the window, so it never grows without bound and offscreen
+  // cards are never rendered at all.
   const step = cardWidth + cardGap;
+  const count = industries.length;
+
+  // Half-window wide enough to cover the viewport plus a card of overscan.
+  const halfWindow = Math.min(
+    Math.max(Math.ceil(containerWidth / 2 / step) + 2, 4),
+    Math.max(count, 1),
+  );
+
+  // The window is anchored to `windowIndex`, which LAGS behind `activeIndex`
+  // while a move animates. If the window re-centred immediately, every slot
+  // would swap content in one frame and the track would never move -- cards
+  // would morph in place instead of sliding. Instead we translate the track by
+  // the difference, then silently re-anchor the window once it settles.
+  const [windowIndex, setWindowIndex] = React.useState(activeIndex);
+  const settleRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  // True for the single commit in which the window re-anchors. The anchor
+  // shift and the drift reset cancel out geometrically, but the browser would
+  // still animate the resulting transform change -- which reads as the deck
+  // sliding back. Suppress the transition for that one frame.
+  const [reanchoring, setReanchoring] = React.useState(false);
+  const activeIndexRef = React.useRef(activeIndex);
+  React.useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  const slots = React.useMemo(() => {
+    const out: { key: string; industry: Industry; index: number; offset: number }[] = [];
+    if (count === 0) return out;
+    for (let offset = -halfWindow; offset <= halfWindow; offset++) {
+      const virtual = windowIndex + offset;
+      // True modulo, correct for negative virtual indices.
+      const real = ((virtual % count) + count) % count;
+      out.push({
+        key: `${virtual}`,
+        industry: industries[real],
+        index: real,
+        offset,
+      });
+    }
+    return out;
+  }, [windowIndex, halfWindow, industries, count]);
+
+  // How far the active card has drifted from the window's anchor. A jump larger
+  // than the window (or a resize that shrinks it) can't be animated
+  // meaningfully, so snap the anchor during render rather than sliding across
+  // many cards. Adjusting state while rendering is the supported pattern here.
+  if (Math.abs(activeIndex - windowIndex) > halfWindow) {
+    setWindowIndex(activeIndex);
+  }
+  const drift = activeIndex - windowIndex;
+
+  // Re-anchor the window after the slide finishes. Because the anchor shift and
+  // the drift reset are applied in the same commit, the rendered geometry is
+  // identical before and after -- the swap is invisible.
+  React.useEffect(() => {
+    if (drift === 0) return;
+    const node = trackRef.current;
+    if (!node) return;
+
+    // Re-anchor exactly when the slide ends. A bare timer races the CSS
+    // transition and re-anchors a few frames early, which reads as a hitch.
+    // Child cards also bubble transitionend here, so match the track's own
+    // transform only.
+    const onEnd = (e: TransitionEvent) => {
+      if (e.target !== node || e.propertyName !== "transform") return;
+      // Re-anchor to the index this slide was heading for. Reading the ref
+      // rather than the closed-over value keeps rapid, overlapping steps from
+      // re-anchoring to a stale target and accumulating drift.
+      setReanchoring(true);
+      setWindowIndex(activeIndexRef.current);
+    };
+    node.addEventListener("transitionend", onEnd);
+
+    // Fallback: transitionend never fires if the transition is interrupted or
+    // suppressed (reduced motion, background tab).
+    if (settleRef.current) clearTimeout(settleRef.current);
+    settleRef.current = setTimeout(() => {
+      setReanchoring(true);
+      setWindowIndex(activeIndexRef.current);
+    }, SLIDE_MS + 120);
+
+    return () => {
+      node.removeEventListener("transitionend", onEnd);
+      if (settleRef.current) clearTimeout(settleRef.current);
+    };
+  }, [drift, activeIndex]);
+
+  // Restore transitions once the untransitioned frame has been painted.
+  React.useEffect(() => {
+    if (!reanchoring) return;
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setReanchoring(false));
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [reanchoring]);
+
+  // Centre the active slot: it sits at position `halfWindow` within the window,
+  // offset by however far the active index has drifted from the anchor.
   const centerTarget = containerWidth / 2;
-  const activeCenter = activeIndex * step + cardWidth / 2;
-  const baseTranslate = centerTarget - activeCenter;
+  const baseTranslate =
+    centerTarget - ((halfWindow + drift) * step + cardWidth / 2);
 
   const {
     isDragging,
@@ -92,7 +196,6 @@ export function IndustryArchDeck({
     containerRef,
     trackRef,
     activeIndex,
-    itemCount: industries.length,
     cardWidth,
     baseTranslate,
     onSelectIndex,
@@ -111,7 +214,7 @@ export function IndustryArchDeck({
       onClickCapture={handleClickCapture}
       onWheel={handleWheel}
       className={cn(
-        "relative w-full overflow-hidden pt-6 pb-2 select-none touch-pan-y",
+        "relative w-full overflow-hidden pt-6 pb-10 select-none touch-pan-y",
         isDragging ? "cursor-grabbing" : "cursor-grab",
       )}
     >
@@ -124,16 +227,14 @@ export function IndustryArchDeck({
         <button
           type="button"
           aria-label="Previous industry"
-          disabled={activeIndex === 0}
           onClick={(e) => {
             e.stopPropagation();
-            if (activeIndex > 0) onSelectIndex(activeIndex - 1);
+            onSelectIndex(activeIndex - 1);
           }}
           className={cn(
             "pointer-events-auto grid size-11 place-items-center rounded-full",
             "border border-ink/10 bg-white/90 text-ink shadow-md backdrop-blur-md",
-            "transition-[transform,background-color,color,opacity] duration-300 ease-expo motion-reduce:transition-none hover:scale-110 hover:bg-blue hover:text-white cursor-pointer active:scale-95",
-            activeIndex === 0 && "opacity-0 pointer-events-none",
+            "transition-[transform,background-color,color] duration-300 ease-expo motion-reduce:transition-none hover:scale-110 hover:bg-blue hover:text-white cursor-pointer active:scale-95",
           )}
         >
           <ChevronLeft className="size-5" />
@@ -142,19 +243,14 @@ export function IndustryArchDeck({
         <button
           type="button"
           aria-label="Next industry"
-          disabled={activeIndex === industries.length - 1}
           onClick={(e) => {
             e.stopPropagation();
-            if (activeIndex < industries.length - 1) {
-              onSelectIndex(activeIndex + 1);
-            }
+            onSelectIndex(activeIndex + 1);
           }}
           className={cn(
             "pointer-events-auto grid size-11 place-items-center rounded-full",
             "border border-ink/10 bg-white/90 text-ink shadow-md backdrop-blur-md",
-            "transition-[transform,background-color,color,opacity] duration-300 ease-expo motion-reduce:transition-none hover:scale-110 hover:bg-blue hover:text-white cursor-pointer active:scale-95",
-            activeIndex === industries.length - 1 &&
-              "opacity-0 pointer-events-none",
+            "transition-[transform,background-color,color] duration-300 ease-expo motion-reduce:transition-none hover:scale-110 hover:bg-blue hover:text-white cursor-pointer active:scale-95",
           )}
         >
           <ChevronRight className="size-5" />
@@ -166,29 +262,34 @@ export function IndustryArchDeck({
         ref={trackRef}
         style={{
           transform: `translate3d(${baseTranslate}px, 0, 0)`,
-          transition: isDragging
-            ? "none"
-            : "transform 550ms cubic-bezier(0.16, 1, 0.3, 1)",
+          transition:
+            isDragging || reanchoring
+              ? "none"
+              : `transform ${SLIDE_MS}ms cubic-bezier(0.16, 1, 0.3, 1)`,
           gap: `${cardGap}px`,
         }}
-        className="flex items-end will-change-transform py-4 motion-reduce:transition-none"
+        className="flex items-end will-change-transform pt-4 motion-reduce:transition-none"
       >
-        {industries.map((industry, index) => {
-          const dist = Math.abs(index - activeIndex);
-          const isActive = index === activeIndex;
+        {slots.map((slot) => {
+          // Distance to the active card, which drifts during the slide.
+          const dist = Math.abs(slot.offset - drift);
+          const isActive = slot.offset - drift === 0;
           const cardHeight = getCardHeight(dist);
 
           return (
             <IndustryArchCard
-              key={industry.slug}
-              industry={industry}
-              index={index}
-              total={industries.length}
+              key={slot.key}
+              industry={slot.industry}
+              index={slot.index}
+              total={count}
               distanceFromCenter={dist}
               isActive={isActive}
               cardWidth={cardWidth}
               cardHeight={cardHeight}
-              onSelectIndex={onSelectIndex}
+              maxCardHeight={maxCardHeight}
+              // Selecting a neighbour moves by its offset, keeping the
+              // unbounded index continuous instead of snapping to a real index.
+              onSelectIndex={() => onSelectIndex(windowIndex + slot.offset)}
               onOpenDetail={onOpenDetail}
             />
           );
