@@ -199,14 +199,14 @@ function Wall({ idle = false }: WallProps) {
                    * knockout to white would erase the wordmark. Each sits on a
                    * light plate instead, which keeps the mark as supplied.
                    */
-                  <span className="inline-flex min-w-[clamp(64px,6.5vw,98px)] items-center justify-center rounded-[4px] bg-white px-[clamp(7px,0.75vw,11px)] py-[clamp(4px,0.5vw,7px)] shadow-sm">
+                  <span className="inline-flex min-w-[clamp(100px,10vw,160px)] items-center justify-center rounded-[6px] bg-white px-[clamp(12px,1.2vw,20px)] py-[clamp(7px,0.8vw,12px)] shadow-sm">
                     <Image
                       src={brand.logo}
                       alt={brand.name}
                       width={220}
                       height={64}
                       style={{ transform: `scale(${brand.logoScale ?? 1})` }}
-                      className="h-[clamp(13px,1.3vw,19px)] w-auto object-contain"
+                      className="h-[clamp(22px,2.4vw,34px)] w-auto object-contain"
                     />
                   </span>
                 ) : (
@@ -221,7 +221,7 @@ function Wall({ idle = false }: WallProps) {
               <div
                 inert={!isOpen}
                 className={cn(
-                  "absolute top-1/2 left-1/2 z-1 mt-[clamp(24px,3vw,38px)] w-[min(330px,68vw)] -translate-x-1/2 text-left transition-[opacity,translate] duration-700 ease-expo",
+                  "absolute top-1/2 left-1/2 z-1 mt-[clamp(32px,3.8vw,52px)] w-[min(330px,68vw)] -translate-x-1/2 text-left transition-[opacity,translate] duration-700 ease-expo",
                   isOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
                 )}
               >

@@ -450,8 +450,8 @@ export interface OrbitDotGlobeProps {
 }
 
 export function OrbitDotGlobe({
-  oceanColor = "#1a1d2e",
-  landColor = "#ffffff",
+  oceanColor = "#c4c9d4",
+  landColor = "#f3f5f8",
   dotSize = 1.8,
   dotDensity = 3,
   autoRotate = true,
@@ -663,6 +663,8 @@ export function OrbitDotGlobe({
         globeGroup.rotation.x = THREE.MathUtils.degToRad(4);
         scene.add(globeGroup);
 
+        const isLightOcean = getLuminance(oceanColor) > 0.3;
+
         const ocean = new THREE.Mesh(
           new THREE.SphereGeometry(
             GLOBE_RADIUS,
@@ -670,9 +672,11 @@ export function OrbitDotGlobe({
             mobile ? 24 : 32
           ),
           new THREE.MeshPhongMaterial({
-            color: safeColor(oceanColor, "#1a1d2e"),
-            specular: new THREE.Color("#343848"),
-            shininess: 6,
+            color: safeColor(oceanColor, "#c4c9d4"),
+            specular: isLightOcean
+              ? new THREE.Color("#dce0e8")
+              : new THREE.Color("#343848"),
+            shininess: isLightOcean ? 8 : 6,
             depthWrite: true,
             depthTest: true,
           })
@@ -682,7 +686,7 @@ export function OrbitDotGlobe({
         const landPoints = new THREE.Points(
           createLandGeometry(landMask, dotDensity, mobile),
           new THREE.PointsMaterial({
-            color: safeColor(landColor, "#ffffff"),
+            color: safeColor(landColor, "#f3f5f8"),
             size: clamp(mobile ? dotSize * 1.05 : dotSize, 0.6, 4.5),
             sizeAttenuation: true,
             map: createDotTexture() ?? undefined,
@@ -770,10 +774,19 @@ export function OrbitDotGlobe({
           }
         });
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
-        const mainLight = new THREE.DirectionalLight(0xffffff, 0.85);
+        const ambientLight = new THREE.AmbientLight(
+          0xffffff,
+          isLightOcean ? 0.75 : 1.2
+        );
+        const mainLight = new THREE.DirectionalLight(
+          0xffffff,
+          isLightOcean ? 0.35 : 0.85
+        );
         mainLight.position.set(-150, 130, 260);
-        const fillLight = new THREE.DirectionalLight(0xffffff, 0.25);
+        const fillLight = new THREE.DirectionalLight(
+          0xffffff,
+          isLightOcean ? 0.15 : 0.25
+        );
         fillLight.position.set(180, -90, 100);
         scene.add(ambientLight, mainLight, fillLight);
 
