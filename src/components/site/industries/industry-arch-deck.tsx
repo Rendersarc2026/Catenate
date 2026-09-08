@@ -86,10 +86,7 @@ export function IndustryArchDeck({
   const count = industries.length;
 
   // Half-window wide enough to cover the viewport plus a card of overscan.
-  const halfWindow = Math.min(
-    Math.max(Math.ceil(containerWidth / 2 / step) + 2, 4),
-    Math.max(count, 1),
-  );
+  const viewportHalf = Math.max(Math.ceil(containerWidth / 2 / step) + 2, 4);
 
   // The window is anchored to `windowIndex`, which LAGS behind `activeIndex`
   // while a move animates. If the window re-centred immediately, every slot
@@ -108,6 +105,22 @@ export function IndustryArchDeck({
     activeIndexRef.current = activeIndex;
   }, [activeIndex]);
 
+  // How far the active card has drifted from the window's anchor. Rapid steps
+  // can outrun the settle, so the drift is clamped rather than allowed to grow
+  // without bound: past this the intermediate cards fly by too fast to read.
+  const MAX_DRIFT = 3;
+  const rawDrift = activeIndex - windowIndex;
+  const drift = Math.max(-MAX_DRIFT, Math.min(MAX_DRIFT, rawDrift));
+
+  // The window must cover the viewport measured from the ANCHOR, which sits
+  // `drift` cards away from the active card. Sizing it for the viewport alone
+  // leaves the trailing side short during a slide -- the deck then runs out of
+  // rendered cards and opens a visible gap at one edge.
+  const halfWindow = Math.min(
+    viewportHalf + Math.abs(drift),
+    Math.max(count, 1),
+  );
+
   const slots = React.useMemo(() => {
     const out: { key: string; industry: Industry; index: number; offset: number }[] = [];
     if (count === 0) return out;
@@ -124,15 +137,6 @@ export function IndustryArchDeck({
     }
     return out;
   }, [windowIndex, halfWindow, industries, count]);
-
-  // How far the active card has drifted from the window's anchor. A jump larger
-  // than the window (or a resize that shrinks it) can't be animated
-  // meaningfully, so snap the anchor during render rather than sliding across
-  // many cards. Adjusting state while rendering is the supported pattern here.
-  if (Math.abs(activeIndex - windowIndex) > halfWindow) {
-    setWindowIndex(activeIndex);
-  }
-  const drift = activeIndex - windowIndex;
 
   // Re-anchor the window after the slide finishes. Because the anchor shift and
   // the drift reset are applied in the same commit, the rendered geometry is
