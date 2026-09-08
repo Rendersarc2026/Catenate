@@ -4,22 +4,29 @@ import * as React from "react";
 import { Reveal } from "@/components/site/reveal";
 import { industries, type Industry } from "@/data/catenate";
 import { cn } from "@/lib/utils";
-import { IndustryMosaic } from "./industries/industry-mosaic";
+import { IndustryArchDeck } from "./industries/industry-arch-deck";
 import { IndustryDetailDialog } from "./industries/industry-detail-dialog";
 import { SECTOR_CATEGORIES } from "./industries/types";
 
 export function IndustriesSection() {
   const [activeCategory, setActiveCategory] = React.useState("all");
+  const [activeIndex, setActiveIndex] = React.useState(3);
   const [openedIndustry, setOpenedIndustry] = React.useState<Industry | null>(
     null,
   );
 
-  // Slugs the wall should keep lit; `null` means every tile stays lit.
-  const highlightedSlugs = React.useMemo(() => {
-    if (activeCategory === "all") return null;
+  const filteredIndustries = React.useMemo(() => {
+    if (activeCategory === "all") return industries;
     const category = SECTOR_CATEGORIES.find((c) => c.id === activeCategory);
-    return category ? new Set(category.slugs) : null;
+    if (!category) return industries;
+    return industries.filter((ind) => category.slugs.includes(ind.slug));
   }, [activeCategory]);
+
+  React.useEffect(() => {
+    setActiveIndex((prev) =>
+      Math.min(prev, Math.max(0, filteredIndustries.length - 1))
+    );
+  }, [filteredIndustries.length]);
 
   return (
     <section
@@ -50,11 +57,12 @@ export function IndustriesSection() {
                 <button
                   key={cat.id}
                   type="button"
-                  onClick={() =>
+                  onClick={() => {
                     setActiveCategory((prev) =>
                       prev === cat.id ? "all" : cat.id,
-                    )
-                  }
+                    );
+                    setActiveIndex(0);
+                  }}
                   className={cn(
                     "inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium transition-all duration-300 cursor-pointer select-none whitespace-nowrap",
                     isActive
@@ -80,11 +88,12 @@ export function IndustriesSection() {
         </div>
       </div>
 
-      {/* Sector Wall */}
-      <div className="mt-12 border-y border-ink/10">
-        <IndustryMosaic
-          industries={industries}
-          highlightedSlugs={highlightedSlugs}
+      {/* Sector Arch Deck */}
+      <div className="mt-10 sm:mt-14 border-b border-ink/10">
+        <IndustryArchDeck
+          industries={filteredIndustries}
+          activeIndex={activeIndex}
+          onSelectIndex={setActiveIndex}
           onOpenDetail={setOpenedIndustry}
         />
       </div>
