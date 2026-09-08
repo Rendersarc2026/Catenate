@@ -71,8 +71,8 @@ export function StrengthsSection() {
     <section id="strengths" className="section bg-white">
       <Reveal className="mb-[clamp(24px,3vw,44px)]">
         <span className="eyebrow">Our strengths</span>
-        <h2 className="max-w-[20ch] text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
-          Eight reasons the chain holds.
+        <h2 className="max-w-[24ch] text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
+          Eight reasons we make a difference.
         </h2>
       </Reveal>
 
