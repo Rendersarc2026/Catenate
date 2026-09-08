@@ -57,10 +57,6 @@ export function SiteFooter() {
         <span>{company.legal}</span>
         <span>© {new Date().getFullYear()} Catenate. All rights reserved.</span>
       </div>
-
-      <div className="foot-mark" aria-hidden="true">
-        CATENATE
-      </div>
     </footer>
   )
 }

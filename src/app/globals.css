@@ -396,12 +396,15 @@
    * ahead of themselves. The names come up late in the run, so no clipped
    * lettering shows while the columns are still narrow.
    */
+  /*
+   * The wall is full width the whole way and rides in from the right edge as
+   * one block, so the principals arrive together at their real proportions.
+   * Growing the box's width instead would have squashed all of them into a
+   * sliver at the edge and stretched them open in place.
+   */
   .wall-wipe {
-    width: calc(var(--wall-in, 1) * 100%);
-  }
-
-  .wall-name {
-    opacity: clamp(0, (var(--wall-in, 1) - 0.62) * 3.4, 1);
+    translate: calc((1 - var(--wall-in, 1)) * 100%) 0;
+    will-change: translate;
   }
 
   /* ---------- Sector showcase ---------- */

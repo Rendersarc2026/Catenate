@@ -57,18 +57,6 @@ function layoutFor(count: number): TileShape[] {
   }));
 }
 
-/**
- * Pools of light behind the grid, in the ambient layer's own coordinates
- * (it bleeds well past the grid, so the grid sits roughly between 24% and 76%
- * vertically). Placed to fall behind distinct tiles rather than spread evenly.
- */
-const AMBIENT_POOLS = [
-  { x: "62%", y: "42%", size: "min(38vw,540px)", color: "rgb(88 128 255 / 0.72)" },
-  { x: "86%", y: "62%", size: "min(34vw,470px)", color: "rgb(72 214 224 / 0.58)" },
-  { x: "54%", y: "70%", size: "min(30vw,420px)", color: "rgb(166 108 250 / 0.48)" },
-  { x: "76%", y: "50%", size: "min(26vw,360px)", color: "rgb(242 166 96 / 0.34)" },
-] as const;
-
 interface IndustryCollageProps {
   industries: Industry[];
   onOpenDetail: (industry: Industry) => void;
@@ -85,35 +73,6 @@ export function IndustryCollage({
 
   return (
     <div className="relative isolate flex min-h-0 flex-1">
-      {/* Ambient field. Glass only reads as glass when there is something
-          behind it to refract -- against a flat ground a blurred panel is
-          indistinguishable from a plain translucent fill. These soft pools of
-          light give each tile a different thing to pick up, which is also
-          where the grid gets its tonal variety from. */}
-      <div
-        aria-hidden
-        // Bleeds past the grid box: clipping the pools to it cut off most of
-        // each one. The section already hides the overflow.
-        className="pointer-events-none absolute -inset-x-[10%] -inset-y-[45%] -z-10"
-      >
-        {/* Each pool is centred on its own coordinates so it sits behind a
-            specific tile -- that is what gives neighbouring panes different
-            colours instead of one flat wash. */}
-        {AMBIENT_POOLS.map((pool, i) => (
-          <div
-            key={i}
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{
-              left: pool.x,
-              top: pool.y,
-              width: pool.size,
-              height: pool.size,
-              background: `radial-gradient(circle, ${pool.color}, transparent 70%)`,
-            }}
-          />
-        ))}
-      </div>
-
       <div className="mx-auto flex w-full max-w-[var(--content-max)] min-h-0 flex-1 flex-col px-[clamp(16px,4vw,40px)]">
         {/* Bento grid. Single column on phones, the full arrangement from sm up
             -- the presets assume four columns and would shear below that. */}
@@ -172,14 +131,13 @@ const BentoTile = React.memo(function BentoTile({
         "group relative isolate overflow-hidden rounded-[clamp(14px,1.4vw,22px)] text-left outline-none",
         "transition-[transform,box-shadow] duration-500 ease-expo motion-reduce:transition-none",
         "hover:z-10 hover:-translate-y-0.5 cursor-pointer",
-        "focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink",
-        // Glass panels. `supports-` keeps the fill opaque where backdrop-filter
-        // is unavailable, so the copy never sits on a bare translucent ground.
+        "focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+        // Sleek obsidian panels on black
         face === "flat" &&
-          "bg-graphite ring-1 ring-inset ring-white/20 supports-backdrop-filter:bg-white/[0.15] supports-backdrop-filter:backdrop-blur-xl",
+          "bg-[#11131a] ring-1 ring-inset ring-white/15 hover:ring-white/30 supports-backdrop-filter:bg-neutral-900/80 supports-backdrop-filter:backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
         face === "accent" &&
-          "bg-graphite ring-1 ring-inset ring-white/15 supports-backdrop-filter:bg-white/[0.09] supports-backdrop-filter:backdrop-blur-xl",
-        face === "photo" && "bg-ink",
+          "bg-[#0d0f14] ring-1 ring-inset ring-white/10 hover:ring-white/25 supports-backdrop-filter:bg-neutral-950/70 supports-backdrop-filter:backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
+        face === "photo" && "bg-black ring-1 ring-inset ring-white/10 hover:ring-white/20",
       )}
       style={{
         gridColumn: shape.col,
@@ -229,7 +187,7 @@ function PhotoFace({
         priority={feature}
         className="object-cover transition-transform duration-700 ease-expo motion-reduce:transition-none scale-[1.04] group-hover:scale-100"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/40 via-60% to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 via-60% to-transparent" />
 
       <div className="absolute inset-0 flex flex-col justify-end gap-1.5 p-[clamp(14px,1.5vw,22px)] text-white">
         <h3
@@ -323,7 +281,9 @@ function TileCorner({ tone }: { tone: "light" | "dark" }) {
         "pointer-events-none absolute right-2.5 top-2.5 grid size-6 place-items-center rounded-full",
         "opacity-0 transition-opacity duration-300 ease-expo motion-reduce:transition-none",
         "group-hover:opacity-100 group-focus-visible:opacity-100",
-        tone === "light" ? "bg-white text-ink" : "bg-ink text-white",
+        tone === "light"
+          ? "bg-white text-black"
+          : "bg-black text-white border border-white/20",
       )}
     >
       <ArrowUpRight className="size-3.5" />

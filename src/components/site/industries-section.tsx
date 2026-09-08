@@ -31,7 +31,7 @@ export function IndustriesSection() {
     <section
       id="industries"
       className={cn(
-        "section-flush relative overflow-hidden bg-ink outline-none scroll-mt-24",
+        "section-flush relative overflow-hidden bg-black outline-none scroll-mt-24 text-white border-y border-neutral-900",
         // From sm up the section fills the viewport and the grid absorbs the
         // height the header leaves. On phones the tiles stack into one column,
         // where forcing a single screen would crush them -- so it scrolls.
@@ -76,7 +76,7 @@ export function IndustriesSection() {
                     "text-[13px] font-medium whitespace-nowrap select-none cursor-pointer",
                     "transition-colors duration-300 ease-expo motion-reduce:transition-none",
                     isActive
-                      ? "border-white bg-white text-ink"
+                      ? "border-white bg-white text-black font-semibold shadow-[0_2px_12px_rgba(255,255,255,0.15)]"
                       : "border-white/15 bg-white/5 text-white/65 hover:border-white/35 hover:text-white",
                   )}
                 >
@@ -84,7 +84,7 @@ export function IndustriesSection() {
                   <span
                     className={cn(
                       "tnum text-[11px]",
-                      isActive ? "text-ink/45" : "text-white/35",
+                      isActive ? "text-black/60 font-semibold" : "text-white/35",
                     )}
                   >
                     {String(cat.slugs.length).padStart(2, "0")}

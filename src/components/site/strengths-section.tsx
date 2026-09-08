@@ -72,9 +72,9 @@ function useDialFits() {
 
 const numeral = (index: number) => String(index + 1).padStart(2, "0");
 
-function Heading() {
+function Heading({ className }: { className?: string }) {
   return (
-    <div className="shrink-0">
+    <div className={className}>
       <span className="eyebrow">Our strengths</span>
       <h2 className="max-w-[24ch] text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
         Eight reasons we make a difference.
@@ -240,18 +240,31 @@ export function StrengthsSection() {
       className="relative bg-white"
       style={{ minHeight: `calc(100svh + ${(strengths.length - 1) * STEP_VH}vh)` }}
     >
-      <div className="content-pad sticky top-0 flex h-svh flex-col overflow-hidden pt-[calc(var(--nav-height)+clamp(20px,4vh,52px))] pb-[clamp(20px,4vh,52px)]">
-        <Heading />
+      {/* The heading and the dial share one grid cell, so the dial centres on
+          the viewport rather than on whatever room the heading leaves below
+          it. Matching top and bottom padding puts that centre clear of the
+          nav. */}
+      <div className="content-pad sticky top-0 grid h-svh grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden pt-[calc(var(--nav-height)+clamp(20px,4vh,52px))] pb-[clamp(20px,4vh,52px)]">
+        <Heading className="relative z-10 col-start-1 row-start-1 self-start" />
 
         <ol
-          className="relative min-h-0 flex-1"
+          className="relative col-start-1 row-start-1 min-h-0"
           style={
             {
-              /* Distance from the rail's left edge to the arc's shoulder. */
-              "--dial-apex": "clamp(150px, 21vw, 300px)",
               "--dial-r": "clamp(340px, 38vw, 560px)",
               /* How far the seated numeral steps off the rim. */
               "--dial-pull": "clamp(30px, 4vw, 68px)",
+              /* The seated pair: the numeral, a gap, then the copy column. */
+              "--copy-gap": "clamp(96px, 12vw, 210px)",
+              "--copy-max": "clamp(340px, 26vw, 480px)",
+              /*
+               * Distance from the rail's left edge to the arc's shoulder.
+               * Derived rather than picked: the seated pair starts one pull
+               * past the shoulder and ends at the copy column's right edge,
+               * and this leaves equal rail either side of it at every width.
+               */
+              "--dial-apex":
+                "max(140px, calc((100% - var(--copy-gap) - var(--copy-max)) / 2 - var(--dial-pull)))",
               "--numeral-rim": "clamp(1.7rem, 3.1vw, 2.75rem)",
               "--numeral-seat": "clamp(3.6rem, 6.7vw, 5.9rem)",
             } as React.CSSProperties
@@ -309,14 +322,14 @@ export function StrengthsSection() {
                 }}
                 className="absolute top-1/2 -translate-y-1/2 will-change-[opacity,transform]"
                 style={{
-                  left: "calc(var(--dial-apex) + var(--dial-pull) + clamp(96px, 12vw, 210px))",
-                  right: 0,
+                  left: "calc(var(--dial-apex) + var(--dial-pull) + var(--copy-gap))",
+                  width: "var(--copy-max)",
                 }}
               >
                 <h3 className="max-w-[20ch] text-[clamp(1.25rem,1.9vw,1.75rem)] leading-[1.15] font-semibold tracking-[-0.02em] text-ink">
                   {item.title}
                 </h3>
-                <p className="mt-3 max-w-[42ch] text-[clamp(15px,1.05vw,17px)] leading-[1.65] text-grey">
+                <p className="mt-3 text-[clamp(15px,1.05vw,17px)] leading-[1.65] text-grey">
                   {item.body}
                 </p>
               </div>

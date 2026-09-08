@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils"
 /*
  * "What we do" plays as three beats inside one pinned track. The statement
  * holds the screen first; it gives way to the line "Authorised distributor
- * of", which the wall of principals then answers — wiping in from the right
- * edge and sweeping over the line until it owns the viewport. Once the wall
+ * of", which the wall of principals then answers — riding in whole from the
+ * right edge and sweeping over the line until it owns the viewport. Once the wall
  * has settled it takes the pointer, and the column under it opens into the
  * distributor's detail.
  */
@@ -190,7 +190,7 @@ function Wall({ idle = false }: WallProps) {
                 onFocus={() => setOpen(index)}
                 /* Focus lands first on a tap, so a toggle here would undo it. */
                 onClick={() => setOpen(index)}
-                className="wall-name relative z-1 flex cursor-pointer items-center justify-center text-[clamp(15px,1.5vw,22px)] leading-[1.2] whitespace-nowrap"
+                className="relative z-1 flex cursor-pointer items-center justify-center text-[clamp(15px,1.5vw,22px)] leading-[1.2] whitespace-nowrap"
               >
                 {brand.logo ? (
                   /*
@@ -319,10 +319,10 @@ export function WhatWeDo() {
         leadRef.current.style.transform = `translate3d(0, ${(22 * (1 - arriving)).toFixed(1)}px, 0)`
       }
 
-      /* One custom property carries the wipe: it opens the wall's width and,
-       * late in the run, brings the names up. */
-      /* Eased both ends: the columns creep in at the right edge while the
-       * line is still readable, sweep across it, then settle. */
+      /* One custom property carries the wipe: it drives how far the wall has
+       * travelled in from the right edge.
+       * Eased both ends: the columns ease off the right edge while the line is
+       * still readable, sweep across it, then settle. */
       const across = easeInOut(clamp01((p - WIPE_START) / (WIPE_END - WIPE_START)))
       wipeRef.current?.style.setProperty("--wall-in", across.toFixed(4))
 
@@ -399,12 +399,13 @@ export function WhatWeDo() {
           <DistributorLead />
         </div>
 
-        {/* Pinned to the right edge and opened by --wall-in, so the columns
-         * come across the statement rather than out from under it. */}
+        {/* Full width and parked off the right edge, drawn back across by
+         * --wall-in, so the columns come over the statement as one block.
+         * The pinned track above clips whatever is still outside. */}
         <div
           ref={wipeRef}
           style={{ "--wall-in": 0 } as React.CSSProperties}
-          className="wall-wipe absolute inset-y-0 right-0 z-1 overflow-hidden"
+          className="wall-wipe absolute inset-0 z-1"
         >
           <Wall idle={!armed} />
         </div>
