@@ -22,16 +22,15 @@ export function IndustriesSection() {
     return industries.filter((ind) => category.slugs.includes(ind.slug));
   }, [activeCategory]);
 
-  React.useEffect(() => {
-    setActiveIndex((prev) =>
-      Math.min(prev, Math.max(0, filteredIndustries.length - 1))
-    );
-  }, [filteredIndustries.length]);
+  const safeActiveIndex = Math.min(
+    activeIndex,
+    Math.max(0, filteredIndustries.length - 1)
+  );
 
   return (
     <section
       id="industries"
-      className="section section-flush relative overflow-hidden bg-off [background-image:radial-gradient(rgb(26_29_46/0.06)_1px,transparent_1px)] [background-size:24px_24px] outline-none"
+      className="section section-flush relative overflow-hidden bg-off [background-image:radial-gradient(rgb(26_29_46/0.06)_1px,transparent_1px)] [background-size:24px_24px] outline-none scroll-mt-24"
     >
       {/* Header Statement */}
       <div className="content-pad">
@@ -92,7 +91,7 @@ export function IndustriesSection() {
       <div className="mt-10 sm:mt-14 border-b border-ink/10">
         <IndustryArchDeck
           industries={filteredIndustries}
-          activeIndex={activeIndex}
+          activeIndex={safeActiveIndex}
           onSelectIndex={setActiveIndex}
           onOpenDetail={setOpenedIndustry}
         />

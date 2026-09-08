@@ -28,7 +28,7 @@ export function ContactSection() {
       <section
         id="contact"
         aria-label="Get in touch with us"
-        className="relative w-full overflow-hidden bg-black text-white selection:bg-cyan-500/30 selection:text-white min-h-[460px] sm:min-h-[500px] lg:min-h-0 lg:aspect-[2.4/1] lg:max-h-[560px]"
+        className="relative w-full overflow-hidden bg-black text-white selection:bg-cyan-500/30 selection:text-white min-h-[520px] sm:min-h-[560px] lg:min-h-0 lg:aspect-[2.1/1] lg:max-h-[760px]"
       >
         {/* Background Image Container — Lossless & Uncompressed */}
         <div className="pointer-events-none absolute inset-0 select-none overflow-hidden" aria-hidden="true">
@@ -50,8 +50,8 @@ export function ContactSection() {
 
         {/* Content Layer — Exact Copy Placement from a-02 (Desktop 16:9 & Mobile Adaptive) */}
         <div className="relative z-10 flex flex-col justify-start px-6 pt-16 pb-12 gap-8 sm:px-10 sm:pt-20 lg:static lg:p-0">
-          {/* Left Heading: starts at X = 6.625%, Y = 26% */}
-          <div className="relative lg:absolute lg:left-[6.625%] lg:top-[26%]">
+          {/* Left Heading: starts at X = 6.625%, Y = 29% */}
+          <div className="relative lg:absolute lg:left-[6.625%] lg:top-[29%]">
             <button
               type="button"
               onClick={handleOpenGeneralEnquiry}
@@ -70,8 +70,8 @@ export function ContactSection() {
             </button>
           </div>
 
-          {/* Right Accordion: starts at X = 70.76%, Y = 25%, width = 21.24% */}
-          <div className="relative w-full lg:absolute lg:left-[70.76%] lg:top-[25%] lg:w-[21.24%]">
+          {/* Right Accordion: starts at X = 70.76%, Y = 28%, width = 21.24% */}
+          <div className="relative w-full lg:absolute lg:left-[70.76%] lg:top-[28%] lg:w-[21.24%]">
             <ContactAccordion
               items={contactCards}
               onSelectAction={handleSelectAction}

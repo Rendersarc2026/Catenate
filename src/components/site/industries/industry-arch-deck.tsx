@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Industry } from "@/data/catenate";
 import { cn } from "@/lib/utils";
 import { IndustryArchCard } from "./industry-arch-card";
+import { useDeckGesture } from "./use-deck-gesture";
 
 interface IndustryArchDeckProps {
   industries: readonly Industry[];
@@ -21,16 +22,8 @@ export function IndustryArchDeck({
   onOpenDetail,
 }: IndustryArchDeckProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const trackRef = React.useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = React.useState(1200);
-  const [dragOffset, setDragOffset] = React.useState(0);
-  const [isDragging, setIsDragging] = React.useState(false);
-
-  const pointerStartRef = React.useRef<{
-    x: number;
-    time: number;
-    moved: boolean;
-  } | null>(null);
-  const currentDragRef = React.useRef(0);
 
   // Measure container width via ResizeObserver
   React.useEffect(() => {
@@ -75,72 +68,35 @@ export function IndustryArchDeck({
       if (dist === 0) return maxCardHeight;
       const drop = Math.min(
         maxCardHeight * 0.58,
-        Math.pow(dist, 1.25) * (maxCardHeight * 0.108)
+        Math.pow(dist, 1.25) * (maxCardHeight * 0.108),
       );
       return Math.round(maxCardHeight - drop);
     },
-    [maxCardHeight]
+    [maxCardHeight],
   );
 
-  // Drag handlers
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if (e.button !== 0) return;
-    pointerStartRef.current = {
-      x: e.clientX,
-      time: performance.now(),
-      moved: false,
-    };
-    currentDragRef.current = 0;
-    setIsDragging(true);
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!pointerStartRef.current || !isDragging) return;
-    const deltaX = e.clientX - pointerStartRef.current.x;
-    if (Math.abs(deltaX) > 4) {
-      pointerStartRef.current.moved = true;
-    }
-    currentDragRef.current = deltaX;
-    setDragOffset(deltaX);
-  };
-
-  const handlePointerUp = () => {
-    if (!pointerStartRef.current) return;
-    const deltaX = currentDragRef.current;
-    const duration = performance.now() - pointerStartRef.current.time;
-    const velocity = deltaX / Math.max(duration, 1);
-
-    setIsDragging(false);
-    setDragOffset(0);
-    currentDragRef.current = 0;
-    pointerStartRef.current = null;
-
-    const threshold = cardWidth * 0.24;
-    if (deltaX < -threshold || velocity < -0.32) {
-      if (activeIndex < industries.length - 1) {
-        onSelectIndex(activeIndex + 1);
-      }
-    } else if (deltaX > threshold || velocity > 0.32) {
-      if (activeIndex > 0) {
-        onSelectIndex(activeIndex - 1);
-      }
-    }
-  };
-
-  // Center active card in track
+  // Compute base centered translation
   const step = cardWidth + cardGap;
   const centerTarget = containerWidth / 2;
   const activeCenter = activeIndex * step + cardWidth / 2;
-  const totalTranslate = centerTarget - activeCenter + dragOffset;
+  const baseTranslate = centerTarget - activeCenter;
 
-  const trackStyle: React.CSSProperties = {
-    transform: `translate3d(${totalTranslate}px, 0, 0)`,
-    transition: isDragging
-      ? "none"
-      : "transform 650ms cubic-bezier(0.16, 1, 0.3, 1)",
-    gap: `${cardGap}px`,
-  };
+  const {
+    isDragging,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleClickCapture,
+    handleWheel,
+  } = useDeckGesture({
+    containerRef,
+    trackRef,
+    activeIndex,
+    itemCount: industries.length,
+    cardWidth,
+    baseTranslate,
+    onSelectIndex,
+  });
 
   return (
     <div
@@ -152,7 +108,12 @@ export function IndustryArchDeck({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      className="relative w-full overflow-hidden pt-6 pb-2 cursor-grab active:cursor-grabbing touch-pan-y select-none"
+      onClickCapture={handleClickCapture}
+      onWheel={handleWheel}
+      className={cn(
+        "relative w-full overflow-hidden pt-6 pb-2 select-none touch-pan-y",
+        isDragging ? "cursor-grabbing" : "cursor-grab",
+      )}
     >
       {/* Soft Vignette horizon masks on sides */}
       <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 sm:w-28 bg-gradient-to-r from-off via-off/70 to-transparent" />
@@ -171,8 +132,8 @@ export function IndustryArchDeck({
           className={cn(
             "pointer-events-auto grid size-11 place-items-center rounded-full",
             "border border-ink/10 bg-white/90 text-ink shadow-md backdrop-blur-md",
-            "transition-all duration-300 hover:scale-110 hover:bg-blue hover:text-white cursor-pointer active:scale-95",
-            activeIndex === 0 && "opacity-0 pointer-events-none"
+            "transition-[transform,background-color,color,opacity] duration-300 ease-expo motion-reduce:transition-none hover:scale-110 hover:bg-blue hover:text-white cursor-pointer active:scale-95",
+            activeIndex === 0 && "opacity-0 pointer-events-none",
           )}
         >
           <ChevronLeft className="size-5" />
@@ -184,15 +145,16 @@ export function IndustryArchDeck({
           disabled={activeIndex === industries.length - 1}
           onClick={(e) => {
             e.stopPropagation();
-            if (activeIndex < industries.length - 1)
+            if (activeIndex < industries.length - 1) {
               onSelectIndex(activeIndex + 1);
+            }
           }}
           className={cn(
             "pointer-events-auto grid size-11 place-items-center rounded-full",
             "border border-ink/10 bg-white/90 text-ink shadow-md backdrop-blur-md",
-            "transition-all duration-300 hover:scale-110 hover:bg-blue hover:text-white cursor-pointer active:scale-95",
+            "transition-[transform,background-color,color,opacity] duration-300 ease-expo motion-reduce:transition-none hover:scale-110 hover:bg-blue hover:text-white cursor-pointer active:scale-95",
             activeIndex === industries.length - 1 &&
-              "opacity-0 pointer-events-none"
+              "opacity-0 pointer-events-none",
           )}
         >
           <ChevronRight className="size-5" />
@@ -201,8 +163,15 @@ export function IndustryArchDeck({
 
       {/* Arch Track with items aligned at the bottom */}
       <div
-        style={trackStyle}
-        className="flex items-end will-change-transform py-4"
+        ref={trackRef}
+        style={{
+          transform: `translate3d(${baseTranslate}px, 0, 0)`,
+          transition: isDragging
+            ? "none"
+            : "transform 550ms cubic-bezier(0.16, 1, 0.3, 1)",
+          gap: `${cardGap}px`,
+        }}
+        className="flex items-end will-change-transform py-4 motion-reduce:transition-none"
       >
         {industries.map((industry, index) => {
           const dist = Math.abs(index - activeIndex);
@@ -219,8 +188,8 @@ export function IndustryArchDeck({
               isActive={isActive}
               cardWidth={cardWidth}
               cardHeight={cardHeight}
-              onSelect={() => onSelectIndex(index)}
-              onOpenDetail={() => onOpenDetail(industry)}
+              onSelectIndex={onSelectIndex}
+              onOpenDetail={onOpenDetail}
             />
           );
         })}

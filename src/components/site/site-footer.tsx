@@ -4,7 +4,7 @@ import { company, footerColumns } from "@/data/catenate"
 
 export function SiteFooter() {
   return (
-    <footer className="content-pad overflow-hidden bg-black pt-[clamp(28px,3.5vw,48px)] pb-[clamp(20px,2.5vw,40px)] text-white">
+    <footer className="content-pad overflow-hidden bg-black pt-[clamp(40px,4.5vw,68px)] pb-[clamp(20px,2.5vw,40px)] text-white">
       <div className="grid grid-cols-[1.3fr_repeat(3,1fr)] gap-8.5 border-b border-white/12 pb-13 max-lg:grid-cols-2">
         <div>
           <h4 className="mb-4 text-[11px] font-medium tracking-[0.16em] text-white uppercase">

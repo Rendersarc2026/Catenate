@@ -15,11 +15,11 @@ interface IndustryArchCardProps {
   isActive: boolean;
   cardWidth: number;
   cardHeight: number;
-  onSelect: () => void;
-  onOpenDetail: () => void;
+  onSelectIndex: (index: number) => void;
+  onOpenDetail: (industry: Industry) => void;
 }
 
-export function IndustryArchCard({
+export const IndustryArchCard = React.memo(function IndustryArchCard({
   industry,
   index,
   total,
@@ -27,38 +27,44 @@ export function IndustryArchCard({
   isActive,
   cardWidth,
   cardHeight,
-  onSelect,
+  onSelectIndex,
   onOpenDetail,
 }: IndustryArchCardProps) {
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (isActive) {
-      onOpenDetail();
-    } else {
-      onSelect();
-    }
-  };
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (isActive) {
+        onOpenDetail(industry);
+      } else {
+        onSelectIndex(index);
+      }
+    },
+    [isActive, industry, index, onOpenDetail, onSelectIndex]
+  );
 
-  const handleBadgeClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onOpenDetail();
-  };
+  const handleBadgeClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onOpenDetail(industry);
+    },
+    [industry, onOpenDetail]
+  );
 
-  // Opacity decreases gradually for outer cards in the arch
+  // Progressive opacity down the curve for depth
   const opacity =
     distanceFromCenter === 0
       ? 1
       : distanceFromCenter === 1
-      ? 0.96
+      ? 0.95
       : distanceFromCenter === 2
-      ? 0.86
+      ? 0.85
       : distanceFromCenter === 3
-      ? 0.72
-      : 0.5;
+      ? 0.7
+      : 0.45;
 
   return (
     <div
-      className="group flex flex-col shrink-0 select-none cursor-pointer outline-none"
+      className="group flex flex-col shrink-0 select-none cursor-pointer outline-none transform-gpu"
       style={{ width: `${cardWidth}px` }}
       onClick={handleClick}
       role="button"
@@ -74,7 +80,7 @@ export function IndustryArchCard({
       {/* Hovering label above the card top-left matching reference design */}
       <div
         className={cn(
-          "mb-2.5 flex items-center gap-1.5 text-left transition-all duration-400 ease-expo pl-0.5",
+          "mb-2.5 flex items-center gap-1.5 text-left transition-colors duration-300 ease-expo motion-reduce:transition-none pl-0.5",
           isActive
             ? "text-ink font-medium"
             : "text-ink/65 group-hover:text-ink font-normal"
@@ -82,9 +88,9 @@ export function IndustryArchCard({
       >
         <span
           className={cn(
-            "size-2 rounded-full border transition-all duration-300 shrink-0",
+            "size-2 rounded-full border transition-[transform,background-color,border-color] duration-300 ease-expo motion-reduce:transition-none shrink-0",
             isActive
-              ? "border-ink bg-ink/75"
+              ? "border-ink bg-ink scale-110"
               : "border-ink/40 bg-transparent group-hover:border-ink/70"
           )}
         />
@@ -93,7 +99,7 @@ export function IndustryArchCard({
         </span>
       </div>
 
-      {/* Card Body */}
+      {/* Card Body with GPU-accelerated height transition */}
       <div
         style={{
           height: `${cardHeight}px`,
@@ -101,7 +107,8 @@ export function IndustryArchCard({
         }}
         className={cn(
           "relative w-full rounded-[18px] sm:rounded-[22px] overflow-hidden bg-ink/5",
-          "border border-black/[0.08] transition-all duration-500 ease-expo",
+          "border border-black/[0.08] transform-gpu will-change-[height,opacity]",
+          "transition-[height,opacity] duration-550 ease-expo motion-reduce:transition-none",
           isActive
             ? "shadow-[0_24px_50px_-12px_rgba(26,29,46,0.28)] ring-1 ring-black/10 scale-100"
             : "shadow-[0_10px_25px_-10px_rgba(26,29,46,0.12)] hover:shadow-[0_18px_36px_-10px_rgba(26,29,46,0.2)] hover:opacity-100"
@@ -112,17 +119,17 @@ export function IndustryArchCard({
           src={images.industry(industry.slug)}
           alt={industry.name}
           fill
-          sizes="(max-width: 640px) 240px, (max-width: 1024px) 260px, 290px"
-          priority={index < 3}
+          sizes="(max-width: 640px) 220px, (max-width: 1024px) 250px, 280px"
+          priority={index >= 1 && index <= 5}
           className={cn(
-            "object-cover transition-transform duration-700 ease-expo",
+            "object-cover transition-transform duration-700 ease-expo motion-reduce:transition-none",
             isActive
               ? "scale-100 group-hover:scale-105"
               : "scale-105 group-hover:scale-100"
           )}
         />
 
-        {/* Top-Right Icon Badge matching reference design */}
+        {/* Top-Right Icon Badge */}
         <button
           type="button"
           onClick={handleBadgeClick}
@@ -130,7 +137,7 @@ export function IndustryArchCard({
           className={cn(
             "absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-10 size-7 sm:size-8 rounded-[8px] sm:rounded-[10px]",
             "bg-white/95 backdrop-blur-md shadow-sm border border-black/5",
-            "flex items-center justify-center text-ink transition-all duration-300",
+            "flex items-center justify-center text-ink transition-[transform,background-color,box-shadow] duration-300 ease-expo motion-reduce:transition-none",
             "hover:scale-110 hover:bg-white hover:shadow-md cursor-pointer active:scale-95"
           )}
         >
@@ -142,7 +149,7 @@ export function IndustryArchCard({
         </button>
 
         {/* Subtle Hover Reveal Scrim for Engineering Systems */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end text-white">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-expo motion-reduce:transition-none flex flex-col justify-end text-white">
           <p className="text-[12px] text-white/90 line-clamp-2 leading-snug">
             {industry.challenge}
           </p>
@@ -160,4 +167,4 @@ export function IndustryArchCard({
       </div>
     </div>
   );
-}
+});
