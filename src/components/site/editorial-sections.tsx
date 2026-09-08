@@ -6,7 +6,6 @@ import {
   customers,
   images,
   projects,
-  strengths,
   technicalSupport,
   type Blurb,
 } from "@/data/catenate";
@@ -30,58 +29,7 @@ function BlurbGrid({ items }: { items: Blurb[] }) {
   );
 }
 
-/**
- * Numbered process-list treatment: an oversized index numeral on the left,
- * a heavy rule opening the row, and the copy split title/body across the
- * remaining two tracks.
- *
- * The numeral pins as the row scrolls past it, so it hangs beside its own
- * copy for the length of the row and is then pushed out of frame by the next
- * one. The pin needs three things together: `grid-rows-[auto_1fr]` to give
- * row two the leftover height, `self-start` so the numeral has somewhere to
- * travel inside that area, and a row tall enough to be worth pinning at all
- * — hence the min-height, which is the dial to turn if the effect wants to
- * be longer or shorter.
- */
-function StrengthRow({ index, item }: { index: number; item: Blurb }) {
-  return (
-    <Reveal
-      bare
-      className="row-fade grid gap-x-[clamp(24px,4vw,72px)] py-[clamp(24px,2.6vw,40px)] lg:min-h-[48vh] lg:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_1fr]"
-    >
-      <div
-        aria-hidden
-        className="mb-6 h-[3px] w-full bg-ink lg:col-span-2 lg:col-start-2 lg:mb-[clamp(18px,2vw,32px)]"
-      />
-      <span className="tnum block self-start text-[clamp(4.5rem,10.5vw,11rem)] leading-[0.8] font-semibold tracking-[-0.045em] lg:sticky lg:top-[calc(var(--nav-height)+clamp(24px,5vh,64px))] lg:row-start-2">
-        {String(index + 1).padStart(2, "0")}
-      </span>
-      <h3 className="mt-4 self-start text-balance text-[clamp(1.15rem,1.7vw,1.55rem)] leading-[1.15] font-medium tracking-[-0.02em] lg:row-start-2 lg:mt-0">
-        {item.title}
-      </h3>
-      <p className="mt-3 max-w-[48ch] self-start text-[15px] leading-[1.7] text-grey lg:row-start-2 lg:mt-0">
-        {item.body}
-      </p>
-    </Reveal>
-  );
-}
-
-export function StrengthsSection() {
-  return (
-    <section id="strengths" className="section bg-white">
-      <Reveal className="mb-[clamp(24px,3vw,44px)]">
-        <span className="eyebrow">Our strengths</span>
-        <h2 className="max-w-[24ch] text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
-          Eight reasons we make a difference.
-        </h2>
-      </Reveal>
-
-      {strengths.map((item, index) => (
-        <StrengthRow key={item.title} index={index} item={item} />
-      ))}
-    </section>
-  );
-}
+export { StrengthsSection } from "./strengths-section";
 
 export function TrustedBySection() {
   return (

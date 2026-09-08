@@ -450,8 +450,8 @@ export interface OrbitDotGlobeProps {
 }
 
 export function OrbitDotGlobe({
-  oceanColor = "#c4c9d4",
-  landColor = "#f3f5f8",
+  oceanColor = "#5c6374",
+  landColor = "#ffffff",
   dotSize = 1.8,
   dotDensity = 3,
   autoRotate = true,
@@ -672,7 +672,7 @@ export function OrbitDotGlobe({
             mobile ? 24 : 32
           ),
           new THREE.MeshPhongMaterial({
-            color: safeColor(oceanColor, "#c4c9d4"),
+            color: safeColor(oceanColor, "#5c6374"),
             specular: isLightOcean
               ? new THREE.Color("#dce0e8")
               : new THREE.Color("#343848"),
@@ -686,7 +686,7 @@ export function OrbitDotGlobe({
         const landPoints = new THREE.Points(
           createLandGeometry(landMask, dotDensity, mobile),
           new THREE.PointsMaterial({
-            color: safeColor(landColor, "#f3f5f8"),
+            color: safeColor(landColor, "#ffffff"),
             size: clamp(mobile ? dotSize * 1.05 : dotSize, 0.6, 4.5),
             sizeAttenuation: true,
             map: createDotTexture() ?? undefined,

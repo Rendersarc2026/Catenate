@@ -37,9 +37,9 @@ export function GlobalPresence() {
       <Reveal className="grid items-center gap-[clamp(28px,4vw,56px)] border-b border-ink/10 pb-[clamp(34px,4vw,54px)] max-lg:grid-cols-1 lg:grid-cols-[1.4fr_0.8fr]">
         <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[480px] flex items-center justify-center">
           <OrbitDotGlobe
-            oceanColor="#c4c9d4"
-            landColor="#f3f5f8"
-            dotSize={2.1}
+            oceanColor="#5c6374"
+            landColor="#ffffff"
+            dotSize={1.8}
             dotDensity={3}
             autoRotate={true}
             activeLocationIndex={activeRegion}
