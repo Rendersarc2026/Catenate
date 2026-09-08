@@ -1,59 +1,63 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
+import { Orb } from "@/components/site/orb";
 import { Reveal } from "@/components/site/reveal";
+
+/**
+ * The finder's invitation, played as one dark full-bleed beat: a ring of
+ * light behind the line, and a single way in. The ring takes the pointer —
+ * the copy over it does not — so moving across the section drags the
+ * distortion through it.
+ */
+
+/** The ground the ring is composited against, and the section's own field. */
+const FIELD = "#000000";
 
 export function SolutionsFinderTeaser() {
   return (
-    <section id="solutions-finder-teaser" className="section bg-white">
-      <Reveal>
-        <Link
-          href="/solutions-finder"
-          className="group relative flex min-h-[360px] w-full flex-col justify-between overflow-hidden rounded-block p-8 shadow-[0_12px_40px_-15px_rgba(0,0,0,0.12)] transition-all duration-500 ease-expo hover:shadow-[0_24px_60px_-12px_rgba(0,0,0,0.22)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-graphite focus-visible:ring-offset-4 sm:min-h-[420px] sm:p-12 lg:min-h-[460px] lg:p-16"
-          aria-label="Find the right solution for the job — Open Solutions Finder"
+    <section
+      id="solutions-finder-teaser"
+      className="relative isolate overflow-hidden"
+      style={{ backgroundColor: FIELD }}
+    >
+      <div
+        className="content-pad relative grid place-items-center py-[clamp(72px,9vw,128px)]"
+        style={
+          {
+            "--orb": "min(84vw, 620px)",
+            minHeight: "calc(var(--orb) + clamp(200px, 22vw, 300px))",
+          } as React.CSSProperties
+        }
+      >
+        {/* The ring. Sits under the copy and keeps the pointer to itself. */}
+        <div
+          className="absolute top-1/2 left-1/2 aspect-square -translate-x-1/2 -translate-y-1/2"
+          style={{ width: "var(--orb)" }}
         >
-          {/* Background Landscape Banner Image */}
-          <Image
-            src="/images/solutions-finder-banner.jpg"
-            alt="Misty mountain landscape"
-            fill
-            priority
-            sizes="(max-width: 1520px) 100vw, 1520px"
-            className="object-cover object-bottom transition-transform duration-700 ease-expo group-hover:scale-105"
-          />
+          <Orb hoverIntensity={0.1} rotateOnHover backgroundColor={FIELD} />
+        </div>
 
-          {/* Subtle mist scrim on left/top to guarantee crisp text readability */}
+        {/* Both are placed against the container's centre — the same centre the
+            ring is drawn around — so the line crosses the ring's middle and the
+            button clears its lower edge. */}
+        <Reveal className="pointer-events-none absolute inset-0 z-10">
+          <h2 className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-[clamp(1.65rem,4.6vw,3.5rem)] leading-[1.12] font-semibold tracking-[-0.03em] text-white text-balance lg:whitespace-nowrap">
+            Find the right solution for the job.
+          </h2>
+
           <div
-            className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent transition-opacity duration-500 group-hover:opacity-65"
-            aria-hidden="true"
-          />
-
-          {/* Editorial Content */}
-          <div className="relative z-10 max-w-[620px]">
-            <span className="eyebrow mb-3 text-ink/70">
-              Solutions Finder
-            </span>
-            <h2 className="text-[clamp(2.1rem,4.4vw,3.6rem)] font-medium leading-[1.1] tracking-[-0.025em] text-balance text-ink transition-colors duration-200 group-hover:text-graphite">
-              Find the right
-              <br />
-              solution for the job.
-            </h2>
-            <p className="mt-4 max-w-[48ch] text-[15px] leading-[1.65] text-ink/85 sm:text-[17px]">
-              Tell us what you&rsquo;re working on. We&rsquo;ll help you find the
-              right system for the application.
-            </p>
-          </div>
-
-          {/* Interactive CTA Badge */}
-          <div className="relative z-10 mt-8 flex items-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-[12px] font-semibold tracking-wide text-white uppercase transition-all duration-300 ease-expo group-hover:bg-graphite">
+            className="absolute inset-x-0 flex justify-center"
+            style={{ top: "calc(50% + var(--orb) / 2 + clamp(28px, 4vw, 60px))" }}
+          >
+            <Link
+              href="/solutions-finder"
+              className="pointer-events-auto inline-flex items-center rounded-full bg-white/8 px-6 py-2.5 text-[14px] font-medium text-white/85 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.14)] transition-colors duration-250 ease-expo hover:bg-white/14 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            >
               Launch Finder
-              <ArrowRight className="size-3.5 transition-transform duration-300 ease-expo group-hover:translate-x-1" />
-            </span>
+            </Link>
           </div>
-        </Link>
-      </Reveal>
+        </Reveal>
+      </div>
     </section>
   );
 }

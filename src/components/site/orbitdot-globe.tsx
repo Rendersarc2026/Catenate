@@ -27,18 +27,30 @@ function isMobileDevice() {
   return coarsePointer || window.innerWidth <= 767;
 }
 
+/** Answered once per page: the probe itself costs a context. */
+let webglSupport: boolean | null = null;
+
 function supportsWebGL() {
   if (typeof document === "undefined") return false;
+  if (webglSupport !== null) return webglSupport;
   try {
     const canvas = document.createElement("canvas");
-    return Boolean(
-      window.WebGLRenderingContext &&
-        (canvas.getContext("webgl") ||
-          canvas.getContext("experimental-webgl"))
-    );
+    const gl =
+      canvas.getContext("webgl") ?? canvas.getContext("experimental-webgl");
+    /*
+     * A probe context counts against the browser's small WebGL budget just
+     * like a real one, and dropping the canvas does not hand it back — so
+     * release it here. Left alone, repeated probes push the oldest live
+     * context out and blank whichever canvas was using it.
+     */
+    (gl as WebGLRenderingContext | null)
+      ?.getExtension("WEBGL_lose_context")
+      ?.loseContext();
+    webglSupport = Boolean(window.WebGLRenderingContext && gl);
   } catch {
-    return false;
+    webglSupport = false;
   }
+  return webglSupport;
 }
 
 function getSafeHttpUrl(value: string) {

@@ -20,8 +20,12 @@ import { strengths } from "@/data/catenate";
 const STEP_DEG = 13;
 /** Scroll spent on each strength past the first, in viewport heights. */
 const STEP_VH = 30;
-/** Size of the numeral at three o'clock, against its size on the rim. */
-const ACTIVE_SCALE = 2.15;
+/*
+ * The numeral is sized by its own font-size rather than by a transform. A
+ * scaled-up glyph is rasterised at its layout size and stretched, which is
+ * what made the seated numeral look soft; interpolating font-size means every
+ * numeral is rasterised at the size it is actually drawn at.
+ */
 /** Numerals stop drawing this many steps out from the active one. */
 const FALLOFF = 3.3;
 /** Share of each scroll segment spent turning rather than resting. */
@@ -142,12 +146,13 @@ export function StrengthsSection() {
 
         const glyph = glyphRefs.current[i];
         if (glyph) {
-          const scale = 1 + (ACTIVE_SCALE - 1) * seated;
           /* On the rim the numeral is centred on its dot; as it seats it
              swings clear so the dot reads as the marker and the numeral as
-             the label. */
+             the label. The percentages track the glyph's own box, so they
+             stay correct as it grows. */
           const shiftX = -50 + 50 * seated;
-          glyph.style.transform = `translate(${shiftX.toFixed(1)}%, -50%) scale(${scale.toFixed(3)})`;
+          glyph.style.fontSize = `calc(var(--numeral-rim) + (var(--numeral-seat) - var(--numeral-rim)) * ${seated.toFixed(3)})`;
+          glyph.style.transform = `translate(${shiftX.toFixed(1)}%, -50%)`;
           glyph.style.color = `rgb(26 29 46 / ${(0.11 + 0.89 * seated).toFixed(3)})`;
         }
 
@@ -247,6 +252,8 @@ export function StrengthsSection() {
               "--dial-r": "clamp(340px, 38vw, 560px)",
               /* How far the seated numeral steps off the rim. */
               "--dial-pull": "clamp(30px, 4vw, 68px)",
+              "--numeral-rim": "clamp(1.7rem, 3.1vw, 2.75rem)",
+              "--numeral-seat": "clamp(3.6rem, 6.7vw, 5.9rem)",
             } as React.CSSProperties
           }
         >
@@ -279,7 +286,7 @@ export function StrengthsSection() {
                   ref={(el) => {
                     glyphRefs.current[index] = el;
                   }}
-                  className="tnum block text-[clamp(1.7rem,3.1vw,2.75rem)] leading-none font-extrabold tracking-[-0.045em] will-change-transform"
+                  className="tnum block text-[length:var(--numeral-rim)] leading-none font-extrabold tracking-[-0.045em]"
                 >
                   {numeral(index)}
                 </span>
@@ -292,7 +299,7 @@ export function StrengthsSection() {
                   dotRefs.current[index] = el;
                 }}
                 aria-hidden
-                className="pointer-events-none absolute top-1/2 size-[5px] -translate-y-1/2 rounded-full bg-ink origin-left will-change-transform"
+                className="pointer-events-none absolute top-1/2 size-1.25 -translate-y-1/2 rounded-full bg-ink origin-left will-change-transform"
                 style={{ left: "calc(var(--dial-apex) - var(--dial-r))" }}
               />
 
