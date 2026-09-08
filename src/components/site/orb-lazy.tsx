@@ -20,7 +20,7 @@ export function OrbLazy(props: OrbProps) {
   useWarmChunk(load)
 
   return (
-    <NearViewport className="size-full">
+    <NearViewport className="size-full" whenIdle>
       <Orb {...props} />
     </NearViewport>
   )

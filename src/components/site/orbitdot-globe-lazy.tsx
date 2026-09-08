@@ -22,7 +22,7 @@ export function OrbitDotGlobeLazy(props: OrbitDotGlobeProps) {
   useWarmChunk(load)
 
   return (
-    <NearViewport className="size-full">
+    <NearViewport className="size-full" whenIdle>
       <OrbitDotGlobe {...props} />
     </NearViewport>
   )

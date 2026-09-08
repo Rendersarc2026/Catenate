@@ -5,10 +5,9 @@ import { SmoothScroll } from "@/components/site/smooth-scroll";
 import "./globals.css";
 
 /*
- * Figtree is a variable font, so naming weights explicitly fetched seven
- * separate static files — one per weight, all render-blocking-ish on first
- * paint. Omitting `weight` takes the variable file instead: one request that
- * covers the whole 300-900 range the design uses.
+ * Figtree is variable, so no weight list: one `@font-face` spanning 300-900
+ * rather than seven rules that all resolve to the same file. Next already
+ * served the variable file either way, so this is tidier CSS, not fewer bytes.
  */
 const figtree = Figtree({
   variable: "--font-figtree",

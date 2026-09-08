@@ -194,7 +194,12 @@ function PhotoFace({
             ? "(max-width: 640px) 100vw, 50vw"
             : "(max-width: 640px) 100vw, 25vw"
         }
-        priority={feature}
+        /*
+         * Not `priority`. The anchor tile is thousands of pixels down the
+         * page, so preloading it only made it race the hero for bandwidth --
+         * the browser warned that it went unused for seconds after load.
+         * Lazy is the right default this far below the fold.
+         */
         className="object-cover transition-transform duration-700 ease-expo motion-reduce:transition-none scale-[1.04] group-hover:scale-100"
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 via-60% to-transparent" />
