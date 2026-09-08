@@ -2,7 +2,8 @@
 
 import * as React from "react"
 
-import { OrbitDotGlobe, type GlobeLocation } from "@/components/site/orbitdot-globe"
+import type { GlobeLocation } from "@/components/site/orbitdot-globe"
+import { OrbitDotGlobeLazy } from "@/components/site/orbitdot-globe-lazy"
 import { Reveal } from "@/components/site/reveal"
 import { industries, presence, regions } from "@/data/catenate"
 import { cn } from "@/lib/utils"
@@ -36,7 +37,7 @@ export function GlobalPresence() {
 
       <Reveal className="grid items-center gap-[clamp(28px,4vw,56px)] border-b border-ink/10 pb-[clamp(34px,4vw,54px)] max-lg:grid-cols-1 lg:grid-cols-[1.4fr_0.8fr]">
         <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[480px] flex items-center justify-center">
-          <OrbitDotGlobe
+          <OrbitDotGlobeLazy
             oceanColor="#5c6374"
             landColor="#ffffff"
             dotSize={1.8}

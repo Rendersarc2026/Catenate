@@ -22,47 +22,67 @@ export function SiteHeader() {
   const lastScrollYRef = React.useRef(0)
 
   React.useEffect(() => {
-    lastScrollYRef.current = typeof window !== "undefined" ? window.scrollY : 0
+    lastScrollYRef.current = window.scrollY
 
-    const onScroll = () => {
+    /*
+     * The hero's height only changes when the page is laid out again, so it is
+     * measured on resize rather than on scroll. Reading `offsetTop`/
+     * `offsetHeight` from inside the scroll handler forced the browser to
+     * flush layout on every single scroll event — on a smooth-scrolled page
+     * that is every frame, for a number that had not moved.
+     */
+    let heroBottom = 600
+
+    const measure = () => {
+      if (!hasHero) return
+      const heroEl = document.getElementById("hero")
+      heroBottom = heroEl
+        ? heroEl.offsetTop + heroEl.offsetHeight - 90
+        : 600
+    }
+
+    const read = () => {
       const currentScrollY = window.scrollY
+
       setScrolled(currentScrollY > 30)
+      setPastHero(hasHero ? currentScrollY >= heroBottom : true)
 
-      if (hasHero) {
-        const heroEl = document.getElementById("hero")
-        if (heroEl) {
-          const heroBottom = heroEl.offsetTop + heroEl.offsetHeight - 90
-          setPastHero(currentScrollY >= heroBottom)
-        } else {
-          setPastHero(currentScrollY > 600)
-        }
-      } else {
-        setPastHero(true)
-      }
-
-      // Hide when scrolling down, show when scrolling up
+      // Hide when scrolling down, show when scrolling up.
       const diff = currentScrollY - lastScrollYRef.current
-
       if (currentScrollY <= 40) {
-        // At the very top: always visible
         setVisible(true)
       } else if (diff > 8 && currentScrollY > 90) {
-        // Scrolling down past 90px threshold: hide header with animation
         setVisible(false)
       } else if (diff < -6) {
-        // Scrolling up: reveal header smoothly
         setVisible(true)
       }
 
       lastScrollYRef.current = currentScrollY
     }
 
-    onScroll()
+    /* One read per frame, however many scroll events the frame delivers. */
+    let frame: number | null = null
+    const onScroll = () => {
+      if (frame !== null) return
+      frame = requestAnimationFrame(() => {
+        frame = null
+        read()
+      })
+    }
+
+    const onResize = () => {
+      measure()
+      onScroll()
+    }
+
+    measure()
+    read()
     window.addEventListener("scroll", onScroll, { passive: true })
-    window.addEventListener("resize", onScroll, { passive: true })
+    window.addEventListener("resize", onResize, { passive: true })
     return () => {
       window.removeEventListener("scroll", onScroll)
-      window.removeEventListener("resize", onScroll)
+      window.removeEventListener("resize", onResize)
+      if (frame !== null) cancelAnimationFrame(frame)
     }
   }, [hasHero])
 

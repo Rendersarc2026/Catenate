@@ -4,10 +4,15 @@ import { Figtree } from "next/font/google";
 import { SmoothScroll } from "@/components/site/smooth-scroll";
 import "./globals.css";
 
+/*
+ * Figtree is a variable font, so naming weights explicitly fetched seven
+ * separate static files — one per weight, all render-blocking-ish on first
+ * paint. Omitting `weight` takes the variable file instead: one request that
+ * covers the whole 300-900 range the design uses.
+ */
 const figtree = Figtree({
   variable: "--font-figtree",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Orb } from "@/components/site/orb";
+import { OrbLazy } from "@/components/site/orb-lazy";
 import { Reveal } from "@/components/site/reveal";
 
 /**
@@ -34,7 +34,7 @@ export function SolutionsFinderTeaser() {
           className="absolute top-1/2 left-1/2 aspect-square -translate-x-1/2 -translate-y-1/2"
           style={{ width: "var(--orb)" }}
         >
-          <Orb hoverIntensity={0.1} rotateOnHover backgroundColor={FIELD} />
+          <OrbLazy hoverIntensity={0.1} rotateOnHover backgroundColor={FIELD} />
         </div>
 
         {/* Both are placed against the container's centre — the same centre the

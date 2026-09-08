@@ -2,6 +2,9 @@
 
 import * as React from "react"
 
+import { createScrollTrack } from "@/lib/scroll-track"
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
+
 /** Share of the scroll track spent growing to full screen. */
 const GROW_END = 0.45
 /** Share of the scroll track spent held at full screen (the "hold" beat). */
@@ -56,19 +59,6 @@ const LINE_2_PARSED = parseLine(
 )
 const TOTAL_CHARS = LINE_2_PARSED.nextIndex
 
-function usePrefersReducedMotion() {
-  const subscribe = React.useCallback((callback: () => void) => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
-    mq.addEventListener("change", callback)
-    return () => mq.removeEventListener("change", callback)
-  }, [])
-
-  const getSnapshot = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  const getServerSnapshot = () => false
-
-  return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
-}
-
 /** 0 → 1 → 0 across the track, with the middle stretch held at 1. */
 function phase(p: number) {
   if (p < GROW_END) return p / GROW_END
@@ -104,17 +94,6 @@ export function HeroStatement() {
 
     letterProgressRef.current = new Float32Array(TOTAL_CHARS).fill(-1)
 
-    let currentProgress = 0
-    let targetProgress = 0
-    let animFrame: number | null = null
-
-    const calculateProgress = () => {
-      const rect = track.getBoundingClientRect()
-      const totalScrollable = rect.height - window.innerHeight
-      if (totalScrollable <= 0) return 0
-      return Math.min(Math.max(-rect.top / totalScrollable, 0), 1)
-    }
-
     /** Cap the zoom so the nowrap lines never run past the viewport edges. */
     const maxScale = () => {
       const natural = contentRef.current?.offsetWidth ?? 0
@@ -122,112 +101,104 @@ export function HeroStatement() {
       return Math.min(MAX_SCALE, (window.innerWidth * 0.92) / natural)
     }
 
-    let scaleCeiling = MAX_SCALE
+    let scaleCeiling = maxScale()
+    let viewportW = window.innerWidth
+    let viewportH = window.innerHeight
+    /*
+     * Where the wavefront sat on the previous frame. Only letters between the
+     * old and the new cursor can have changed, so the reveal touches the few
+     * glyphs actually moving instead of restyling all of them every frame.
+     */
+    let paintedCursor = 0
 
-    const updateStyles = (p: number) => {
+    const onResize = () => {
+      viewportW = window.innerWidth
+      viewportH = window.innerHeight
+      scaleCeiling = maxScale()
+    }
+    window.addEventListener("resize", onResize, { passive: true })
+
+    const paint = (p: number) => {
       const e = ease(phase(p))
 
-      // 1. Calculate resting 16:9 widescreen dimensions
-      const restingW = Math.min(1240, window.innerWidth * 0.88)
+      // 1. Resting 16:9 widescreen dimensions.
+      const restingW = Math.min(1240, viewportW * 0.88)
       const idealH = restingW * (9 / 16)
-      const restingH = Math.max(Math.min(idealH, window.innerHeight * 0.7), 240)
+      const restingH = Math.max(Math.min(idealH, viewportH * 0.7), 240)
 
-      const restingInsetX = Math.max(0, (window.innerWidth - restingW) / 2)
-      const restingInsetY = Math.max(0, (window.innerHeight - restingH) / 2)
+      const insetX = ((1 - e) * Math.max(0, (viewportW - restingW) / 2)).toFixed(1)
+      const insetY = ((1 - e) * Math.max(0, (viewportH - restingH) / 2)).toFixed(1)
+      const radius = ((1 - e) * 24).toFixed(1)
 
-      const currentInsetX = (1 - e) * restingInsetX
-      const currentInsetY = (1 - e) * restingInsetY
-      const currentRadius = (1 - e) * 24
-
-      // 2. Black widescreen panel expansion
+      /*
+       * 2. The panel grows by clip, not by box. Animating `inset` moved the
+       * element's own geometry, so every frame of the expansion cost a layout
+       * pass; a clip-path on a panel that is already full-bleed is resolved
+       * during paint and looks identical.
+       */
       if (panelRef.current) {
-        panelRef.current.style.inset = `${currentInsetY.toFixed(1)}px ${currentInsetX.toFixed(1)}px`
-        panelRef.current.style.borderRadius = `${currentRadius.toFixed(1)}px`
+        panelRef.current.style.clipPath = `inset(${insetY}px ${insetX}px round ${radius}px)`
       }
 
-      // 3. Typography container scale & exit fade
+      // 3. Typography container scale and exit fade.
       const exitP = p > 0.82 ? Math.min((p - 0.82) / 0.18, 1) : 0
-      const exitFade = 1 - ease(exitP)
-
       if (contentRef.current) {
         const scale = 1 + (scaleCeiling - 1) * e
         contentRef.current.style.transform = `scale(${scale.toFixed(4)})`
-        contentRef.current.style.opacity = exitFade.toFixed(3)
+        contentRef.current.style.opacity = (1 - ease(exitP)).toFixed(3)
       }
 
-      // 4. Letter-by-letter left-to-right reveal with subtle glowing wavefront
+      // 4. Letter-by-letter reveal with a glowing wavefront.
       const r = Math.min(Math.max((p - REVEAL_START) / (REVEAL_END - REVEAL_START), 0), 1)
       const cursor = r * TOTAL_CHARS
+      const prev = letterProgressRef.current
+      if (!prev) return
 
-      if (letterProgressRef.current) {
-        const prev = letterProgressRef.current
-        for (let i = 0; i < TOTAL_CHARS; i++) {
-          const el = letterRefs.current[i]
-          if (!el) continue
+      /*
+       * A letter's state is a clamped function of `cursor - i`, so anything
+       * outside the swept band is already at the value it should hold. The
+       * bounds widen by one either side to catch the glyphs the band just
+       * crossed and settle them at their end state.
+       */
+      const from = Math.max(0, Math.floor(Math.min(cursor, paintedCursor) - FADE_WINDOW) - 1)
+      const to = Math.min(TOTAL_CHARS - 1, Math.ceil(Math.max(cursor, paintedCursor)) + 1)
+      paintedCursor = cursor
 
-          const diff = cursor - i
-          const localProgress = Math.min(Math.max(diff / FADE_WINDOW, 0), 1)
+      for (let i = from; i <= to; i++) {
+        const el = letterRefs.current[i]
+        if (!el) continue
 
-          if (Math.abs(localProgress - prev[i]) < 0.005) continue
-          prev[i] = localProgress
+        const localProgress = Math.min(Math.max((cursor - i) / FADE_WINDOW, 0), 1)
+        if (Math.abs(localProgress - prev[i]) < 0.005) continue
+        prev[i] = localProgress
 
-          if (localProgress <= 0) {
-            el.style.opacity = "0.2"
-            el.style.color = "rgba(255, 255, 255, 0.2)"
-            el.style.textShadow = "none"
-          } else if (localProgress >= 1) {
-            el.style.opacity = "1"
-            el.style.color = "#ffffff"
-            el.style.textShadow = "0 0 1px rgba(255, 255, 255, 0.4)"
+        if (localProgress <= 0) {
+          el.style.opacity = "0.2"
+          el.style.color = "rgba(255, 255, 255, 0.2)"
+          el.style.textShadow = "none"
+        } else if (localProgress >= 1) {
+          el.style.opacity = "1"
+          el.style.color = "#ffffff"
+          el.style.textShadow = "0 0 1px rgba(255, 255, 255, 0.4)"
+        } else {
+          const opacity = 0.2 + 0.8 * localProgress
+          const glow = Math.sin(localProgress * Math.PI)
+          el.style.opacity = opacity.toFixed(3)
+          el.style.color = `rgba(255, 255, 255, ${opacity.toFixed(3)})`
+          if (glow > 0.05) {
+            el.style.textShadow = `0 0 ${(10 * glow).toFixed(1)}px rgba(255, 255, 255, ${(0.85 * glow).toFixed(2)}), 0 0 ${(22 * glow).toFixed(1)}px rgba(255, 255, 255, ${(0.45 * glow).toFixed(2)})`
           } else {
-            const opacity = 0.2 + 0.8 * localProgress
-            const glow = Math.sin(localProgress * Math.PI)
-            el.style.opacity = opacity.toFixed(3)
-            el.style.color = `rgba(255, 255, 255, ${opacity.toFixed(3)})`
-            if (glow > 0.05) {
-              el.style.textShadow = `0 0 ${(10 * glow).toFixed(1)}px rgba(255, 255, 255, ${(0.85 * glow).toFixed(2)}), 0 0 ${(22 * glow).toFixed(1)}px rgba(255, 255, 255, ${(0.45 * glow).toFixed(2)})`
-            } else {
-              el.style.textShadow = "none"
-            }
+            el.style.textShadow = "none"
           }
         }
       }
     }
 
-    const tick = () => {
-      currentProgress += (targetProgress - currentProgress) * 0.14
-      updateStyles(currentProgress)
-      if (Math.abs(targetProgress - currentProgress) > 0.0005) {
-        animFrame = requestAnimationFrame(tick)
-      } else {
-        currentProgress = targetProgress
-        updateStyles(targetProgress)
-        animFrame = null
-      }
-    }
-
-    const onScroll = () => {
-      targetProgress = calculateProgress()
-      if (animFrame === null) animFrame = requestAnimationFrame(tick)
-    }
-
-    const onResize = () => {
-      scaleCeiling = maxScale()
-      onScroll()
-    }
-
-    scaleCeiling = maxScale()
-    targetProgress = calculateProgress()
-    currentProgress = targetProgress
-    updateStyles(targetProgress)
-
-    window.addEventListener("scroll", onScroll, { passive: true })
-    window.addEventListener("resize", onResize, { passive: true })
+    const stop = createScrollTrack({ element: track, paint })
 
     return () => {
-      window.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onResize)
-      if (animFrame !== null) cancelAnimationFrame(animFrame)
+      stop()
     }
   }, [reducedMotion])
 
@@ -256,11 +227,14 @@ export function HeroStatement() {
       ref={trackRef}
       className="relative bg-white border-b border-ink/8 min-h-[220vh] sm:min-h-[260vh]"
     >
-      <div className="sticky top-0 flex h-screen h-dvh w-full items-center justify-center overflow-hidden content-pad">
+      <div className="sticky top-0 flex h-screen h-dvh w-full items-center justify-center overflow-hidden [contain:layout_paint] content-pad">
         {/* Backing Widescreen 16:9 Black Box that expands on scroll */}
         <div
           ref={panelRef}
-          className="absolute bg-black will-change-[inset,border-radius] shadow-[0_25px_65px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
+          /* Collapsed until the first paint sizes it, so the full-bleed box
+             never flashes between hydration and the opening frame. */
+          style={{ clipPath: "inset(50% round 24px)" }}
+          className="absolute inset-0 bg-black will-change-[clip-path] shadow-[0_25px_65px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
           aria-hidden="true"
         />
 
@@ -289,7 +263,7 @@ export function HeroStatement() {
                           ref={(el) => {
                             letterRefs.current[item.globalIndex] = el
                           }}
-                          className="inline-block align-baseline will-change-[color,opacity,text-shadow]"
+                          className="inline-block align-baseline"
                           style={{
                             color: "rgba(255, 255, 255, 0.2)",
                             opacity: 0.2,
@@ -315,7 +289,7 @@ export function HeroStatement() {
                           ref={(el) => {
                             letterRefs.current[item.globalIndex] = el
                           }}
-                          className="inline-block align-baseline will-change-[color,opacity,text-shadow]"
+                          className="inline-block align-baseline"
                           style={{
                             color: "rgba(255, 255, 255, 0.2)",
                             opacity: 0.2,

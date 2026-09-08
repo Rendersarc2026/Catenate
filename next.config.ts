@@ -2,11 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Placeholder photography. Replace with the real asset host.
     remotePatterns: [
-      // Placeholder photography. Replace with the real asset host.
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "https", hostname: "fastly.picsum.photos" },
     ],
+    // Modern formats first; the site's photography is all large and decorative.
+    formats: ["image/avif", "image/webp"],
+  },
+  experimental: {
+    /*
+     * Rewrites barrel imports to deep ones so a single icon does not pull the
+     * whole set through the bundler.
+     */
+    optimizePackageImports: ["lucide-react", "@base-ui/react"],
   },
 };
 

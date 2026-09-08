@@ -2,6 +2,9 @@
 
 import * as React from "react"
 
+import { createScrollTrack } from "@/lib/scroll-track"
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
+
 import { DistributorWall } from "./what-we-do/distributor-wall"
 
 /*
@@ -38,20 +41,6 @@ const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 /** easeInOutCubic — for smooth cinematic sweeps. */
 const easeInOut = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
-
-function usePrefersReducedMotion() {
-  const subscribe = React.useCallback((callback: () => void) => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
-    mq.addEventListener("change", callback)
-    return () => mq.removeEventListener("change", callback)
-  }, [])
-
-  return React.useSyncExternalStore(
-    subscribe,
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    () => false
-  )
-}
 
 /* ------------------------------------------------------------------ *
  * Beat one — the statement
@@ -121,17 +110,7 @@ export function WhatWeDo() {
     const track = trackRef.current
     if (!track) return
 
-    let current = 0
-    let target = 0
-    let frame: number | null = null
     let live = false
-
-    const progress = () => {
-      const rect = track.getBoundingClientRect()
-      const scrollable = rect.height - window.innerHeight
-      if (scrollable <= 0) return 0
-      return clamp01(-rect.top / scrollable)
-    }
 
     const paint = (p: number) => {
       // 1. Statement leaves (drifts slightly left and fades)
@@ -142,21 +121,20 @@ export function WhatWeDo() {
         introRef.current.style.visibility = leaving >= 1 ? "hidden" : "visible"
       }
 
-      // 2. "Authorised Distributor of" comes in from the right side with animation
+      // 2. "Authorised Distributor of" comes in from the right side
       const leadArriving = easeOut(clamp01((p - LEAD_START) / (LEAD_REACHED - LEAD_START)))
-      const leadLeaving = easeInOut(clamp01((p - WALL_START) / (WALL_END - WALL_START)))
+      const wallAcross = easeInOut(clamp01((p - WALL_START) / (WALL_END - WALL_START)))
 
       if (leadRef.current) {
         const slideX = (1 - leadArriving) * 100
-        const pushX = -48 * leadLeaving
+        const pushX = -48 * wallAcross
         leadRef.current.style.transform = `translate3d(${slideX.toFixed(2)}%, 0, 0) translate3d(${pushX.toFixed(1)}px, 0, 0)`
-        leadRef.current.style.opacity = (leadArriving * (1 - 0.5 * leadLeaving)).toFixed(3)
+        leadRef.current.style.opacity = (leadArriving * (1 - 0.5 * wallAcross)).toFixed(3)
         leadRef.current.style.visibility =
-          leadArriving <= 0 || leadLeaving >= 1 ? "hidden" : "visible"
+          leadArriving <= 0 || wallAcross >= 1 ? "hidden" : "visible"
       }
 
-      // 3. The 5 distributors come after "Authorised Distributor of" has reached
-      const wallAcross = easeInOut(clamp01((p - WALL_START) / (WALL_END - WALL_START)))
+      // 3. The wall sweeps across once the lead has arrived.
       wipeRef.current?.style.setProperty("--wall-in", wallAcross.toFixed(4))
 
       // 4. Settled check for pointer interactions
@@ -167,30 +145,7 @@ export function WhatWeDo() {
       }
     }
 
-    const tick = () => {
-      current += (target - current) * 0.16
-      if (Math.abs(target - current) < 0.0005) current = target
-      paint(current)
-      frame = current === target ? null : requestAnimationFrame(tick)
-    }
-
-    const onScroll = () => {
-      target = progress()
-      if (frame === null) frame = requestAnimationFrame(tick)
-    }
-
-    target = progress()
-    current = target
-    paint(current)
-
-    window.addEventListener("scroll", onScroll, { passive: true })
-    window.addEventListener("resize", onScroll, { passive: true })
-
-    return () => {
-      window.removeEventListener("scroll", onScroll)
-      window.removeEventListener("resize", onScroll)
-      if (frame !== null) cancelAnimationFrame(frame)
-    }
+    return createScrollTrack({ element: track, paint, smoothing: 0.096 })
   }, [reducedMotion])
 
   if (reducedMotion) {
@@ -215,7 +170,7 @@ export function WhatWeDo() {
       id="what-we-do"
       className="relative min-h-[380vh] bg-white"
     >
-      <div className="sticky top-0 h-dvh w-full overflow-hidden">
+      <div className="sticky top-0 h-dvh w-full overflow-hidden [contain:layout_paint]">
         {/* Beat one: What we do statement */}
         <div
           ref={introRef}

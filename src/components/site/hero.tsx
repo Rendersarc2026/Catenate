@@ -3,6 +3,8 @@
 import * as React from "react"
 import { ArrowButton } from "@/components/site/arrow-button"
 import { hero } from "@/data/catenate"
+import { createScrollTrack } from "@/lib/scroll-track"
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
 
 /** Peak translation of the mouse parallax layer, in px. */
 const PARALLAX_X = 14
@@ -21,19 +23,6 @@ const STARS = [
   { x: 78, y: 68, size: 2, delay: "0.3s", duration: "4.0s" },
   { x: 88, y: 80, size: 1.5, delay: "1.9s", duration: "3.4s" },
 ]
-
-function usePrefersReducedMotion() {
-  const subscribe = React.useCallback((callback: () => void) => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
-    mq.addEventListener("change", callback)
-    return () => mq.removeEventListener("change", callback)
-  }, [])
-
-  const getSnapshot = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  const getServerSnapshot = () => false
-
-  return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
-}
 
 export function Hero() {
   const [ready, setReady] = React.useState(false)
@@ -111,15 +100,14 @@ export function Hero() {
     }
   }, [reducedMotion])
 
-  // Scroll-driven sticky cinematic banner reveal with paced, smooth scroll dampening
+  // Scroll-driven sticky cinematic banner reveal, paced by the shared engine.
   React.useEffect(() => {
     if (reducedMotion) {
       if (bannerContainerRef.current) {
         bannerContainerRef.current.style.opacity = "1"
         bannerContainerRef.current.style.transform = "none"
         bannerContainerRef.current.style.visibility = "visible"
-        bannerContainerRef.current.style.borderRadius = "0px"
-        bannerContainerRef.current.style.padding = "0px"
+        bannerContainerRef.current.style.clipPath = "none"
       }
       if (contentRef.current) {
         contentRef.current.style.opacity = "1"
@@ -144,114 +132,78 @@ export function Hero() {
     const container = containerRef.current
     if (!container) return
 
-    let currentProgress = 0
-    let targetProgress = 0
-    let animFrame: number | null = null
+    /* Set once, rather than rewritten on every frame alongside the rest. */
+    if (wordmarkRef.current) wordmarkRef.current.style.pointerEvents = "none"
 
-    const calculateProgress = () => {
-      const rect = container.getBoundingClientRect()
-      const totalScrollable = rect.height - window.innerHeight
-      if (totalScrollable <= 0) return 0
-      const currentScroll = -rect.top
-      return Math.min(Math.max(currentScroll / totalScrollable, 0), 1)
-    }
+    /* Blurring the wordmark rasterises it afresh each frame, so hold the last
+       value and only rewrite it when it has actually moved a visible amount. */
+    let paintedBlur = -1
 
-    const updateStyles = (p: number) => {
-      // 1. Landing CATENATE Wordmark (visible only on landing, fades out smoothly on scroll)
+    const paint = (p: number) => {
+      // 1. Landing CATENATE wordmark — fades out on the first scroll.
       if (wordmarkRef.current) {
         const wmOpacity = Math.max(0, 1 - p * 3.2)
-        const wmScale = 1 + p * 0.12
-        const wmTranslateY = -p * 45
-        const wmBlur = p * 12
+        const hidden = wmOpacity <= 0.001
         wordmarkRef.current.style.opacity = wmOpacity.toFixed(3)
-        wordmarkRef.current.style.transform = `translate3d(0, ${wmTranslateY.toFixed(1)}px, 0) scale(${wmScale.toFixed(3)})`
-        wordmarkRef.current.style.filter = `blur(${wmBlur.toFixed(1)}px)`
-        wordmarkRef.current.style.pointerEvents = "none"
-        wordmarkRef.current.style.visibility = wmOpacity <= 0.001 ? "hidden" : "visible"
+        wordmarkRef.current.style.transform = `translate3d(0, ${(-p * 45).toFixed(1)}px, 0) scale(${(1 + p * 0.12).toFixed(3)})`
+        wordmarkRef.current.style.visibility = hidden ? "hidden" : "visible"
+        if (!hidden) {
+          const wmBlur = p * 12
+          if (Math.abs(wmBlur - paintedBlur) > 0.15) {
+            paintedBlur = wmBlur
+            wordmarkRef.current.style.filter = `blur(${wmBlur.toFixed(1)}px)`
+          }
+        }
       }
 
-      // 2. Landing Scroll Cue (fades out gracefully on first scroll)
+      // 2. Landing scroll cue.
       if (landingScrollCueRef.current) {
         const scOpacity = Math.max(0, 1 - p * 5.0)
-        const scTranslateY = p * 20
         landingScrollCueRef.current.style.opacity = scOpacity.toFixed(3)
-        landingScrollCueRef.current.style.transform = `translate3d(0, ${scTranslateY.toFixed(1)}px, 0)`
+        landingScrollCueRef.current.style.transform = `translate3d(0, ${(p * 20).toFixed(1)}px, 0)`
         landingScrollCueRef.current.style.visibility = scOpacity <= 0.001 ? "hidden" : "visible"
       }
 
-      // 3. Expanding Earth Banner Visual (reveals smoothly on scroll)
+      const bP = Math.min(Math.max((p - 0.08) / 0.62, 0), 1)
+
+      // 3. Expanding banner. The inset and the corner rounding ride on one
+      //    `clip-path` rather than on `padding` and `border-radius`: those two
+      //    relaid the banner out on every frame of the reveal, where a clip is
+      //    settled during paint and never touches layout at all.
       if (bannerContainerRef.current) {
-        const bP = Math.min(Math.max((p - 0.08) / 0.62, 0), 1)
         const bannerScale = 0.88 + bP * 0.12 + (p > 0.7 ? (p - 0.7) * 0.04 : 0)
-        const bannerOpacity = bP
         const bannerRadius = Math.max(0, 36 * (1 - bP))
-        const bannerTranslateY = (1 - bP) * 50
         const bannerInset = Math.max(0, (1 - bP) * 24)
 
-        bannerContainerRef.current.style.transform = `translate3d(0, ${bannerTranslateY.toFixed(1)}px, 0) scale(${bannerScale.toFixed(3)})`
-        bannerContainerRef.current.style.opacity = bannerOpacity.toFixed(3)
-        bannerContainerRef.current.style.borderRadius = `${bannerRadius.toFixed(1)}px`
-        bannerContainerRef.current.style.padding = `${bannerInset.toFixed(1)}px`
-        bannerContainerRef.current.style.visibility = bannerOpacity <= 0.001 ? "hidden" : "visible"
+        bannerContainerRef.current.style.transform = `translate3d(0, ${((1 - bP) * 50).toFixed(1)}px, 0) scale(${bannerScale.toFixed(3)})`
+        bannerContainerRef.current.style.opacity = bP.toFixed(3)
+        bannerContainerRef.current.style.clipPath = `inset(${bannerInset.toFixed(1)}px round ${bannerRadius.toFixed(1)}px)`
+        bannerContainerRef.current.style.visibility = bP <= 0.001 ? "hidden" : "visible"
       }
 
       if (bannerInnerRef.current) {
-        const bP = Math.min(Math.max((p - 0.08) / 0.62, 0), 1)
-        const innerScale = 1.14 - bP * 0.14
-        bannerInnerRef.current.style.transform = `scale(${innerScale.toFixed(3)})`
+        bannerInnerRef.current.style.transform = `scale(${(1.14 - bP * 0.14).toFixed(3)})`
       }
 
-      // 4. Foreground Headline & Buttons (reveals smoothly on scroll)
+      // 4. Foreground headline and buttons.
       if (contentRef.current) {
         const cP = Math.min(Math.max((p - 0.22) / 0.52, 0), 1)
-        const contentTranslateY = (1 - cP) * 35
         contentRef.current.style.opacity = cP.toFixed(3)
-        contentRef.current.style.transform = `translate3d(0, ${contentTranslateY.toFixed(1)}px, 0)`
+        contentRef.current.style.transform = `translate3d(0, ${((1 - cP) * 35).toFixed(1)}px, 0)`
         contentRef.current.style.pointerEvents = cP > 0.6 ? "auto" : "none"
         contentRef.current.style.visibility = cP <= 0.001 ? "hidden" : "visible"
       }
 
-      // 5. Stats Row along bottom (reveals smoothly on scroll)
+      // 5. Stats row along the bottom.
       if (statsRef.current) {
         const sP = Math.min(Math.max((p - 0.32) / 0.52, 0), 1)
-        const statsTranslateY = (1 - sP) * 30
         statsRef.current.style.opacity = sP.toFixed(3)
-        statsRef.current.style.transform = `translate3d(0, ${statsTranslateY.toFixed(1)}px, 0)`
+        statsRef.current.style.transform = `translate3d(0, ${((1 - sP) * 30).toFixed(1)}px, 0)`
         statsRef.current.style.visibility = sP <= 0.001 ? "hidden" : "visible"
       }
     }
 
-    const tick = () => {
-      currentProgress += (targetProgress - currentProgress) * 0.14
-      updateStyles(currentProgress)
-      if (Math.abs(targetProgress - currentProgress) > 0.0005) {
-        animFrame = requestAnimationFrame(tick)
-      } else {
-        currentProgress = targetProgress
-        updateStyles(targetProgress)
-        animFrame = null
-      }
-    }
-
-    const onScroll = () => {
-      targetProgress = calculateProgress()
-      if (animFrame === null) {
-        animFrame = requestAnimationFrame(tick)
-      }
-    }
-
-    targetProgress = calculateProgress()
-    currentProgress = targetProgress
-    updateStyles(targetProgress)
-
-    window.addEventListener("scroll", onScroll, { passive: true })
-    window.addEventListener("resize", onScroll, { passive: true })
-
-    return () => {
-      window.removeEventListener("scroll", onScroll)
-      window.removeEventListener("resize", onScroll)
-      if (animFrame !== null) cancelAnimationFrame(animFrame)
-    }
+    return createScrollTrack({ element: container, paint })
   }, [reducedMotion])
 
   return (
@@ -266,7 +218,7 @@ export function Hero() {
       }`}
     >
       {/* Sticky Hero Viewport */}
-      <div className="sticky top-0 h-screen h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center text-white bg-black pt-[100px] pb-6 sm:pt-[110px] sm:pb-8 content-pad select-none">
+      <div className="sticky top-0 h-screen h-dvh w-full overflow-hidden [contain:layout_paint] flex flex-col justify-between items-center text-center text-white bg-black pt-[100px] pb-6 sm:pt-[110px] sm:pb-8 content-pad select-none">
         {/* Ambient background glow & starfield */}
         <div
           className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_50%_40%,rgba(44,48,63,0.45),transparent_70%)] animate-[hero-glow-pulse_8s_ease-in-out_infinite]"

@@ -84,13 +84,22 @@ export function IndustryCollage({
           )}
         >
           {industries.map((industry, index) => (
-            <BentoTile
+            <div
               key={industry.slug}
-              industry={industry}
-              index={index}
-              shape={shapes[index]}
-              onOpenDetail={onOpenDetail}
-            />
+              style={{
+                gridColumn: shapes[index].col,
+                gridRow: shapes[index].row,
+                animationDelay: `${index * 45}ms`,
+              }}
+              className="bento-tile-enter flex min-h-0 min-w-0"
+            >
+              <BentoTile
+                industry={industry}
+                index={index}
+                shape={shapes[index]}
+                onOpenDetail={onOpenDetail}
+              />
+            </div>
           ))}
         </div>
       </div>
@@ -128,20 +137,21 @@ const BentoTile = React.memo(function BentoTile({
       onClick={handleOpen}
       aria-label={`${industry.name} — open full specification`}
       className={cn(
-        "group relative isolate overflow-hidden rounded-[clamp(14px,1.4vw,22px)] text-left outline-none",
+        "group relative isolate size-full overflow-hidden rounded-[clamp(14px,1.4vw,22px)] text-left outline-none",
         "transition-[transform,box-shadow] duration-500 ease-expo motion-reduce:transition-none",
         "hover:z-10 hover:-translate-y-0.5 cursor-pointer",
         "focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black",
-        // Sleek obsidian panels on black
+        // Sleek obsidian panels on black. The panels are translucent but not
+        // blurred: the section behind them is a flat black, so a backdrop blur
+        // resolved to the colour it started from while still costing a
+        // backdrop snapshot and a blur pass per tile.
         face === "flat" &&
-          "bg-[#11131a] ring-1 ring-inset ring-white/15 hover:ring-white/30 supports-backdrop-filter:bg-neutral-900/80 supports-backdrop-filter:backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
+          "bg-[#11131a] ring-1 ring-inset ring-white/15 hover:ring-white/30 supports-backdrop-filter:bg-neutral-900/80 shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
         face === "accent" &&
-          "bg-[#0d0f14] ring-1 ring-inset ring-white/10 hover:ring-white/25 supports-backdrop-filter:bg-neutral-950/70 supports-backdrop-filter:backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
+          "bg-[#0d0f14] ring-1 ring-inset ring-white/10 hover:ring-white/25 supports-backdrop-filter:bg-neutral-950/70 shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
         face === "photo" && "bg-black ring-1 ring-inset ring-white/10 hover:ring-white/20",
       )}
       style={{
-        gridColumn: shape.col,
-        gridRow: shape.row,
         // Isolates each tile's rendering; blurred backdrops are expensive to
         // repaint, so keep their work from spilling into the rest of the grid.
         contain: "layout style paint",

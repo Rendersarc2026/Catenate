@@ -12,14 +12,22 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     if (prefersReducedMotion) return
 
+    /*
+     * `lerp` rather than `duration`: duration mode replays a fixed 1.4s easing
+     * curve from wherever the last wheel event landed, so a run of events
+     * restarts the curve over and over and the page arrives late and floaty.
+     * Lerp mode chases a moving target and is scaled by real elapsed time, so
+     * it tracks the wheel closely and behaves the same at 60Hz and 144Hz.
+     */
     const lenis = new Lenis({
-      duration: 1.4,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.12,
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 0.9,
       touchMultiplier: 1.2,
+      /* Touch devices already scroll smoothly, and doubling it up adds lag. */
+      syncTouch: false,
       infinite: false,
     })
 
@@ -43,14 +51,14 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         const el = document.querySelector(href)
         if (el) {
           e.preventDefault()
-          lenis.scrollTo(el as HTMLElement, { offset: -80, duration: 1.6 })
+          lenis.scrollTo(el as HTMLElement, { offset: -80, duration: 1.1 })
         }
       } else if (href.startsWith("/#") && window.location.pathname === "/") {
         const hash = href.substring(1)
         const el = document.querySelector(hash)
         if (el) {
           e.preventDefault()
-          lenis.scrollTo(el as HTMLElement, { offset: -80, duration: 1.6 })
+          lenis.scrollTo(el as HTMLElement, { offset: -80, duration: 1.1 })
         }
       }
     }

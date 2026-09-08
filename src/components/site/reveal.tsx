@@ -17,6 +17,42 @@ type RevealProps = React.ComponentProps<"div"> & {
   bare?: boolean
 }
 
+type Entry = { stagger: boolean; step: number; show: () => void }
+
+/*
+ * Every Reveal on the page shares one IntersectionObserver. Twenty-odd blocks
+ * used to mean twenty-odd observers, each with its own callback and its own
+ * set of tracked rects for the browser to keep in step. One observer watching
+ * twenty targets is a single intersection pass.
+ */
+const entries = new WeakMap<Element, Entry>()
+let observer: IntersectionObserver | null = null
+
+function shared() {
+  if (observer) return observer
+  observer = new IntersectionObserver(
+    (records) => {
+      for (const record of records) {
+        if (!record.isIntersecting) continue
+        const entry = entries.get(record.target)
+        observer?.unobserve(record.target)
+        entries.delete(record.target)
+        if (!entry) continue
+
+        if (entry.stagger) {
+          const children = record.target.children
+          for (let i = 0; i < children.length; i++) {
+            ;(children[i] as HTMLElement).style.transitionDelay = `${i * entry.step}ms`
+          }
+        }
+        entry.show()
+      }
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+  )
+  return observer
+}
+
 /**
  * Fades a block up the first time it enters the viewport, then stops observing.
  * Motion is suppressed wholesale by the reduced-motion rules in globals.css.
@@ -39,28 +75,17 @@ export function Reveal({
 
   React.useEffect(() => {
     const el = ref.current
-    if (!el) return
+    if (!el || visible) return
 
-    // Already past the fold on first paint (deep link, restored scroll).
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          if (stagger) {
-            Array.from(entry.target.children).forEach((child, i) => {
-              ;(child as HTMLElement).style.transitionDelay = `${i * step}ms`
-            })
-          }
-          setVisible(true)
-          observer.unobserve(entry.target)
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    )
+    const io = shared()
+    entries.set(el, { stagger, step, show: () => setVisible(true) })
+    io.observe(el)
 
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [stagger, step])
+    return () => {
+      entries.delete(el)
+      io.unobserve(el)
+    }
+  }, [stagger, step, visible])
 
   return (
     <div

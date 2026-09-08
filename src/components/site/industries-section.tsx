@@ -14,6 +14,31 @@ export function IndustriesSection() {
     null,
   );
 
+  const buttonRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
+  const [indicator, setIndicator] = React.useState<{
+    left: number;
+    width: number;
+    opacity: number;
+  }>({ left: 0, width: 0, opacity: 0 });
+
+  React.useEffect(() => {
+    const updateIndicator = () => {
+      const activeIndex = CATEGORIES.findIndex((c) => c.id === activeCategory);
+      const activeBtn = buttonRefs.current[activeIndex];
+      if (activeBtn) {
+        setIndicator({
+          left: activeBtn.offsetLeft,
+          width: activeBtn.offsetWidth,
+          opacity: 1,
+        });
+      }
+    };
+
+    updateIndicator();
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
+  }, [activeCategory]);
+
   const activeCategoryMeta =
     CATEGORIES.find((c) => c.id === activeCategory) ?? CATEGORIES[0];
 
@@ -59,32 +84,50 @@ export function IndustriesSection() {
           <div
             role="tablist"
             aria-label="Sector categories"
-            className="flex w-max items-stretch gap-2"
+            className="relative flex w-max items-stretch gap-2"
           >
-            {CATEGORIES.map((cat) => {
+            {/* Animated sliding pill */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute top-0 bottom-0 rounded-full bg-white shadow-[0_2px_14px_rgba(255,255,255,0.22)] transition-[transform,width,opacity] duration-300 ease-expo motion-reduce:transition-none"
+              style={{
+                transform: `translate3d(${indicator.left}px, 0, 0)`,
+                width: `${indicator.width}px`,
+                opacity: indicator.opacity,
+              }}
+            />
+
+            {CATEGORIES.map((cat, idx) => {
               const isActive = activeCategory === cat.id;
 
               return (
                 <button
                   key={cat.id}
+                  ref={(el) => {
+                    buttonRefs.current[idx] = el;
+                  }}
                   type="button"
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setActiveCategory(cat.id)}
                   className={cn(
-                    "group inline-flex items-baseline gap-2.5 rounded-full border px-4 py-2.5",
+                    "group relative z-1 inline-flex items-baseline gap-2.5 rounded-full border px-4 py-2.5",
                     "text-[13px] font-medium whitespace-nowrap select-none cursor-pointer",
-                    "transition-colors duration-300 ease-expo motion-reduce:transition-none",
+                    "transition-colors duration-250 ease-expo active:scale-[0.97] motion-reduce:transition-none",
                     isActive
-                      ? "border-white bg-white text-black font-semibold shadow-[0_2px_12px_rgba(255,255,255,0.15)]"
-                      : "border-white/15 bg-white/5 text-white/65 hover:border-white/35 hover:text-white",
+                      ? indicator.opacity > 0
+                        ? "border-transparent text-black font-semibold"
+                        : "border-white bg-white text-black font-semibold shadow-[0_2px_12px_rgba(255,255,255,0.15)]"
+                      : "border-white/15 bg-white/5 text-white/65 hover:border-white/35 hover:text-white hover:bg-white/10",
                   )}
                 >
                   <span>{cat.label}</span>
                   <span
                     className={cn(
-                      "tnum text-[11px]",
-                      isActive ? "text-black/60 font-semibold" : "text-white/35",
+                      "tnum text-[11px] transition-colors duration-250",
+                      isActive
+                        ? "text-black/60 font-semibold"
+                        : "text-white/35 group-hover:text-white/50",
                     )}
                   >
                     {String(cat.slugs.length).padStart(2, "0")}
