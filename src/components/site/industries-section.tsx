@@ -3,45 +3,111 @@
 import * as React from "react";
 import { Reveal } from "@/components/site/reveal";
 import { industries, type Industry } from "@/data/catenate";
-import { IndustryArchDeck } from "./industries/industry-arch-deck";
+import { cn } from "@/lib/utils";
+import { IndustryCollage } from "./industries/industry-collage";
 import { IndustryDetailDialog } from "./industries/industry-detail-dialog";
+import { SECTOR_CATEGORIES as CATEGORIES } from "./industries/types";
 
 export function IndustriesSection() {
-  const [activeIndex, setActiveIndex] = React.useState(3);
+  const [activeCategory, setActiveCategory] = React.useState(CATEGORIES[0].id);
   const [openedIndustry, setOpenedIndustry] = React.useState<Industry | null>(
     null,
+  );
+
+  const activeCategoryMeta =
+    CATEGORIES.find((c) => c.id === activeCategory) ?? CATEGORIES[0];
+
+  const filteredIndustries = React.useMemo(
+    () =>
+      // Ordered by the category's own slug list so each view has a deliberate
+      // opening tile rather than whatever order the master list happens to use.
+      activeCategoryMeta.slugs
+        .map((slug) => industries.find((ind) => ind.slug === slug))
+        .filter((ind): ind is Industry => ind !== undefined),
+    [activeCategoryMeta],
   );
 
   return (
     <section
       id="industries"
-      className="section section-flush relative overflow-hidden bg-off [background-image:radial-gradient(rgb(26_29_46/0.06)_1px,transparent_1px)] [background-size:24px_24px] outline-none scroll-mt-24"
+      className={cn(
+        "section-flush relative overflow-hidden bg-ink outline-none scroll-mt-24",
+        // From sm up the section fills the viewport and the grid absorbs the
+        // height the header leaves. On phones the tiles stack into one column,
+        // where forcing a single screen would crush them -- so it scrolls.
+        "flex flex-col gap-[clamp(24px,3vw,48px)] sm:min-h-svh",
+        "py-[clamp(48px,6vw,88px)]",
+      )}
     >
-      {/* Header Statement */}
+      {/* Header statement */}
       <div className="content-pad">
-        <Reveal className="relative z-2 text-center">
-          <h2 className="mx-auto max-w-[28ch] text-[clamp(2rem,3.6vw,3.2rem)] leading-[1.15] font-medium tracking-[-0.02em] text-ink text-balance">
-            Every sector demands a different solution.
-          </h2>
+        <Reveal className="relative z-2">
+          <div className="grid items-end gap-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+            <h2 className="max-w-[20ch] text-[clamp(2rem,4vw,3.4rem)] leading-[1.08] font-medium tracking-[-0.028em] text-white text-balance">
+              Every sector demands a different solution.
+            </h2>
 
-          <p className="lead mx-auto mt-3.5 max-w-[50ch] text-[16px] text-grey text-balance">
-            Explore engineering solutions built for your industry.
-          </p>
+            <p className="lead max-w-[44ch] text-[16px] text-white/55 text-balance md:pb-2">
+              Pick a field below. Each one opens onto the systems, tolerances and
+              reference projects we engineer for it.
+            </p>
+          </div>
         </Reveal>
 
+        {/* Sector filters */}
+        <div className="mt-9 -mx-[clamp(16px,4vw,40px)] overflow-x-auto px-[clamp(16px,4vw,40px)] pb-2 scrollbar-none">
+          <div
+            role="tablist"
+            aria-label="Sector categories"
+            className="flex w-max items-stretch gap-2"
+          >
+            {CATEGORIES.map((cat) => {
+              const isActive = activeCategory === cat.id;
+
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={cn(
+                    "group inline-flex items-baseline gap-2.5 rounded-full border px-4 py-2.5",
+                    "text-[13px] font-medium whitespace-nowrap select-none cursor-pointer",
+                    "transition-colors duration-300 ease-expo motion-reduce:transition-none",
+                    isActive
+                      ? "border-white bg-white text-ink"
+                      : "border-white/15 bg-white/5 text-white/65 hover:border-white/35 hover:text-white",
+                  )}
+                >
+                  <span>{cat.label}</span>
+                  <span
+                    className={cn(
+                      "tnum text-[11px]",
+                      isActive ? "text-ink/45" : "text-white/35",
+                    )}
+                  >
+                    {String(cat.slugs.length).padStart(2, "0")}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      {/* Sector Arch Deck */}
-      <div className="mt-10 sm:mt-14 border-b border-ink/10">
-        <IndustryArchDeck
-          industries={industries}
-          activeIndex={activeIndex}
-          onSelectIndex={setActiveIndex}
+      {/* Sector bento grid, taking whatever height the header leaves */}
+      <div className="flex min-h-0 flex-1 flex-col">
+        <IndustryCollage
+          // Remounting on filter change lets the new set enter fresh instead of
+          // cross-fading two unrelated tile layouts.
+          key={activeCategory}
+          industries={filteredIndustries}
           onOpenDetail={setOpenedIndustry}
         />
       </div>
 
-      {/* Specification Detail Modal Dialog */}
+      {/* Specification detail modal */}
       <IndustryDetailDialog
         industry={openedIndustry}
         onClose={() => setOpenedIndustry(null)}

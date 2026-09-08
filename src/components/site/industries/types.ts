@@ -6,11 +6,6 @@ export type SectorCategory = {
 
 export const SECTOR_CATEGORIES: SectorCategory[] = [
   {
-    id: "all",
-    label: "All Sectors (14)",
-    slugs: [],
-  },
-  {
     id: "built-env",
     label: "Infrastructure & Built Env.",
     slugs: [
@@ -52,7 +47,7 @@ export const SECTOR_CATEGORIES: SectorCategory[] = [
 
 export function getCategoryLabelForSlug(slug: string): string {
   for (const cat of SECTOR_CATEGORIES) {
-    if (cat.id !== "all" && cat.slugs.includes(slug)) {
+    if (cat.slugs.includes(slug)) {
       return cat.label
     }
   }
