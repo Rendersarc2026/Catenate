@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 
-import { AboutHero } from "@/components/site/about-hero";
-import { ApprovalsSection } from "@/components/site/approvals-section";
+import { AboutFeature } from "@/components/site/about/about-feature";
+import { AboutGlobalChain } from "@/components/site/about/about-global-chain";
+import { AboutHero } from "@/components/site/about/about-hero";
+import { AboutNetworkTeam } from "@/components/site/about/about-network-team";
+import { AboutPowerBuild } from "@/components/site/about/about-power-build";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 
 export const metadata: Metadata = {
-  title: "About Catenate — Channel Partner Network & Approvals",
+  title: "About Us — Catenate",
   description:
-    "The certifications Catenate holds and the approvals carried by our principals, so proof travels with the system.",
+    "Connecting the world's trusted brands to the builders who need them — bonding, sealing and protection systems, moved with the same discipline every time.",
 };
 
 export default function AboutPage() {
@@ -16,9 +19,12 @@ export default function AboutPage() {
     <>
       <SiteHeader />
 
-      <main id="content">
+      <main id="content" className="bg-black">
         <AboutHero />
-        <ApprovalsSection />
+        <AboutGlobalChain />
+        <AboutPowerBuild />
+        <AboutFeature />
+        <AboutNetworkTeam />
       </main>
 
       <SiteFooter />

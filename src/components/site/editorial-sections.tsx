@@ -2,32 +2,8 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 
 import { Reveal } from "@/components/site/reveal";
-import {
-  customers,
-  images,
-  projects,
-  technicalSupport,
-  type Blurb,
-} from "@/data/catenate";
-
-/** Two-column list of short titled paragraphs, hairline-separated. */
-function BlurbGrid({ items }: { items: Blurb[] }) {
-  return (
-    <Reveal
-      stagger
-      className="grid grid-cols-2 gap-x-[clamp(32px,5vw,64px)] max-md:grid-cols-1"
-    >
-      {items.map((item) => (
-        <div key={item.title} className="border-b border-ink/10 py-5.5">
-          <h3 className="mb-1 text-[17px] leading-[1.3] font-medium">
-            {item.title}
-          </h3>
-          <p className="text-[14.5px] text-grey">{item.body}</p>
-        </div>
-      ))}
-    </Reveal>
-  );
-}
+import { TechnicalSupportAccordion } from "@/components/site/technical-support-accordion";
+import { customers, images, projects, technicalSupport } from "@/data/catenate";
 
 export { StrengthsSection } from "./strengths-section";
 
@@ -133,13 +109,10 @@ export function ProjectsRail() {
 export function TechnicalSupport() {
   return (
     <section className="section bg-white">
-      <Reveal className="mb-5.5">
+      <Reveal>
         <span className="eyebrow">Technical support</span>
-        <h2 className="text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
-          What comes with the delivery.
-        </h2>
+        <TechnicalSupportAccordion items={technicalSupport} />
       </Reveal>
-      <BlurbGrid items={technicalSupport} />
     </section>
   );
 }

@@ -1,7 +1,6 @@
-import Link from "next/link";
-
 import { OrbLazy } from "@/components/site/orb-lazy";
 import { Reveal } from "@/components/site/reveal";
+import { SpecularButton } from "@/components/ui/specular-button";
 
 /**
  * The finder's invitation, played as one dark full-bleed beat: a ring of
@@ -25,7 +24,7 @@ export function SolutionsFinderTeaser() {
         style={
           {
             "--orb": "min(84vw, 620px)",
-            minHeight: "calc(var(--orb) + clamp(200px, 22vw, 300px))",
+            minHeight: "calc(var(--orb) + clamp(120px, 16vw, 220px))",
           } as React.CSSProperties
         }
       >
@@ -37,24 +36,37 @@ export function SolutionsFinderTeaser() {
           <OrbLazy hoverIntensity={0.1} rotateOnHover backgroundColor={FIELD} />
         </div>
 
-        {/* Both are placed against the container's centre — the same centre the
-            ring is drawn around — so the line crosses the ring's middle and the
-            button clears its lower edge. */}
-        <Reveal className="pointer-events-none absolute inset-0 z-10">
-          <h2 className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-[clamp(1.65rem,4.6vw,3.5rem)] leading-[1.12] font-semibold tracking-[-0.03em] text-white text-balance lg:whitespace-nowrap">
-            Find the right solution for the job.
-          </h2>
+        {/* Heading and button placed directly together at the container's center. */}
+        <Reveal className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-4">
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-center text-[clamp(1.65rem,4.6vw,3.5rem)] leading-[1.12] font-semibold tracking-[-0.03em] text-white text-balance lg:whitespace-nowrap">
+              Find the right solution for the job.
+            </h2>
 
-          <div
-            className="absolute inset-x-0 flex justify-center"
-            style={{ top: "calc(50% + var(--orb) / 2 + clamp(28px, 4vw, 60px))" }}
-          >
-            <Link
-              href="/solutions-finder"
-              className="pointer-events-auto inline-flex items-center rounded-full bg-white/8 px-6 py-2.5 text-[14px] font-medium text-white/85 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.14)] transition-colors duration-250 ease-expo hover:bg-white/14 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-            >
-              Launch Finder
-            </Link>
+            <div className="mt-8 sm:mt-10 flex justify-center">
+              <SpecularButton
+                href="/solutions-finder"
+                size="lg"
+                radius={18}
+                tint="#ffffff"
+                tintOpacity={0}
+                blur={0}
+                textColor="#f5f5f5"
+                lineColor="#ffffff"
+                baseColor="#525252"
+                intensity={1}
+                shineSize={10}
+                shineFade={40}
+                thickness={1}
+                speed={0.35}
+                followMouse
+                proximity={250}
+                autoAnimate={false}
+                className="pointer-events-auto"
+              >
+                Launch Finder
+              </SpecularButton>
+            </div>
           </div>
         </Reveal>
       </div>
