@@ -45,15 +45,12 @@ function src(id: string, width: number, quality = 78) {
   return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=${quality}`
 }
 
-/** Horizontal strips the outgoing frame is cut into for the wipe. */
-const SLATS = 22
-
 /** How long each region holds before the slider moves on, in ms. */
 const DWELL = 6000
 
 const pad = (n: number) => String(n).padStart(2, "0")
 
-type Wipe = { token: number; photoId: string }
+type Fade = { token: number; photoId: string }
 
 export function RegionSlider({
   regions,
@@ -67,7 +64,7 @@ export function RegionSlider({
   const stageRef = React.useRef<HTMLDivElement>(null)
 
   const [active, setActive] = React.useState(0)
-  const [wipe, setWipe] = React.useState<Wipe | null>(null)
+  const [fade, setFade] = React.useState<Fade | null>(null)
   const [inView, setInView] = React.useState(false)
   const [paused, setPaused] = React.useState(false)
 
@@ -105,8 +102,8 @@ export function RegionSlider({
         const target = (next + regions.length) % regions.length
         if (target === current) return current
         if (!reducedMotion) {
-          // The outgoing frame is what slides away, so capture it before the swap.
-          setWipe({ token: Date.now(), photoId: photoFor(regions[current]).id })
+          // The outgoing frame is what fades, so capture it before the swap.
+          setFade({ token: Date.now(), photoId: photoFor(regions[current]).id })
         }
         return target
       })
@@ -135,28 +132,15 @@ export function RegionSlider({
         aria-label={photo.alt}
       />
 
-      {/*
-       * The wipe: the previous frame, cut into strips that slide off in
-       * alternating directions on a stagger, uncovering the new one beneath.
-       */}
-      {wipe && inView ? (
-        <div key={wipe.token} className="region-wipe" aria-hidden="true">
-          {Array.from({ length: SLATS }, (_, i) => (
-            <span
-              key={i}
-              className={cn("region-slat", i % 2 === 0 ? "is-left" : "is-right")}
-              onAnimationEnd={i === SLATS - 1 ? () => setWipe(null) : undefined}
-              style={{
-                top: `${(i * 100) / SLATS}%`,
-                height: `calc(${100 / SLATS}% + 1px)`,
-                backgroundImage: `url("${src(wipe.photoId, 1920)}")`,
-                backgroundSize: `100% ${SLATS * 100}%`,
-                backgroundPositionY: `${(i * 100) / (SLATS - 1)}%`,
-                animationDelay: `${i * 16}ms`,
-              }}
-            />
-          ))}
-        </div>
+      {/* The previous frame, held over the new one and faded out. */}
+      {fade && inView ? (
+        <div
+          key={fade.token}
+          className="region-fade"
+          aria-hidden="true"
+          style={{ backgroundImage: `url("${src(fade.photoId, 1920)}")` }}
+          onAnimationEnd={() => setFade(null)}
+        />
       ) : null}
 
       <div className="region-scrim" aria-hidden="true" />

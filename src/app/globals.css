@@ -702,55 +702,25 @@
 }
 
 .region-frame,
-.region-slat {
-  background-repeat: no-repeat;
-  background-color: #0d1018;
-}
-
-.region-frame {
+.region-fade {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  background-color: #0d1018;
 }
 
-/* The outgoing frame, cut into strips. Each one carries the slice of the
-   picture that was already sitting at its own height, so before the animation
-   starts the stack is indistinguishable from the whole image. */
-.region-wipe {
-  position: absolute;
-  inset: 0;
+/* The outgoing frame, held over the incoming one and faded off it. */
+.region-fade {
   pointer-events: none;
+  will-change: opacity;
+  animation: region-fade-out 0.7s var(--ease-out-expo) forwards;
 }
 
-.region-slat {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  background-position-x: center;
-  will-change: transform;
-  animation-duration: 0.78s;
-  animation-timing-function: cubic-bezier(0.7, 0, 0.24, 1);
-  animation-fill-mode: both;
-}
-
-.region-slat.is-left {
-  animation-name: region-slat-left;
-}
-
-.region-slat.is-right {
-  animation-name: region-slat-right;
-}
-
-@keyframes region-slat-left {
+@keyframes region-fade-out {
   to {
-    transform: translate3d(-101%, 0, 0);
-  }
-}
-
-@keyframes region-slat-right {
-  to {
-    transform: translate3d(101%, 0, 0);
+    opacity: 0;
   }
 }
 
