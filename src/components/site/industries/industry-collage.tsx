@@ -103,18 +103,18 @@ const IndustryCard = React.memo(function IndustryCard({
         </div>
 
         {/* Lower copy area */}
-        <div className="flex flex-col justify-between flex-1 p-5 text-black">
+        <div className="flex flex-col flex-1 px-4 py-3.5 text-black">
           <div>
-            <h3 className="text-[16px] sm:text-[17px] font-semibold text-neutral-950 leading-snug tracking-tight line-clamp-2 min-h-[2.6rem] sm:min-h-[2.75rem]">
+            <h3 className="text-[15px] sm:text-[16px] font-semibold text-neutral-950 leading-snug tracking-tight line-clamp-2 min-h-[2.35rem] sm:min-h-[2.5rem]">
               {industry.name}
             </h3>
-            <p className="mt-2 text-[12px] sm:text-[12.5px] leading-relaxed text-neutral-600 line-clamp-3 min-h-[3.3rem] sm:min-h-[3.5rem]">
+            <p className="mt-1.5 text-[12px] sm:text-[12.5px] leading-snug text-neutral-600 line-clamp-2">
               {industry.challenge}
             </p>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400 font-medium">
-            <span className="truncate">{industry.reference}</span>
+          <div className="mt-auto pt-2.5 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400 font-medium">
+            <span className="truncate pr-2">{industry.reference}</span>
             <span className="shrink-0">{industry.systems.length} systems</span>
           </div>
         </div>

@@ -59,19 +59,6 @@ export function DistributorWall({ idle = false }: DistributorWallProps) {
         idle && "pointer-events-none"
       )}
     >
-      {/* Header bar indicating Authorised Distributor */}
-      <div className="pointer-events-none absolute top-0 inset-x-0 z-20 flex items-center justify-between px-[clamp(20px,4vw,64px)] pt-[clamp(20px,3.5vh,44px)] max-md:px-4 max-md:pt-[clamp(12px,2vh,24px)]">
-        <div className="flex items-center gap-2.5">
-          <span className="inline-block size-1.5 rounded-full bg-white/70" />
-          <h3 className="text-[clamp(12px,1.2vw,15px)] font-medium tracking-[0.06em] text-white/90 uppercase">
-            Authorised Distributor of
-          </h3>
-        </div>
-        <span className="font-mono text-[11px] tracking-[0.14em] text-white/50 uppercase">
-          05 Principals
-        </span>
-      </div>
-
       {brands.map((brand, index) => {
         const isOpen = openIndex === index
 
@@ -90,10 +77,7 @@ export function DistributorWall({ idle = false }: DistributorWallProps) {
           >
             <div
               style={{ background: tone(index, brands.length) }}
-              className={cn(
-                "relative flex size-full items-center justify-center px-4 text-center text-white",
-                index === 0 && "max-md:pt-6"
-              )}
+              className="relative flex size-full items-center justify-center px-4 text-center text-white"
             >
               {/* Darkens the palest columns just enough to hold the copy. */}
               <span

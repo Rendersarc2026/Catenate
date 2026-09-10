@@ -17,7 +17,7 @@ export const images = {
   heroBanner: "/images/hero-banner.jpg",
   /** Sector photography, keyed by the slug on each `Industry`. */
   industry: (slug: string) => `/images/industries/${slug}.jpg`,
-  project: (index: number) => placeholder(`catenateproj${index}`, 1200, 900),
+  project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),
   contactInquiry: placeholder("catenatesupport", 700, 525),
   contactChannel: placeholder("catenatechannel", 700, 525),
   contactPartner: placeholder("catenatepartner", 700, 525),
