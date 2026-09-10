@@ -317,7 +317,7 @@ export function Hero() {
               scale={2.4}
               hueShift={0}
               colorFrequency={1}
-              noise={0.18}
+              noise={0}
               glow={0.7}
               bloom={0.8}
             />

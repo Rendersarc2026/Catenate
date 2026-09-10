@@ -190,8 +190,10 @@ const buildFragment = (steps: number) => /* glsl */ `
     o = tanh4(o * o * (uGlow * uBloom) / 1e5);
 
     vec3 col = o.rgb;
-    float n = rand(gl_FragCoord.xy + vec2(iTime));
-    col += (n - 0.5) * uNoise;
+    if(uNoise > 0.0001){
+      float n = rand(gl_FragCoord.xy + vec2(iTime));
+      col += (n - 0.5) * uNoise;
+    }
     col = clamp(col, 0.0, 1.0);
 
     float L = dot(col, vec3(0.2126, 0.7152, 0.0722));
@@ -244,7 +246,7 @@ export function Prism({
   animationType = "rotate",
   glow = 1,
   offset,
-  noise = 0.5,
+  noise = 0,
   transparent = true,
   scale = 3.6,
   hueShift = 0,
