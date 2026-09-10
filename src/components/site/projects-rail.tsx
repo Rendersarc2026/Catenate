@@ -1,14 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import * as React from "react";
 
+import { ProjectCard } from "@/components/site/project-card";
 import { Reveal } from "@/components/site/reveal";
-import { images, projects } from "@/data/catenate";
+import { projects } from "@/data/catenate";
 import { cn } from "@/lib/utils";
 
 export function ProjectsRail() {
   const railRef = React.useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = React.useState(0);
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -16,55 +17,95 @@ export function ProjectsRail() {
   const startXRef = React.useRef(0);
   const scrollLeftRef = React.useRef(0);
   const hasMovedRef = React.useRef(false);
+  const rafIdRef = React.useRef<number | null>(null);
 
-  const checkScrollState = React.useCallback(() => {
+  const updateActiveCard = React.useCallback(() => {
     const rail = railRef.current;
     if (!rail) return;
-    const { scrollLeft, scrollWidth, clientWidth } = rail;
-    setCanScrollLeft(scrollLeft > 6);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 6);
+
+    const railCenter = rail.scrollLeft + rail.clientWidth / 2;
+    const cards = rail.querySelectorAll<HTMLElement>("article");
+    if (!cards.length) return;
+
+    let closestIdx = 0;
+    let minDistance = Infinity;
+
+    cards.forEach((card, idx) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const dist = Math.abs(cardCenter - railCenter);
+      if (dist < minDistance) {
+        minDistance = dist;
+        closestIdx = idx;
+      }
+    });
+
+    setActiveIndex(closestIdx);
+    setCanScrollLeft(closestIdx > 0);
+    setCanScrollRight(closestIdx < cards.length - 1);
   }, []);
+
+  const handleScroll = React.useCallback(() => {
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+    }
+    rafIdRef.current = requestAnimationFrame(() => {
+      updateActiveCard();
+      rafIdRef.current = null;
+    });
+  }, [updateActiveCard]);
+
+  const scrollToIndex = React.useCallback(
+    (index: number, behavior: ScrollBehavior = "smooth") => {
+      const rail = railRef.current;
+      if (!rail) return;
+
+      const cards = rail.querySelectorAll<HTMLElement>("article");
+      const targetCard = cards[index];
+      if (!targetCard) return;
+
+      const railCenter = rail.clientWidth / 2;
+      const cardCenter = targetCard.offsetLeft + targetCard.offsetWidth / 2;
+      const targetScrollLeft = cardCenter - railCenter;
+
+      rail.scrollTo({
+        left: targetScrollLeft,
+        behavior,
+      });
+
+      setActiveIndex(index);
+      setCanScrollLeft(index > 0);
+      setCanScrollRight(index < cards.length - 1);
+    },
+    []
+  );
 
   React.useEffect(() => {
     const rail = railRef.current;
     if (!rail) return;
 
-    checkScrollState();
-    rail.addEventListener("scroll", checkScrollState, { passive: true });
-    window.addEventListener("resize", checkScrollState);
+    updateActiveCard();
+    rail.addEventListener("scroll", handleScroll, { passive: true });
+
+    const handleResize = () => {
+      updateActiveCard();
+    };
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      rail.removeEventListener("scroll", checkScrollState);
-      window.removeEventListener("resize", checkScrollState);
+      rail.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
     };
-  }, [checkScrollState]);
-
-  const scroll = React.useCallback((direction: "left" | "right") => {
-    const rail = railRef.current;
-    if (!rail) return;
-
-    const card = rail.querySelector<HTMLElement>("article");
-    const style = typeof window !== "undefined" ? window.getComputedStyle(rail) : null;
-    const gap = style ? parseFloat(style.columnGap || style.gap) || 32 : 32;
-    const cardWidth = card ? card.offsetWidth : 300;
-    const scrollAmount = cardWidth + gap;
-
-    rail.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
-  }, []);
+  }, [handleScroll, updateActiveCard]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== "mouse" || e.button !== 0) return;
-    const rail = railRef.current;
-    if (!rail) return;
-
+    if (e.pointerType !== "mouse" || e.button !== 0 || !railRef.current) return;
     setIsDragging(true);
     hasMovedRef.current = false;
     startXRef.current = e.pageX;
-    scrollLeftRef.current = rail.scrollLeft;
-
+    scrollLeftRef.current = railRef.current.scrollLeft;
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {
@@ -73,21 +114,15 @@ export function ProjectsRail() {
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging || e.pointerType !== "mouse") return;
-    const rail = railRef.current;
-    if (!rail) return;
-
+    if (!isDragging || e.pointerType !== "mouse" || !railRef.current) return;
     const deltaX = e.pageX - startXRef.current;
-    if (Math.abs(deltaX) > 4) {
-      hasMovedRef.current = true;
-    }
-    rail.scrollLeft = scrollLeftRef.current - deltaX;
+    if (Math.abs(deltaX) > 4) hasMovedRef.current = true;
+    railRef.current.scrollLeft = scrollLeftRef.current - deltaX;
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType !== "mouse") return;
     setIsDragging(false);
-
     try {
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
@@ -100,92 +135,96 @@ export function ProjectsRail() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "ArrowLeft") {
       e.preventDefault();
-      scroll("left");
+      scrollToIndex(Math.max(0, activeIndex - 1));
     } else if (e.key === "ArrowRight") {
       e.preventDefault();
-      scroll("right");
+      scrollToIndex(Math.min(projects.length - 1, activeIndex + 1));
+    } else if (e.key === "Home" || e.key === "End") {
+      e.preventDefault();
+      scrollToIndex(e.key === "Home" ? 0 : projects.length - 1);
+    }
+  };
+
+  const handleCardClick = (index: number) => {
+    if (hasMovedRef.current) return;
+    if (index !== activeIndex) {
+      scrollToIndex(index);
     }
   };
 
   return (
-    <section id="projects" className="section section-flush bg-off">
-      <Reveal className="content-pad flex items-center justify-between pb-8.5">
-        <span className="eyebrow mb-0">Projects</span>
+    <section id="projects" className="section section-flush bg-off py-12 sm:py-16">
+      <Reveal className="content-pad flex items-center justify-between pb-8 sm:pb-10">
+        <div className="flex items-center gap-3">
+          <span className="eyebrow mb-0">Projects</span>
+          <span className="hidden sm:inline-block h-3.5 w-px bg-ink/15" />
+          <span className="hidden sm:inline-block font-mono text-[11px] tracking-[0.14em] text-grey uppercase">
+            Featured Specifications
+          </span>
+        </div>
 
-        {/* Section header navigation arrows */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => scroll("left")}
-            disabled={!canScrollLeft}
-            aria-label="Previous projects"
-            className="grid size-[38px] cursor-pointer place-items-center rounded-full text-ink shadow-[inset_0_0_0_1px_rgb(26_29_46/0.2)] transition-[background-color,opacity,box-shadow,transform] duration-200 ease-expo hover:bg-ink/5 active:scale-95 disabled:pointer-events-none disabled:opacity-25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="size-[15px] fill-none stroke-current stroke-[1.8]"
+        {/* Section header navigation & counter */}
+        <div className="flex items-center gap-4">
+          <div className="font-mono text-[12.5px] tracking-wider text-grey select-none">
+            <span className="font-semibold text-ink tnum">
+              {String(activeIndex + 1).padStart(2, "0")}
+            </span>
+            <span className="mx-1.5 text-grey/40">/</span>
+            <span className="tnum">
+              {String(projects.length).padStart(2, "0")}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => scrollToIndex(Math.max(0, activeIndex - 1))}
+              disabled={!canScrollLeft}
+              aria-label="Previous project"
+              className="grid size-9 sm:size-[38px] cursor-pointer place-items-center rounded-full text-ink shadow-[inset_0_0_0_1px_rgb(26_29_46/0.2)] transition-[background-color,opacity,box-shadow,transform] duration-200 ease-expo hover:bg-ink/5 active:scale-95 disabled:pointer-events-none disabled:opacity-25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
             >
-              <path d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            onClick={() => scroll("right")}
-            disabled={!canScrollRight}
-            aria-label="Next projects"
-            className="grid size-[38px] cursor-pointer place-items-center rounded-full text-ink shadow-[inset_0_0_0_1px_rgb(26_29_46/0.2)] transition-[background-color,opacity,box-shadow,transform] duration-200 ease-expo hover:bg-ink/5 active:scale-95 disabled:pointer-events-none disabled:opacity-25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="size-[15px] fill-none stroke-current stroke-[1.8]"
+              <ArrowIcon dir="left" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToIndex(Math.min(projects.length - 1, activeIndex + 1))}
+              disabled={!canScrollRight}
+              aria-label="Next project"
+              className="grid size-9 sm:size-[38px] cursor-pointer place-items-center rounded-full text-ink shadow-[inset_0_0_0_1px_rgb(26_29_46/0.2)] transition-[background-color,opacity,box-shadow,transform] duration-200 ease-expo hover:bg-ink/5 active:scale-95 disabled:pointer-events-none disabled:opacity-25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
             >
-              <path d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+              <ArrowIcon dir="right" />
+            </button>
+          </div>
         </div>
       </Reveal>
 
-      <div className="group/rail relative w-full">
+      <div className="group/rail relative w-full overflow-hidden">
         {/* Floating Prev Button */}
         <button
           type="button"
-          onClick={() => scroll("left")}
+          onClick={() => scrollToIndex(Math.max(0, activeIndex - 1))}
           disabled={!canScrollLeft}
-          aria-label="Previous projects"
+          aria-label="Previous project"
           className={cn(
-            "absolute left-4 lg:left-8 top-[clamp(140px,18vw,200px)] z-20 hidden sm:grid size-11 place-items-center rounded-full bg-white/95 text-ink shadow-[0_4px_20px_rgb(0_0_0/0.12),inset_0_0_0_1px_rgb(26_29_46/0.15)] backdrop-blur-md transition-[opacity,transform,background-color] duration-250 ease-expo hover:bg-white hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink",
-            canScrollLeft
-              ? "opacity-90 hover:opacity-100"
-              : "pointer-events-none opacity-0"
+            "absolute left-4 lg:left-10 top-[clamp(140px,20vw,220px)] z-20 hidden sm:grid size-12 place-items-center rounded-full bg-white/95 text-ink shadow-[0_6px_24px_rgb(0_0_0/0.14),inset_0_0_0_1px_rgb(26_29_46/0.12)] backdrop-blur-md transition-[opacity,transform,background-color] duration-250 ease-expo hover:bg-white hover:scale-105 active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink",
+            canScrollLeft ? "opacity-90 hover:opacity-100" : "pointer-events-none opacity-0"
           )}
         >
-          <svg
-            viewBox="0 0 24 24"
-            className="size-[17px] fill-none stroke-current stroke-[2]"
-          >
-            <path d="M15 19l-7-7 7-7" />
-          </svg>
+          <ArrowIcon dir="left" />
         </button>
 
         {/* Floating Next Button */}
         <button
           type="button"
-          onClick={() => scroll("right")}
+          onClick={() => scrollToIndex(Math.min(projects.length - 1, activeIndex + 1))}
           disabled={!canScrollRight}
-          aria-label="Next projects"
+          aria-label="Next project"
           className={cn(
-            "absolute right-4 lg:right-8 top-[clamp(140px,18vw,200px)] z-20 hidden sm:grid size-11 place-items-center rounded-full bg-white/95 text-ink shadow-[0_4px_20px_rgb(0_0_0/0.12),inset_0_0_0_1px_rgb(26_29_46/0.15)] backdrop-blur-md transition-[opacity,transform,background-color] duration-250 ease-expo hover:bg-white hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink",
-            canScrollRight
-              ? "opacity-90 hover:opacity-100"
-              : "pointer-events-none opacity-0"
+            "absolute right-4 lg:right-10 top-[clamp(140px,20vw,220px)] z-20 hidden sm:grid size-12 place-items-center rounded-full bg-white/95 text-ink shadow-[0_6px_24px_rgb(0_0_0/0.14),inset_0_0_0_1px_rgb(26_29_46/0.12)] backdrop-blur-md transition-[opacity,transform,background-color] duration-250 ease-expo hover:bg-white hover:scale-105 active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink",
+            canScrollRight ? "opacity-90 hover:opacity-100" : "pointer-events-none opacity-0"
           )}
         >
-          <svg
-            viewBox="0 0 24 24"
-            className="size-[17px] fill-none stroke-current stroke-[2]"
-          >
-            <path d="M9 5l7 7-7 7" />
-          </svg>
+          <ArrowIcon dir="right" />
         </button>
 
         <div
@@ -201,45 +240,58 @@ export function ProjectsRail() {
           onPointerCancel={handlePointerUp}
           onDragStart={(e) => e.preventDefault()}
           className={cn(
-            "rail content-pad gap-7 md:gap-8 lg:gap-9 cursor-grab active:cursor-grabbing select-none focus-visible:outline-none",
+            "rail gap-6 sm:gap-8 lg:gap-10 cursor-grab active:cursor-grabbing select-none focus-visible:outline-none py-4",
             isDragging && "snap-none"
           )}
-          style={{
-            scrollSnapType: isDragging ? "none" : undefined,
-            paddingInline:
-              "max(var(--section-pad), calc((100% - var(--content-max)) / 2))",
-            scrollPaddingInline:
-              "max(var(--section-pad), calc((100% - var(--content-max)) / 2))",
-          }}
+          style={
+            {
+              "--card-w": "clamp(310px, 52vw, 640px)",
+              scrollSnapType: isDragging ? "none" : "x mandatory",
+              paddingInline: "calc(50% - (var(--card-w) / 2))",
+              scrollPaddingInline: "calc(50% - (var(--card-w) / 2))",
+            } as React.CSSProperties
+          }
         >
           {projects.map((project, index) => (
-            <article
+            <ProjectCard
               key={project.name}
-              className="group/proj flex-[0_0_clamp(240px,30vw,330px)] snap-start"
-            >
-              <div className="relative aspect-3/4 overflow-hidden rounded-block bg-[#e6e7ec]">
-                <Image
-                  src={images.project(index)}
-                  alt={project.name}
-                  fill
-                  sizes="(max-width: 768px) 60vw, 330px"
-                  draggable={false}
-                  className="pointer-events-none object-cover transition-transform duration-800 ease-expo group-hover/proj:scale-105"
-                />
-              </div>
-              <h3 className="mt-4 text-[17px] leading-[1.3] font-medium">
-                {project.name}
-              </h3>
-              <span className="mt-1.5 block text-[11px] tracking-[0.14em] text-grey uppercase">
-                {project.sector}
-              </span>
-              <em className="mt-2 block text-[13.5px] not-italic text-grey">
-                {project.scope}
-              </em>
-            </article>
+              project={project}
+              index={index}
+              isActive={index === activeIndex}
+              onClick={() => handleCardClick(index)}
+            />
+          ))}
+        </div>
+
+        {/* Bottom pagination pills */}
+        <div className="flex items-center justify-center gap-2 pt-6 sm:pt-8">
+          {projects.map((project, idx) => (
+            <button
+              key={project.name}
+              type="button"
+              onClick={() => scrollToIndex(idx)}
+              aria-label={`Jump to project ${idx + 1}: ${project.name}`}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300 ease-expo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink",
+                idx === activeIndex
+                  ? "w-8 bg-ink"
+                  : "w-2 bg-ink/25 hover:bg-ink/45 hover:w-3"
+              )}
+            />
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function ArrowIcon({ dir }: { dir: "left" | "right" }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="size-[17px] fill-none stroke-current stroke-[1.9]"
+    >
+      <path d={dir === "left" ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
+    </svg>
   );
 }
