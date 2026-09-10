@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 
 import { Reveal } from "@/components/site/reveal";
 import { TechnicalSupportAccordion } from "@/components/site/technical-support-accordion";
-import { customers, images, projects, technicalSupport } from "@/data/catenate";
+import { customers, technicalSupport } from "@/data/catenate";
 
 export { StrengthsSection } from "./strengths-section";
 
@@ -68,43 +68,7 @@ export function TrustedBySection() {
 
 export { WhyCatenate } from "./why-catenate-section";
 
-export function ProjectsRail() {
-  return (
-    <section id="projects" className="section section-flush bg-off">
-      <Reveal className="content-pad pb-8.5">
-        <span className="eyebrow">Projects</span>
-      </Reveal>
-
-      <div className="rail">
-        {projects.map((project, index) => (
-          <article
-            key={project.name}
-            className="group/proj flex-[0_0_clamp(240px,30vw,330px)] snap-start"
-          >
-            <div className="relative aspect-3/4 overflow-hidden rounded-block bg-[#e6e7ec]">
-              <Image
-                src={images.project(index)}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 60vw, 330px"
-                className="object-cover transition-transform duration-800 ease-expo group-hover/proj:scale-105"
-              />
-            </div>
-            <h3 className="mt-4 text-[17px] leading-[1.3] font-medium">
-              {project.name}
-            </h3>
-            <span className="mt-1.5 block text-[11px] tracking-[0.14em] text-grey uppercase">
-              {project.sector}
-            </span>
-            <em className="mt-2 block text-[13.5px] not-italic text-grey">
-              {project.scope}
-            </em>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
+export { ProjectsRail } from "./projects-rail";
 
 export function TechnicalSupport() {
   return (

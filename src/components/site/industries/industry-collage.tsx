@@ -109,27 +109,19 @@ export function IndustryCollage({
 
 interface BentoTileProps {
   industry: Industry;
-  index: number;
+  index?: number;
   shape: TileShape;
   onOpenDetail: (industry: Industry) => void;
 }
 
 const BentoTile = React.memo(function BentoTile({
   industry,
-  index,
   shape,
   onOpenDetail,
 }: BentoTileProps) {
   const handleOpen = React.useCallback(() => {
     onOpenDetail(industry);
   }, [industry, onOpenDetail]);
-
-  // The reference alternates photography with flat panels. Area decides first:
-  // a tile with room to fill earns a photograph, since a large flat panel just
-  // reads as a hole. Only the smaller tiles alternate flat and accent grounds.
-  const isWide = shape.col !== "span 1";
-  const face: "photo" | "flat" | "accent" =
-    shape.feature || isWide ? "photo" : index % 2 === 1 ? "flat" : "accent";
 
   return (
     <button
@@ -141,36 +133,13 @@ const BentoTile = React.memo(function BentoTile({
         "transition-[transform,box-shadow] duration-500 ease-expo motion-reduce:transition-none",
         "hover:z-10 hover:-translate-y-0.5 cursor-pointer",
         "focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black",
-        // Sleek obsidian panels on black. The panels are translucent but not
-        // blurred: the section behind them is a flat black, so a backdrop blur
-        // resolved to the colour it started from while still costing a
-        // backdrop snapshot and a blur pass per tile.
-        face === "flat" &&
-          "bg-[#11131a] ring-1 ring-inset ring-white/15 hover:ring-white/30 supports-backdrop-filter:bg-neutral-900/80 shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
-        face === "accent" &&
-          "bg-[#0d0f14] ring-1 ring-inset ring-white/10 hover:ring-white/25 supports-backdrop-filter:bg-neutral-950/70 shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
-        face === "photo" && "bg-black ring-1 ring-inset ring-white/10 hover:ring-white/20",
+        "bg-black ring-1 ring-inset ring-white/10 hover:ring-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
       )}
       style={{
-        // Isolates each tile's rendering; blurred backdrops are expensive to
-        // repaint, so keep their work from spilling into the rest of the grid.
         contain: "layout style paint",
       }}
     >
-      {/* Specular top edge -- the highlight that reads as a lit pane rather
-          than a flat translucent rectangle. */}
-      {face !== "photo" && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent"
-        />
-      )}
-
-      {face === "photo" && (
-        <PhotoFace industry={industry} feature={shape.feature} />
-      )}
-      {face === "accent" && <AccentFace industry={industry} />}
-      {face === "flat" && <FlatFace industry={industry} />}
+      <PhotoFace industry={industry} feature={shape.feature} />
     </button>
   );
 });
@@ -194,15 +163,9 @@ function PhotoFace({
             ? "(max-width: 640px) 100vw, 50vw"
             : "(max-width: 640px) 100vw, 25vw"
         }
-        /*
-         * Not `priority`. The anchor tile is thousands of pixels down the
-         * page, so preloading it only made it race the hero for bandwidth --
-         * the browser warned that it went unused for seconds after load.
-         * Lazy is the right default this far below the fold.
-         */
         className="object-cover transition-transform duration-700 ease-expo motion-reduce:transition-none scale-[1.04] group-hover:scale-100"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 via-60% to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 via-60% to-transparent" />
 
       <div className="absolute inset-0 flex flex-col justify-end gap-1.5 p-[clamp(14px,1.5vw,22px)] text-white">
         <h3
@@ -210,15 +173,13 @@ function PhotoFace({
             "font-medium leading-tight tracking-tight text-balance",
             feature
               ? "text-[clamp(19px,2vw,27px)]"
-              : "text-[14px] sm:text-[15px]",
+              : "text-[14px] sm:text-[15.5px]",
           )}
         >
           {industry.name}
         </h3>
 
-        {/* Only the anchor tile has room for the challenge line; the small
-            tiles would clip it into noise. */}
-        {feature && (
+        {feature ? (
           <>
             <p className="max-w-[42ch] text-[13.5px] leading-[1.5] text-white/75">
               {industry.challenge}
@@ -228,59 +189,14 @@ function PhotoFace({
               {industry.systems.length} systems
             </span>
           </>
+        ) : (
+          <div className="flex items-center justify-between gap-2 text-[12px] text-white/75">
+            <span className="truncate text-white/75">{industry.reference}</span>
+            <span className="shrink-0 text-[11px] text-white/60">
+              {industry.systems.length} systems
+            </span>
+          </div>
         )}
-      </div>
-
-      <TileCorner tone="light" />
-    </>
-  );
-}
-
-/** Saturated panel: no photograph, so the sector name carries the tile. */
-function AccentFace({ industry }: { industry: Industry }) {
-  return (
-    <>
-      <div className="absolute inset-0 flex flex-col justify-between gap-2 p-[clamp(14px,1.4vw,20px)] text-white">
-        <span className="text-[11px] tracking-[0.14em] text-white/50 uppercase">
-          {String(industry.systems.length).padStart(2, "0")} systems
-        </span>
-
-        <div className="flex flex-col gap-1.5">
-          <h3 className="text-[15px] font-medium leading-tight tracking-tight text-balance sm:text-[17px]">
-            {industry.name}
-          </h3>
-          <p className="line-clamp-2 text-[12px] leading-[1.45] text-white/55">
-            {industry.challenge}
-          </p>
-        </div>
-      </div>
-
-      <TileCorner tone="light" />
-    </>
-  );
-}
-
-/** The brighter pane: carries the systems list rather than a photograph. */
-function FlatFace({ industry }: { industry: Industry }) {
-  return (
-    <>
-      <div className="absolute inset-0 flex flex-col justify-between gap-2 p-[clamp(14px,1.4vw,20px)]">
-        <div className="flex flex-col gap-1">
-          <h3 className="text-[15px] font-medium leading-tight tracking-tight text-white text-balance sm:text-[17px]">
-            {industry.name}
-          </h3>
-          <p className="truncate text-[11px] text-white/50">
-            {industry.reference}
-          </p>
-        </div>
-
-        <ul className="flex flex-col gap-1 text-[11.5px] leading-tight text-white/60">
-          {industry.systems.slice(0, 3).map((system) => (
-            <li key={system} className="truncate border-t border-white/12 pt-1">
-              {system}
-            </li>
-          ))}
-        </ul>
       </div>
 
       <TileCorner tone="light" />

@@ -349,10 +349,14 @@
   /* ---------- Horizontal rail ---------- */
   .rail {
     display: flex;
-    gap: 18px;
+    gap: clamp(28px, 3vw, 40px);
     overflow-x: auto;
-    padding-block: 0 8px;
+    padding-block: 0 12px;
     padding-inline: max(
+      var(--section-pad),
+      calc((100% - var(--content-max)) / 2)
+    );
+    scroll-padding-inline: max(
       var(--section-pad),
       calc((100% - var(--content-max)) / 2)
     );

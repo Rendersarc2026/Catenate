@@ -38,7 +38,7 @@ export function TechnicalSupportAccordion({
           aria-controls="technical-support-panel"
           className="group/main flex w-full cursor-pointer items-center justify-between gap-6 rounded-none text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4"
         >
-          <span className="block text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink transition-[transform,color] duration-350 ease-expo group-hover/main:translate-x-1">
+          <span className="block text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
             {title}
           </span>
 
@@ -86,7 +86,7 @@ export function TechnicalSupportAccordion({
                   showIcon={false}
                   className="group/row flex w-full cursor-pointer items-center justify-between gap-6 rounded-none py-5.5 text-left hover:no-underline"
                 >
-                  <span className="block text-[clamp(1.05rem,1.6vw,1.4rem)] leading-[1.3] font-medium tracking-[-0.015em] transition-[transform,color] duration-350 ease-expo group-hover/row:translate-x-1.5 group-data-panel-open/row:text-blue">
+                  <span className="block text-[clamp(1.05rem,1.6vw,1.4rem)] leading-[1.3] font-medium tracking-[-0.015em] transition-colors duration-250 ease-expo group-data-panel-open/row:text-blue">
                     {item.title}
                   </span>
 
