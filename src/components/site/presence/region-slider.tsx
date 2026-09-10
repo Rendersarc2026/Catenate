@@ -154,47 +154,51 @@ export function RegionSlider({ regions }: { regions: Region[] }) {
 
       <div className="region-scrim" aria-hidden="true" />
 
-      {/* Advancing by clicking the picture, the way the reference does. */}
-      <button type="button" className="region-advance" onClick={next}>
-        <span className="sr-only">Show the next region</span>
-      </button>
-
-      <ExploreCursor stageRef={stageRef} enabled={!reducedMotion} />
+      {/*
+        Advancing by clicking the picture. It is a second route to the chevron
+        below rather than a control of its own, so it stays out of the tab order
+        instead of doubling up on it — and it leaves the cursor alone.
+      */}
+      <button
+        type="button"
+        className="region-advance"
+        onClick={next}
+        tabIndex={-1}
+        aria-hidden="true"
+      />
 
       <div className="region-chrome">
-        <h3 key={region.name} className="region-title">
-          {[...region.name].map((glyph, i) => (
-            <span
-              key={i}
-              className="region-title-glyph"
-              style={{ animationDelay: `${120 + i * 34}ms` }}
-            >
-              {glyph === " " ? " " : glyph}
-            </span>
-          ))}
-        </h3>
+        <div className="region-copy">
+          <h3 key={region.name} className="region-title">
+            {[...region.name].map((glyph, i) => (
+              <span
+                key={i}
+                className="region-title-glyph"
+                style={{ animationDelay: `${120 + i * 34}ms` }}
+              >
+                {glyph === " " ? "\u00A0" : glyph}
+              </span>
+            ))}
+          </h3>
 
-        <div className="region-rule">
-          <span className="region-rule-lead">
-            <i className="region-stack" aria-hidden="true" />
-            {regions.length} regions
-          </span>
-          <span key={`m-${active}`} className="region-rule-label">
-            {region.markets}
-          </span>
-          <span className="region-rule-count tnum">
-            <b key={`c-${active}`}>{pad(active + 1)}</b>
-            <em>—</em>
-            {pad(regions.length)}
+          <span className="region-rule" aria-hidden="true" />
+
+          <div className="region-meta">
+            <span key={`m-${active}`} className="region-market">
+              {region.markets}
+            </span>
+            <span key={`co-${active}`} className="region-coords">
+              {region.coordinates}
+            </span>
+          </div>
+
+          <span className="region-count tnum">
+            <b key={`c-${active}`}>{pad(active + 1)}</b>-{pad(regions.length)}
           </span>
         </div>
 
-        <div className="region-foot">
-          <span key={`co-${active}`} className="region-coords">
-            {region.coordinates}
-          </span>
-
-          <div className="region-thumbs" role="tablist" aria-label="Regions">
+        <div className="region-rail">
+          <div className="region-rail-thumbs" role="tablist" aria-label="Regions">
             {regions.map((other, index) => {
               const isActive = index === active
               return (
@@ -206,15 +210,17 @@ export function RegionSlider({ regions }: { regions: Region[] }) {
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => goTo(index)}
                   onKeyDown={(event) => {
-                    if (event.key === "ArrowRight") goTo(index + 1)
-                    else if (event.key === "ArrowLeft") goTo(index - 1)
+                    if (event.key === "ArrowDown" || event.key === "ArrowRight")
+                      goTo(index + 1)
+                    else if (event.key === "ArrowUp" || event.key === "ArrowLeft")
+                      goTo(index - 1)
                     else return
                     event.preventDefault()
                   }}
                   className={cn("region-thumb", isActive && "is-active")}
                 >
                   <span className="region-thumb-index" aria-hidden="true">
-                    {pad(index + 1)}.
+                    {index + 1}.
                   </span>
                   <span
                     className="region-thumb-shot"
@@ -225,100 +231,45 @@ export function RegionSlider({ regions }: { regions: Region[] }) {
                     }
                   >
                     <span className="sr-only">{other.name}</span>
+                    {/*
+                     * The bar is the clock: it runs for the dwell, and the slider
+                     * moves when it finishes. Pausing the animation — on hover, on
+                     * focus, off screen — pauses the slider with it, so the two can
+                     * never drift out of step.
+                     */}
+                    {isActive ? (
+                      <span className="region-thumb-rail" aria-hidden="true">
+                        <span
+                          key={`p-${active}`}
+                          className={cn("region-thumb-fill", !autoplay && "is-held")}
+                          style={{ animationDuration: `${DWELL}ms` }}
+                          onAnimationEnd={next}
+                        />
+                      </span>
+                    ) : null}
                   </span>
-                  {/*
-                   * The bar is the clock: it runs for the dwell, and the slider
-                   * moves when it finishes. Pausing the animation — on hover, on
-                   * focus, off screen — pauses the slider with it, so the two can
-                   * never drift out of step.
-                   */}
-                  {isActive ? (
-                    <span className="region-thumb-rail" aria-hidden="true">
-                      <span
-                        key={`p-${active}`}
-                        className={cn("region-thumb-fill", !autoplay && "is-held")}
-                        style={{ animationDuration: `${DWELL}ms` }}
-                        onAnimationEnd={next}
-                      />
-                    </span>
-                  ) : null}
                 </button>
               )
             })}
           </div>
+
+          <button
+            type="button"
+            className="region-chevron"
+            onClick={next}
+            aria-label="Show the next region"
+          >
+            <svg viewBox="0 0 24 14" width="24" height="14" fill="none" aria-hidden="true">
+              <path
+                d="M1 1l11 11L23 1"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
-  )
-}
-
-/**
- * The disc that trails the pointer across the stage. Positioned straight on the
- * element rather than through React state — this runs on every pointer move,
- * and a re-render per frame is a cost with nothing to show for it.
- */
-function ExploreCursor({
-  stageRef,
-  enabled,
-}: {
-  stageRef: React.RefObject<HTMLDivElement | null>
-  enabled: boolean
-}) {
-  const dotRef = React.useRef<HTMLSpanElement>(null)
-
-  React.useEffect(() => {
-    const stage = stageRef.current
-    const dot = dotRef.current
-    if (!stage || !dot || !enabled) return
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return
-
-    let frame: number | null = null
-    let targetX = 0
-    let targetY = 0
-    let x = 0
-    let y = 0
-    let seeded = false
-
-    const tick = () => {
-      x += (targetX - x) * 0.18
-      y += (targetY - y) * 0.18
-      dot.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`
-      frame = Math.abs(targetX - x) < 0.1 && Math.abs(targetY - y) < 0.1
-        ? null
-        : requestAnimationFrame(tick)
-    }
-
-    const move = (event: PointerEvent) => {
-      const box = stage.getBoundingClientRect()
-      targetX = event.clientX - box.left
-      targetY = event.clientY - box.top
-      if (!seeded) {
-        // Land the disc under the cursor rather than flying it in from a corner.
-        seeded = true
-        x = targetX
-        y = targetY
-      }
-      if (frame === null) frame = requestAnimationFrame(tick)
-    }
-
-    const leave = () => {
-      seeded = false
-    }
-
-    stage.addEventListener("pointermove", move)
-    stage.addEventListener("pointerleave", leave)
-    return () => {
-      stage.removeEventListener("pointermove", move)
-      stage.removeEventListener("pointerleave", leave)
-      if (frame !== null) cancelAnimationFrame(frame)
-    }
-  }, [enabled, stageRef])
-
-  if (!enabled) return null
-
-  return (
-    <span ref={dotRef} className="region-cursor" aria-hidden="true">
-      Next
-    </span>
   )
 }

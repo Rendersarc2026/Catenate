@@ -691,9 +691,12 @@
 .region-stage {
   position: relative;
   width: 100%;
-  height: clamp(440px, 58vw, 700px);
+  /* `svh` rather than `dvh`: the stage scrolls with the page, so sizing it to
+     the *dynamic* viewport would resize it every time a mobile URL bar
+     collapses. `vh` first for anything that has not caught up. */
+  height: 100vh;
+  height: 100svh;
   overflow: hidden;
-  border-radius: var(--block-radius);
   background-color: #0d1018;
   isolation: isolate;
 }
@@ -766,13 +769,16 @@
       rgb(8 10 16 / 0.06) 66%,
       rgb(8 10 16 / 0.38) 100%
     ),
-    linear-gradient(to right, rgb(8 10 16 / 0.55), transparent 58%);
+    linear-gradient(to right, rgb(8 10 16 / 0.55), transparent 58%),
+    linear-gradient(to left, rgb(8 10 16 / 0.42), transparent 32%);
 }
 
+/* Sits over the whole picture, but takes no cursor of its own — the pointer
+   stays the plain arrow it would be over any photograph. */
 .region-advance {
   position: absolute;
   inset: 0;
-  cursor: pointer;
+  cursor: default;
   border: 0;
   background: none;
 }
@@ -780,17 +786,20 @@
 .region-advance:focus-visible {
   outline: 2px solid #fff;
   outline-offset: -6px;
-  border-radius: var(--block-radius);
 }
 
 .region-chrome {
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: clamp(14px, 2vw, 22px);
-  padding: clamp(20px, 3vw, 40px);
+  align-items: stretch;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 44px);
+  padding-block: clamp(20px, 3vw, 40px);
+  /* Now the stage runs edge to edge, the copy and the rail line up with the
+     site's content column rather than with the screen — the same gutter the
+     nav, the heading and the stats sit on. */
+  padding-inline: max(var(--section-pad), calc((100% - var(--content-max)) / 2));
   color: #fff;
   /* Chrome is a layer above the click target, so it hands pointer events back
      only where something is genuinely interactive. */
@@ -802,9 +811,20 @@
   pointer-events: auto;
 }
 
+/* ---- Left column: title, rule, detail, counter ---- */
+
+.region-copy {
+  flex: 1;
+  min-width: 0;
+  max-width: min(58%, 760px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 .region-title {
   margin: 0;
-  font-size: clamp(3rem, 8.5vw, 7rem);
+  font-size: clamp(2.6rem, 7.5vw, 6.2rem);
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: -0.035em;
@@ -829,77 +849,47 @@
   }
 }
 
+/* Stops well short of the thumbnail rail rather than running the full width. */
 .region-rule {
+  height: 1px;
+  margin-top: clamp(12px, 1.6vw, 22px);
+  background: rgb(255 255 255 / 0.42);
+}
+
+.region-meta {
   display: flex;
-  align-items: center;
-  gap: clamp(12px, 2vw, 28px);
-  padding-top: 14px;
-  border-top: 1px solid rgb(255 255 255 / 0.32);
-  font-size: 13px;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: clamp(10px, 1.2vw, 16px);
+  font-size: 12.5px;
   text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
 }
 
-.region-rule-lead {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  flex: none;
-}
-
-/* Three stacked bars — the reference's menu glyph, drawn rather than imported. */
-.region-stack {
-  width: 14px;
-  height: 9px;
-  flex: none;
-  background: linear-gradient(currentColor 0 0) 0 0 / 100% 1px no-repeat,
-    linear-gradient(currentColor 0 0) 0 50% / 100% 1px no-repeat,
-    linear-gradient(currentColor 0 0) 0 100% / 100% 1px no-repeat;
-}
-
-.region-rule-label {
-  flex: 1;
-  min-width: 0;
-  text-align: right;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: rgb(255 255 255 / 0.82);
+.region-market {
+  color: rgb(255 255 255 / 0.92);
   animation: region-detail-in 0.6s var(--ease-out-expo) 0.14s both;
 }
 
-.region-rule-count {
-  flex: none;
-  display: inline-flex;
-  gap: 0.5ch;
-  color: rgb(255 255 255 / 0.6);
-}
-
-.region-rule-count b {
-  font-weight: inherit;
-  color: #fff;
-  animation: region-detail-in 0.6s var(--ease-out-expo) 0.2s both;
-}
-
-.region-rule-count em {
-  font-style: normal;
-  opacity: 0.5;
-}
-
-.region-foot {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: clamp(16px, 3vw, 40px);
-}
-
 .region-coords {
-  max-width: 22ch;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12px;
   letter-spacing: 0.02em;
-  color: rgb(255 255 255 / 0.72);
+  color: rgb(255 255 255 / 0.66);
+  animation: region-detail-in 0.6s var(--ease-out-expo) 0.22s both;
+}
+
+.region-count {
+  margin-top: clamp(24px, 5vh, 56px);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: rgb(255 255 255 / 0.78);
   text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
-  animation: region-detail-in 0.6s var(--ease-out-expo) 0.26s both;
+}
+
+.region-count b {
+  font-weight: inherit;
+  color: #fff;
+  animation: region-detail-in 0.6s var(--ease-out-expo) 0.3s both;
 }
 
 @keyframes region-detail-in {
@@ -909,23 +899,39 @@
   }
 }
 
-.region-thumbs {
-  display: flex;
-  gap: clamp(8px, 1.2vw, 14px);
+/* ---- Right column: the thumbnail rail ---- */
+
+.region-rail {
+  --shot-w: clamp(68px, min(8.5vw, 12svh), 120px);
+
   flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(8px, 1.2vh, 12px);
+}
+
+.region-rail-thumbs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(6px, 1vh, 10px);
+  min-height: 0;
 }
 
 .region-thumb {
+  flex: none;
   display: flex;
-  flex-direction: column;
-  gap: 7px;
-  width: clamp(74px, 9vw, 116px);
+  align-items: flex-end;
+  gap: clamp(5px, 0.6vw, 9px);
   cursor: pointer;
   border: 0;
   background: none;
   padding: 0;
   color: rgb(255 255 255 / 0.6);
-  font-size: 11px;
+  font-size: 11.5px;
   letter-spacing: 0.04em;
   text-align: left;
   /* Identity value: the lift below moves this, and declaring it here keeps the
@@ -943,7 +949,7 @@
 @media (hover: hover) {
   .region-thumb:hover {
     color: #fff;
-    translate: 0 -4px;
+    translate: -4px 0;
   }
 }
 
@@ -953,29 +959,46 @@
   border-radius: 4px;
 }
 
+.region-thumb-index {
+  flex: none;
+  padding-bottom: 2px;
+  text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
+}
+
 .region-thumb-shot {
+  position: relative;
   display: block;
-  aspect-ratio: 4 / 3;
+  width: var(--shot-w);
+  aspect-ratio: 8 / 5;
   border-radius: 6px;
+  overflow: hidden;
   background-color: #171b26;
   background-size: cover;
   background-position: center;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16);
-  opacity: 0.55;
-  transition: opacity 0.4s var(--ease-out-expo);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22);
+  opacity: 0.62;
+  transition:
+    opacity 0.4s var(--ease-out-expo),
+    width 0.5s var(--ease-out-expo);
 }
 
-.region-thumb.is-active .region-thumb-shot,
+/* The frame in view reads larger, growing leftward so the rail stays flush
+   with the right edge of the stage. */
+.region-thumb.is-active .region-thumb-shot {
+  width: calc(var(--shot-w) * 1.15);
+  opacity: 1;
+}
+
 .region-thumb:hover .region-thumb-shot {
   opacity: 1;
 }
 
+/* The dwell clock, laid across the foot of the frame in view. */
 .region-thumb-rail {
-  display: block;
+  position: absolute;
+  inset: auto 0 0 0;
   height: 2px;
-  border-radius: 2px;
-  background: rgb(255 255 255 / 0.24);
-  overflow: hidden;
+  background: rgb(255 255 255 / 0.28);
 }
 
 .region-thumb-fill {
@@ -1001,68 +1024,55 @@
   }
 }
 
-.region-cursor {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 3;
+/* Centred under the frames, not under the row — the numbers sit outside. */
+.region-chevron {
+  flex: none;
   display: grid;
   place-items: center;
-  width: 74px;
-  height: 74px;
-  border-radius: 50%;
-  border: 1px solid rgb(255 255 255 / 0.4);
-  background: rgb(255 255 255 / 0.12);
-  backdrop-filter: blur(6px);
-  color: #fff;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  pointer-events: none;
-  opacity: 0;
-  scale: 0.7;
+  width: var(--shot-w);
+  height: 22px;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: rgb(255 255 255 / 0.72);
   transition:
-    opacity 0.35s var(--ease-out-expo),
-    scale 0.35s var(--ease-out-expo);
+    color 0.3s var(--ease-out-expo),
+    translate 0.4s var(--ease-out-expo);
+  translate: 0 0;
 }
 
-.region-stage:hover .region-cursor {
-  opacity: 1;
-  scale: 1;
+.region-chevron:hover {
+  color: #fff;
+  translate: 0 3px;
 }
 
-/* A coarse pointer has no cursor to follow, and the disc would sit stranded
-   wherever the last tap left it. */
-@media (hover: none), (pointer: coarse) {
-  .region-cursor {
-    display: none;
-  }
+.region-chevron:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-@media (width < 40rem) {
-  .region-foot {
-    flex-direction: column;
-    align-items: stretch;
+@media (width < 48rem) {
+  .region-copy {
+    max-width: none;
   }
 
-  .region-thumbs {
-    justify-content: space-between;
-  }
-
-  .region-thumb {
-    flex: 1;
-    width: auto;
+  .region-rail {
+    --shot-w: clamp(52px, min(16vw, 9svh), 80px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .region-title-glyph,
-  .region-rule-label,
-  .region-rule-count b,
-  .region-coords {
+  .region-market,
+  .region-coords,
+  .region-count b {
     animation: none;
   }
 
-  .region-thumb:hover {
+  .region-thumb:hover,
+  .region-chevron:hover {
     translate: 0 0;
   }
 }

@@ -7,22 +7,26 @@ import { Reveal } from "@/components/site/reveal"
 import { industries, presence, regions } from "@/data/catenate"
 
 export function GlobalPresence() {
+  /*
+   * Flush, so the slider can run the full width of the screen. Every other
+   * block re-applies the content column for itself.
+   */
   return (
-    <section id="presence" className="section bg-white text-ink overflow-hidden">
-      <Reveal className="mb-[clamp(34px,4vw,54px)] flex flex-col items-center text-center">
+    <section id="presence" className="section section-flush bg-white text-ink overflow-hidden">
+      <Reveal className="content-pad mb-[clamp(34px,4vw,54px)] flex flex-col items-center text-center">
         <span className="eyebrow">{presence.eyebrow}</span>
         <h2 className="mx-auto max-w-[24ch] text-balance text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
           {presence.heading}
         </h2>
       </Reveal>
 
-      <Reveal className="border-b border-ink/10 pb-[clamp(34px,4vw,54px)]">
+      <Reveal>
         <RegionSlider regions={regions} />
       </Reveal>
 
       <Reveal
         stagger
-        className="grid grid-cols-4 gap-6 border-b border-ink/10 py-[clamp(34px,4vw,54px)] text-center max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-10"
+        className="content-pad grid grid-cols-4 gap-6 border-b border-ink/10 py-[clamp(34px,4vw,54px)] text-center max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-10"
       >
         {presence.stats.map((stat) => (
           /* Each figure is centred over its own label, so the four blocks
@@ -36,7 +40,7 @@ export function GlobalPresence() {
         ))}
       </Reveal>
 
-      <Reveal className="ticker-mask mt-[clamp(28px,3.5vw,44px)]" aria-hidden="true">
+      <Reveal className="content-pad ticker-mask mt-[clamp(28px,3.5vw,44px)]" aria-hidden="true">
         <div className="ticker-track">
           {/* Duplicated so the -50% keyframe loops seamlessly. */}
           {[0, 1].map((copy) => (
