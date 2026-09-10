@@ -21,23 +21,17 @@ export function GlobalPresence() {
       </Reveal>
 
       <Reveal>
-        <RegionSlider regions={regions} />
-      </Reveal>
-
-      <Reveal
-        stagger
-        className="content-pad grid grid-cols-4 gap-6 border-b border-ink/10 py-[clamp(34px,4vw,54px)] text-center max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-10"
-      >
-        {presence.stats.map((stat) => (
-          /* Each figure is centred over its own label, so the four blocks
-             sit at even intervals whatever the label lengths. */
-          <div key={stat.label} className="flex flex-col items-center">
-            <CountUp to={stat.to} suffix={stat.suffix} />
-            <span className="mt-3 block text-xs tracking-[0.14em] text-grey uppercase">
-              {stat.label}
-            </span>
-          </div>
-        ))}
+        {/* The figures ride the foot of the picture rather than sitting under
+            it, so the stage reads as one frame. */}
+        <RegionSlider
+          regions={regions}
+          footer={presence.stats.map((stat) => (
+            <div key={stat.label} className="region-stat">
+              <CountUp to={stat.to} suffix={stat.suffix} />
+              <span className="region-stat-label">{stat.label}</span>
+            </div>
+          ))}
+        />
       </Reveal>
 
       <Reveal className="content-pad ticker-mask mt-[clamp(28px,3.5vw,44px)]" aria-hidden="true">
@@ -103,10 +97,7 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   }, [to])
 
   return (
-    <b
-      ref={ref}
-      className="tnum block text-[clamp(2.6rem,5.4vw,4.2rem)] leading-none font-medium tracking-[-0.03em] text-ink"
-    >
+    <b ref={ref} className="tnum region-stat-figure">
       {value}
       {suffix}
     </b>

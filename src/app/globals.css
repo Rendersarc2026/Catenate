@@ -792,9 +792,8 @@
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: clamp(16px, 3vw, 44px);
+  flex-direction: column;
+  gap: clamp(22px, 4vh, 48px);
   padding-block: clamp(20px, 3vw, 40px);
   /* Now the stage runs edge to edge, the copy and the rail line up with the
      site's content column rather than with the screen — the same gutter the
@@ -809,6 +808,17 @@
 .region-chrome button,
 .region-chrome a {
   pointer-events: auto;
+}
+
+/* Title on the left, the region list on the right, both filling the height
+   above the figures. */
+.region-chrome-row {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 44px);
 }
 
 /* ---- Left column: title, rule, detail, counter ---- */
@@ -849,18 +859,28 @@
   }
 }
 
-/* Stops well short of the thumbnail rail rather than running the full width. */
+/* Runs the width of the copy column and stops there — it is the measure the
+   detail and the counter are set against, not a divider across the picture. */
 .region-rule {
   height: 1px;
   margin-top: clamp(12px, 1.6vw, 22px);
   background: rgb(255 255 255 / 0.42);
 }
 
+/* Detail at one end of the rule, the counter at the other. */
+.region-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 40px);
+  margin-top: clamp(10px, 1.2vw, 16px);
+}
+
 .region-meta {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  margin-top: clamp(10px, 1.2vw, 16px);
+  min-width: 0;
   font-size: 12.5px;
   text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
 }
@@ -879,10 +899,10 @@
 }
 
 .region-count {
-  margin-top: clamp(24px, 5vh, 56px);
+  flex: none;
   font-size: 12.5px;
   letter-spacing: 0.06em;
-  color: rgb(255 255 255 / 0.78);
+  color: rgb(255 255 255 / 0.62);
   text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
 }
 
@@ -899,119 +919,99 @@
   }
 }
 
-/* ---- Right column: the thumbnail rail ---- */
+/* ---- Right column: the region list ---- */
 
 .region-rail {
-  --shot-w: clamp(68px, min(8.5vw, 12svh), 120px);
-
   flex: none;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: center;
-  gap: clamp(8px, 1.2vh, 12px);
-}
-
-.region-rail-thumbs {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  gap: clamp(6px, 1vh, 10px);
+  gap: clamp(9px, 1.5vh, 17px);
   min-height: 0;
 }
 
-.region-thumb {
+/*
+ * A name, not a thumbnail: the one in view is set larger and pulled a little
+ * off the column so the size change reads as emphasis rather than as reflow.
+ */
+.region-name {
+  position: relative;
   flex: none;
   display: flex;
-  align-items: flex-end;
-  gap: clamp(5px, 0.6vw, 9px);
+  align-items: flex-start;
+  gap: clamp(5px, 0.5vw, 9px);
   cursor: pointer;
   border: 0;
   background: none;
   padding: 0;
-  color: rgb(255 255 255 / 0.6);
-  font-size: 11.5px;
-  letter-spacing: 0.04em;
+  color: rgb(255 255 255 / 0.66);
+  font-size: clamp(0.95rem, 1.5vw, 1.35rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
   text-align: left;
-  /* Identity value: the lift below moves this, and declaring it here keeps the
-     stacking context from changing the moment it does. */
+  text-shadow: 0 1px 16px rgb(8 10 16 / 0.5);
+  /* Identity values: the shift below moves this, and declaring it here keeps
+     the transition symmetrical in both directions. */
   translate: 0 0;
   transition:
-    translate 0.4s var(--ease-out-expo),
-    color 0.3s var(--ease-out-expo);
+    color 0.35s var(--ease-out-expo),
+    font-size 0.5s var(--ease-out-expo),
+    translate 0.5s var(--ease-out-expo);
 }
 
-.region-thumb.is-active {
+.region-name.is-active {
   color: #fff;
+  font-size: clamp(1.5rem, 2.7vw, 2.45rem);
+  letter-spacing: -0.005em;
+  translate: -0.42em 0;
 }
 
 @media (hover: hover) {
-  .region-thumb:hover {
+  .region-name:hover {
     color: #fff;
-    translate: -4px 0;
   }
 }
 
-.region-thumb:focus-visible {
+.region-name:focus-visible {
   outline: 2px solid #fff;
-  outline-offset: 4px;
-  border-radius: 4px;
+  outline-offset: 5px;
+  border-radius: 3px;
 }
 
-.region-thumb-index {
+/* Superscript, so it sits with the cap line rather than on the baseline. */
+.region-name-index {
   flex: none;
-  padding-bottom: 2px;
-  text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
+  padding-top: 0.16em;
+  font-size: 0.44em;
+  letter-spacing: 0.04em;
+  color: rgb(255 255 255 / 0.5);
 }
 
-.region-thumb-shot {
-  position: relative;
-  display: block;
-  width: var(--shot-w);
-  aspect-ratio: 8 / 5;
-  border-radius: 6px;
-  overflow: hidden;
-  background-color: #171b26;
-  background-size: cover;
-  background-position: center;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22);
-  opacity: 0.62;
-  transition:
-    opacity 0.4s var(--ease-out-expo),
-    width 0.5s var(--ease-out-expo);
+.region-name.is-active .region-name-index {
+  color: rgb(255 255 255 / 0.72);
 }
 
-/* The frame in view reads larger, growing leftward so the rail stays flush
-   with the right edge of the stage. */
-.region-thumb.is-active .region-thumb-shot {
-  width: calc(var(--shot-w) * 1.15);
-  opacity: 1;
-}
-
-.region-thumb:hover .region-thumb-shot {
-  opacity: 1;
-}
-
-/* The dwell clock, laid across the foot of the frame in view. */
-.region-thumb-rail {
+/*
+ * The dwell clock. It carries no picture of its own in this layout, but it is
+ * still what moves the slider on: it runs for the dwell and fires at the end,
+ * and pausing the animation — on hover, on focus, off screen — pauses the
+ * slider with it, so the two can never drift out of step.
+ */
+.region-dwell-clock {
   position: absolute;
-  inset: auto 0 0 0;
-  height: 2px;
-  background: rgb(255 255 255 / 0.28);
-}
-
-.region-thumb-fill {
-  display: block;
-  height: 100%;
-  background: #fff;
-  transform-origin: left center;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
   animation-name: region-dwell;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }
 
-.region-thumb-fill.is-held {
+.region-dwell-clock.is-held {
   animation-play-state: paused;
 }
 
@@ -1024,33 +1024,45 @@
   }
 }
 
-/* Centred under the frames, not under the row — the numbers sit outside. */
-.region-chevron {
+/* ---- Foot: the figures, laid across the bottom of the picture ---- */
+
+.region-stats {
   flex: none;
   display: grid;
-  place-items: center;
-  width: var(--shot-w);
-  height: 22px;
-  border: 0;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  color: rgb(255 255 255 / 0.72);
-  transition:
-    color 0.3s var(--ease-out-expo),
-    translate 0.4s var(--ease-out-expo);
-  translate: 0 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  max-width: min(74%, 1080px);
 }
 
-.region-chevron:hover {
+.region-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: clamp(8px, 1.5vw, 24px);
+  text-align: center;
+}
+
+.region-stat + .region-stat {
+  border-left: 1px solid rgb(255 255 255 / 0.22);
+}
+
+.region-stat-figure {
+  display: block;
+  font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.03em;
   color: #fff;
-  translate: 0 3px;
+  text-shadow: 0 2px 24px rgb(8 10 16 / 0.5);
 }
 
-.region-chevron:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 3px;
-  border-radius: 4px;
+.region-stat-label {
+  margin-top: clamp(8px, 1vw, 13px);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.72);
+  text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
 }
 
 @media (width < 48rem) {
@@ -1058,8 +1070,19 @@
     max-width: none;
   }
 
-  .region-rail {
-    --shot-w: clamp(52px, min(16vw, 9svh), 80px);
+  .region-stats {
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: clamp(18px, 4vw, 28px);
+  }
+
+  /* Two up, so the rule belongs to the column beside it, not the row above. */
+  .region-stat + .region-stat {
+    border-left: 0;
+  }
+
+  .region-stat:nth-child(even) {
+    border-left: 1px solid rgb(255 255 255 / 0.22);
   }
 }
 
@@ -1071,9 +1094,8 @@
     animation: none;
   }
 
-  .region-thumb:hover,
-  .region-chevron:hover {
-    translate: 0 0;
+  .region-name {
+    transition: color 0.35s var(--ease-out-expo);
   }
 }
 

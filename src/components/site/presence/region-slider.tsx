@@ -55,7 +55,14 @@ const pad = (n: number) => String(n).padStart(2, "0")
 
 type Wipe = { token: number; photoId: string }
 
-export function RegionSlider({ regions }: { regions: Region[] }) {
+export function RegionSlider({
+  regions,
+  footer,
+}: {
+  regions: Region[]
+  /** Laid across the foot of the picture, inside the same content column. */
+  footer?: React.ReactNode
+}) {
   const reducedMotion = usePrefersReducedMotion()
   const stageRef = React.useRef<HTMLDivElement>(null)
 
@@ -155,8 +162,8 @@ export function RegionSlider({ regions }: { regions: Region[] }) {
       <div className="region-scrim" aria-hidden="true" />
 
       {/*
-        Advancing by clicking the picture. It is a second route to the chevron
-        below rather than a control of its own, so it stays out of the tab order
+        Advancing by clicking the picture. It is a second route to the region
+        list rather than a control of its own, so it stays out of the tab order
         instead of doubling up on it — and it leaves the cursor alone.
       */}
       <button
@@ -168,37 +175,39 @@ export function RegionSlider({ regions }: { regions: Region[] }) {
       />
 
       <div className="region-chrome">
-        <div className="region-copy">
-          <h3 key={region.name} className="region-title">
-            {[...region.name].map((glyph, i) => (
-              <span
-                key={i}
-                className="region-title-glyph"
-                style={{ animationDelay: `${120 + i * 34}ms` }}
-              >
-                {glyph === " " ? "\u00A0" : glyph}
+        <div className="region-chrome-row">
+          <div className="region-copy">
+            <h3 key={region.name} className="region-title">
+              {[...region.name].map((glyph, i) => (
+                <span
+                  key={i}
+                  className="region-title-glyph"
+                  style={{ animationDelay: `${120 + i * 34}ms` }}
+                >
+                  {glyph === " " ? "\u00A0" : glyph}
+                </span>
+              ))}
+            </h3>
+
+            <span className="region-rule" aria-hidden="true" />
+
+            <div className="region-foot">
+              <div className="region-meta">
+                <span key={`m-${active}`} className="region-market">
+                  {region.markets}
+                </span>
+                <span key={`co-${active}`} className="region-coords">
+                  {region.coordinates}
+                </span>
+              </div>
+
+              <span className="region-count tnum">
+                <b key={`c-${active}`}>{pad(active + 1)}</b>-{pad(regions.length)}
               </span>
-            ))}
-          </h3>
-
-          <span className="region-rule" aria-hidden="true" />
-
-          <div className="region-meta">
-            <span key={`m-${active}`} className="region-market">
-              {region.markets}
-            </span>
-            <span key={`co-${active}`} className="region-coords">
-              {region.coordinates}
-            </span>
+            </div>
           </div>
 
-          <span className="region-count tnum">
-            <b key={`c-${active}`}>{pad(active + 1)}</b>-{pad(regions.length)}
-          </span>
-        </div>
-
-        <div className="region-rail">
-          <div className="region-rail-thumbs" role="tablist" aria-label="Regions">
+          <div className="region-rail" role="tablist" aria-label="Regions">
             {regions.map((other, index) => {
               const isActive = index === active
               return (
@@ -217,58 +226,28 @@ export function RegionSlider({ regions }: { regions: Region[] }) {
                     else return
                     event.preventDefault()
                   }}
-                  className={cn("region-thumb", isActive && "is-active")}
+                  className={cn("region-name", isActive && "is-active")}
                 >
-                  <span className="region-thumb-index" aria-hidden="true">
-                    {index + 1}.
+                  <span className="region-name-index" aria-hidden="true">
+                    {index + 1}
                   </span>
-                  <span
-                    className="region-thumb-shot"
-                    style={
-                      inView
-                        ? { backgroundImage: `url("${src(photoFor(other).id, 480, 66)}")` }
-                        : undefined
-                    }
-                  >
-                    <span className="sr-only">{other.name}</span>
-                    {/*
-                     * The bar is the clock: it runs for the dwell, and the slider
-                     * moves when it finishes. Pausing the animation — on hover, on
-                     * focus, off screen — pauses the slider with it, so the two can
-                     * never drift out of step.
-                     */}
-                    {isActive ? (
-                      <span className="region-thumb-rail" aria-hidden="true">
-                        <span
-                          key={`p-${active}`}
-                          className={cn("region-thumb-fill", !autoplay && "is-held")}
-                          style={{ animationDuration: `${DWELL}ms` }}
-                          onAnimationEnd={next}
-                        />
-                      </span>
-                    ) : null}
-                  </span>
+                  {other.name}
+                  {isActive ? (
+                    <span
+                      key={`p-${active}`}
+                      className={cn("region-dwell-clock", !autoplay && "is-held")}
+                      style={{ animationDuration: `${DWELL}ms` }}
+                      onAnimationEnd={next}
+                      aria-hidden="true"
+                    />
+                  ) : null}
                 </button>
               )
             })}
           </div>
-
-          <button
-            type="button"
-            className="region-chevron"
-            onClick={next}
-            aria-label="Show the next region"
-          >
-            <svg viewBox="0 0 24 14" width="24" height="14" fill="none" aria-hidden="true">
-              <path
-                d="M1 1l11 11L23 1"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
         </div>
+
+        {footer ? <div className="region-stats">{footer}</div> : null}
       </div>
     </div>
   )
