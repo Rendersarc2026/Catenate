@@ -684,6 +684,389 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Global presence — region slider
+--------------------------------------------------------------------------- */
+
+.region-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(440px, 58vw, 700px);
+  overflow: hidden;
+  border-radius: var(--block-radius);
+  background-color: #0d1018;
+  isolation: isolate;
+}
+
+.region-frame,
+.region-slat {
+  background-repeat: no-repeat;
+  background-color: #0d1018;
+}
+
+.region-frame {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+/* The outgoing frame, cut into strips. Each one carries the slice of the
+   picture that was already sitting at its own height, so before the animation
+   starts the stack is indistinguishable from the whole image. */
+.region-wipe {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.region-slat {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background-position-x: center;
+  will-change: transform;
+  animation-duration: 0.78s;
+  animation-timing-function: cubic-bezier(0.7, 0, 0.24, 1);
+  animation-fill-mode: both;
+}
+
+.region-slat.is-left {
+  animation-name: region-slat-left;
+}
+
+.region-slat.is-right {
+  animation-name: region-slat-right;
+}
+
+@keyframes region-slat-left {
+  to {
+    transform: translate3d(-101%, 0, 0);
+  }
+}
+
+@keyframes region-slat-right {
+  to {
+    transform: translate3d(101%, 0, 0);
+  }
+}
+
+/* Seats the type: darker at the edges where the copy sits, clear through the
+   middle where the photograph earns its keep. */
+.region-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      rgb(8 10 16 / 0.95) 0%,
+      rgb(8 10 16 / 0.82) 18%,
+      rgb(8 10 16 / 0.45) 38%,
+      rgb(8 10 16 / 0.06) 66%,
+      rgb(8 10 16 / 0.38) 100%
+    ),
+    linear-gradient(to right, rgb(8 10 16 / 0.55), transparent 58%);
+}
+
+.region-advance {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  border: 0;
+  background: none;
+}
+
+.region-advance:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -6px;
+  border-radius: var(--block-radius);
+}
+
+.region-chrome {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: clamp(14px, 2vw, 22px);
+  padding: clamp(20px, 3vw, 40px);
+  color: #fff;
+  /* Chrome is a layer above the click target, so it hands pointer events back
+     only where something is genuinely interactive. */
+  pointer-events: none;
+}
+
+.region-chrome button,
+.region-chrome a {
+  pointer-events: auto;
+}
+
+.region-title {
+  margin: 0;
+  font-size: clamp(3rem, 8.5vw, 7rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  text-shadow: 0 2px 40px rgb(8 10 16 / 0.4);
+}
+
+.region-title-glyph {
+  display: inline-block;
+  animation: region-glyph-in 0.85s var(--ease-out-expo) both;
+}
+
+@keyframes region-glyph-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.42em);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(-30% -10% -30% -10%);
+  }
+}
+
+.region-rule {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding-top: 14px;
+  border-top: 1px solid rgb(255 255 255 / 0.32);
+  font-size: 13px;
+  text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
+}
+
+.region-rule-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+/* Three stacked bars — the reference's menu glyph, drawn rather than imported. */
+.region-stack {
+  width: 14px;
+  height: 9px;
+  flex: none;
+  background: linear-gradient(currentColor 0 0) 0 0 / 100% 1px no-repeat,
+    linear-gradient(currentColor 0 0) 0 50% / 100% 1px no-repeat,
+    linear-gradient(currentColor 0 0) 0 100% / 100% 1px no-repeat;
+}
+
+.region-rule-label {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgb(255 255 255 / 0.82);
+  animation: region-detail-in 0.6s var(--ease-out-expo) 0.14s both;
+}
+
+.region-rule-count {
+  flex: none;
+  display: inline-flex;
+  gap: 0.5ch;
+  color: rgb(255 255 255 / 0.6);
+}
+
+.region-rule-count b {
+  font-weight: inherit;
+  color: #fff;
+  animation: region-detail-in 0.6s var(--ease-out-expo) 0.2s both;
+}
+
+.region-rule-count em {
+  font-style: normal;
+  opacity: 0.5;
+}
+
+.region-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 40px);
+}
+
+.region-coords {
+  max-width: 22ch;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: rgb(255 255 255 / 0.72);
+  text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
+  animation: region-detail-in 0.6s var(--ease-out-expo) 0.26s both;
+}
+
+@keyframes region-detail-in {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+}
+
+.region-thumbs {
+  display: flex;
+  gap: clamp(8px, 1.2vw, 14px);
+  flex: none;
+}
+
+.region-thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: clamp(74px, 9vw, 116px);
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: rgb(255 255 255 / 0.6);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-align: left;
+  /* Identity value: the lift below moves this, and declaring it here keeps the
+     stacking context from changing the moment it does. */
+  translate: 0 0;
+  transition:
+    translate 0.4s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo);
+}
+
+.region-thumb.is-active {
+  color: #fff;
+}
+
+@media (hover: hover) {
+  .region-thumb:hover {
+    color: #fff;
+    translate: 0 -4px;
+  }
+}
+
+.region-thumb:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.region-thumb-shot {
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  background-color: #171b26;
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16);
+  opacity: 0.55;
+  transition: opacity 0.4s var(--ease-out-expo);
+}
+
+.region-thumb.is-active .region-thumb-shot,
+.region-thumb:hover .region-thumb-shot {
+  opacity: 1;
+}
+
+.region-thumb-rail {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.24);
+  overflow: hidden;
+}
+
+.region-thumb-fill {
+  display: block;
+  height: 100%;
+  background: #fff;
+  transform-origin: left center;
+  animation-name: region-dwell;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.region-thumb-fill.is-held {
+  animation-play-state: paused;
+}
+
+@keyframes region-dwell {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.region-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background: rgb(255 255 255 / 0.12);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.7;
+  transition:
+    opacity 0.35s var(--ease-out-expo),
+    scale 0.35s var(--ease-out-expo);
+}
+
+.region-stage:hover .region-cursor {
+  opacity: 1;
+  scale: 1;
+}
+
+/* A coarse pointer has no cursor to follow, and the disc would sit stranded
+   wherever the last tap left it. */
+@media (hover: none), (pointer: coarse) {
+  .region-cursor {
+    display: none;
+  }
+}
+
+@media (width < 40rem) {
+  .region-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .region-thumbs {
+    justify-content: space-between;
+  }
+
+  .region-thumb {
+    flex: 1;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .region-title-glyph,
+  .region-rule-label,
+  .region-rule-count b,
+  .region-coords {
+    animation: none;
+  }
+
+  .region-thumb:hover {
+    translate: 0 0;
+  }
+}
+
 @keyframes ticker-slide {
   from {
     transform: translateX(0);

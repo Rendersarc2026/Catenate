@@ -2,30 +2,11 @@
 
 import * as React from "react"
 
-import type { GlobeLocation } from "@/components/site/orbitdot-globe"
-import { OrbitDotGlobeLazy } from "@/components/site/orbitdot-globe-lazy"
+import { RegionSlider } from "@/components/site/presence/region-slider"
 import { Reveal } from "@/components/site/reveal"
 import { industries, presence, regions } from "@/data/catenate"
-import { cn } from "@/lib/utils"
 
 export function GlobalPresence() {
-  const [selectedRegion, setSelectedRegion] = React.useState<number | null>(null)
-  const [hoveredRegion, setHoveredRegion] = React.useState<number | null>(null)
-
-  const activeRegion = hoveredRegion !== null ? hoveredRegion : selectedRegion
-
-  const globeLocations: GlobeLocation[] = React.useMemo(
-    () =>
-      regions.map((region) => ({
-        name: region.name,
-        coordinates: region.coordinates,
-        color: "#e8b98a",
-        pulse: true,
-        showLabel: true,
-      })),
-    []
-  )
-
   return (
     <section id="presence" className="section bg-white text-ink overflow-hidden">
       <Reveal className="mb-[clamp(34px,4vw,54px)] flex flex-col items-center text-center">
@@ -35,63 +16,8 @@ export function GlobalPresence() {
         </h2>
       </Reveal>
 
-      <Reveal className="grid items-center gap-[clamp(28px,4vw,56px)] border-b border-ink/10 pb-[clamp(34px,4vw,54px)] max-lg:grid-cols-1 lg:grid-cols-[1.4fr_0.8fr]">
-        <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[480px] flex items-center justify-center">
-          <OrbitDotGlobeLazy
-            oceanColor="#5c6374"
-            landColor="#ffffff"
-            dotSize={1.8}
-            dotDensity={3}
-            autoRotate={true}
-            activeLocationIndex={activeRegion}
-            onLocationSelect={(index) => {
-              setSelectedRegion((prev) => (prev === index ? null : index))
-            }}
-            locations={globeLocations}
-            className="w-full h-full"
-          />
-        </div>
-
-        <ul className="list-none" onMouseLeave={() => setHoveredRegion(null)}>
-          {regions.map((region, index) => {
-            const isCurrent = activeRegion === index
-            const isSelected = selectedRegion === index
-            return (
-              <li
-                key={region.name}
-                onMouseEnter={() => setHoveredRegion(index)}
-                onClick={() =>
-                  setSelectedRegion((prev) => (prev === index ? null : index))
-                }
-                className={cn(
-                  "group flex flex-col gap-1 border-b border-ink/10 py-3.5 transition-all duration-250 ease-expo last:border-b-0 cursor-pointer select-none",
-                  activeRegion !== null && !isCurrent && "opacity-35",
-                  isSelected && "bg-ink/4 -mx-3 px-3 rounded-xl border-transparent"
-                )}
-              >
-                <div className="flex items-center gap-3.5">
-                  <i
-                    className={cn(
-                      "size-1.5 flex-none rounded-full bg-ink/30 transition-[opacity,transform,background-color] duration-250 ease-expo",
-                      isCurrent && "scale-150 opacity-100 bg-blue"
-                    )}
-                  />
-                  <b className="flex-1 text-[16px] font-medium tracking-[-0.01em] text-ink">
-                    {region.name}
-                  </b>
-                  <span className="text-xs text-grey group-hover:text-ink transition-colors font-mono">
-                    {region.coordinates}
-                  </span>
-                </div>
-                {region.markets && (
-                  <span className="pl-5 text-xs text-grey">
-                    {region.markets}
-                  </span>
-                )}
-              </li>
-            )
-          })}
-        </ul>
+      <Reveal className="border-b border-ink/10 pb-[clamp(34px,4vw,54px)]">
+        <RegionSlider regions={regions} />
       </Reveal>
 
       <Reveal
