@@ -111,7 +111,9 @@ export function SpecularButton({
     const fx = fxRef.current;
     if (!btn || !fx) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    /* The specular ring is a soft gradient a couple of pixels wide; past 1.5x
+       the extra pixels cost frames and show nothing. */
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const renderer = new Renderer({
       alpha: true,
       premultipliedAlpha: true,
@@ -168,28 +170,53 @@ export function SpecularButton({
     ro.observe(btn);
     resize();
 
+    /* Nothing to draw while the button is off screen — and this one sits far
+       enough down the page that it was drawing to nobody for most of a read. */
+    let visible = false;
+    const visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        visible = entries[0]?.isIntersecting ?? true;
+      },
+      { rootMargin: "100px" }
+    );
+    visibilityObserver.observe(btn);
+
     let pointerAngle: number | null = null;
     let proximityT = 0;
+
+    /* The handler only records where the pointer is. Measuring the button from
+       inside it meant a forced layout on every pointer move, in the middle of a
+       smooth-scrolled page that is writing styles on every frame. */
+    let pointerX = 0;
+    let pointerY = 0;
+    let pointerDirty = false;
     const onPointerMove = (e: PointerEvent) => {
+      pointerX = e.clientX;
+      pointerY = e.clientY;
+      pointerDirty = true;
+    };
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+
+    const readPointer = () => {
+      pointerDirty = false;
       const rect = btn.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
-      const dx = Math.max(rect.left - e.clientX, 0, e.clientX - rect.right);
-      const dy = Math.max(rect.top - e.clientY, 0, e.clientY - rect.bottom);
+      const dx = Math.max(rect.left - pointerX, 0, pointerX - rect.right);
+      const dy = Math.max(rect.top - pointerY, 0, pointerY - rect.bottom);
       const dist = Math.hypot(dx, dy);
 
       if (dist === 0) {
-        const nx = (e.clientX - cx) / (rect.width / 2);
-        const ny = (cy - e.clientY) / (rect.height / 2);
+        const nx = (pointerX - cx) / (rect.width / 2);
+        const ny = (cy - pointerY) / (rect.height / 2);
         pointerAngle =
           Math.atan2(2 / rect.height, -2 / rect.width) + nx * 0.3 + ny * 0.15;
       } else {
-        pointerAngle = Math.atan2(cy - e.clientY, e.clientX - cx);
+        pointerAngle = Math.atan2(cy - pointerY, pointerX - cx);
       }
       const t = Math.max(0, 1 - dist / Math.max(propsRef.current.proximity, 1));
       proximityT = t * t * (3 - 2 * t);
     };
-    window.addEventListener("pointermove", onPointerMove);
 
     let angle = 2.4;
     let idleAngle = 2.4;
@@ -199,12 +226,25 @@ export function SpecularButton({
 
     const lineC = new Color();
     const baseC = new Color();
+    /* Parsing two colour strings per frame, for values that change when a prop
+       changes and never otherwise. */
+    let parsedLine = "";
+    let parsedBase = "";
+
+    /* The ring is only lit while the pointer is near it. Once it has faded out
+       the frames that follow are identical to the one already on screen, so
+       the loop holds and waits rather than redrawing it. */
+    let settled = false;
 
     const update = (now: number) => {
       raf = requestAnimationFrame(update);
+      if (!visible) return;
+
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       const p = propsRef.current;
+
+      if (pointerDirty) readPointer();
 
       idleAngle += p.speed * dt;
       const target =
@@ -217,8 +257,20 @@ export function SpecularButton({
       const brightTarget = p.autoAnimate ? 1 : proximityT;
       bright += (brightTarget - bright) * (1 - Math.exp(-dt * 8));
 
-      lineC.set(p.lineColor);
-      baseC.set(p.baseColor);
+      /* Dark and staying dark: the shine is the only thing that moves. */
+      const dark = bright < 0.002 && brightTarget < 0.002;
+      if (dark && settled) return;
+      settled = dark;
+      if (dark) bright = 0;
+
+      if (parsedLine !== p.lineColor) {
+        lineC.set(p.lineColor);
+        parsedLine = p.lineColor;
+      }
+      if (parsedBase !== p.baseColor) {
+        baseC.set(p.baseColor);
+        parsedBase = p.baseColor;
+      }
       program.uniforms.uAngle.value = angle;
       program.uniforms.uRadius.value =
         Math.min(p.radius, Math.min(sizeRef.w, sizeRef.h) / 2) * dpr;
@@ -235,6 +287,7 @@ export function SpecularButton({
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      visibilityObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       if (gl.canvas.parentNode === fx) fx.removeChild(gl.canvas);
       gl.getExtension("WEBGL_lose_context")?.loseContext();

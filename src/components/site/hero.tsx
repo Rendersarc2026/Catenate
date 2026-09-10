@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { ArrowButton } from "@/components/site/arrow-button"
+import { PrismLazy } from "@/components/site/prism-lazy"
 import { hero } from "@/data/catenate"
 import { createScrollTrack } from "@/lib/scroll-track"
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
@@ -26,9 +27,13 @@ const STARS = [
 
 export function Hero() {
   const [ready, setReady] = React.useState(false)
+  /* The prism only draws once the banner it sits in is actually on screen —
+     which, with reduced motion, is straight away. */
+  const [bannerLive, setBannerLive] = React.useState(false)
   const reducedMotion = usePrefersReducedMotion()
 
   const containerRef = React.useRef<HTMLElement>(null)
+  const ambientRef = React.useRef<HTMLDivElement>(null)
   const wordmarkRef = React.useRef<HTMLDivElement>(null)
   const wordmarkParallaxRef = React.useRef<HTMLDivElement>(null)
   const landingScrollCueRef = React.useRef<HTMLDivElement>(null)
@@ -126,6 +131,9 @@ export function Hero() {
       if (landingScrollCueRef.current) {
         landingScrollCueRef.current.style.display = "none"
       }
+      if (ambientRef.current) {
+        ambientRef.current.style.display = "none"
+      }
       return
     }
 
@@ -138,6 +146,10 @@ export function Hero() {
     /* Blurring the wordmark rasterises it afresh each frame, so hold the last
        value and only rewrite it when it has actually moved a visible amount. */
     let paintedBlur = -1
+
+    /* Hidden rather than left running: `visibility` is what actually stops a
+       compositor animation, and one write per crossing is not a per-frame cost. */
+    let ambientHidden: boolean | null = null
 
     const paint = (p: number) => {
       // 1. Landing CATENATE wordmark — fades out on the first scroll.
@@ -166,6 +178,16 @@ export function Hero() {
 
       const bP = Math.min(Math.max((p - 0.08) / 0.62, 0), 1)
 
+      if (ambientRef.current) {
+        /* Late enough that the banner is all but opaque over it: switching the
+           layer off any earlier is a visible pop. */
+        const hide = bP > 0.88
+        if (hide !== ambientHidden) {
+          ambientHidden = hide
+          ambientRef.current.style.visibility = hide ? "hidden" : "visible"
+        }
+      }
+
       // 3. Expanding banner. The inset and the corner rounding ride on one
       //    `clip-path` rather than on `padding` and `border-radius`: those two
       //    relaid the banner out on every frame of the reveal, where a clip is
@@ -180,6 +202,9 @@ export function Hero() {
         bannerContainerRef.current.style.clipPath = `inset(${bannerInset.toFixed(1)}px round ${bannerRadius.toFixed(1)}px)`
         bannerContainerRef.current.style.visibility = bP <= 0.001 ? "hidden" : "visible"
       }
+
+      /* One flip per crossing, not a state write per frame. */
+      setBannerLive((live) => (live === bP > 0.001 ? live : bP > 0.001))
 
       if (bannerInnerRef.current) {
         bannerInnerRef.current.style.transform = `scale(${(1.14 - bP * 0.14).toFixed(3)})`
@@ -219,28 +244,32 @@ export function Hero() {
     >
       {/* Sticky Hero Viewport */}
       <div className="sticky top-0 h-screen h-dvh w-full overflow-hidden [contain:layout_paint] flex flex-col justify-between items-center text-center text-white bg-black pt-[100px] pb-6 sm:pt-[110px] sm:pb-8 content-pad select-none">
-        {/* Ambient background glow & starfield */}
-        <div
-          className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_50%_40%,rgba(44,48,63,0.45),transparent_70%)] animate-[hero-glow-pulse_8s_ease-in-out_infinite]"
-          aria-hidden="true"
-        />
+        {/* Ambient background glow & starfield.
+            Grouped so the reveal can switch the whole layer off in one write:
+            a dozen looping compositor animations kept running underneath the
+            banner for the rest of the hero's 300vh, drawing to nobody. */}
+        <div ref={ambientRef} className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+          <div
+            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(44,48,63,0.45),transparent_70%)] animate-[hero-glow-pulse_8s_ease-in-out_infinite]"
+          />
 
-        {/* Constellation of ambient space star particles */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          {STARS.map((star, idx) => (
-            <div
-              key={idx}
-              className="absolute rounded-full bg-white will-change-transform"
-              style={{
-                left: `${star.x}%`,
-                top: `${star.y}%`,
-                width: `${star.size}px`,
-                height: `${star.size}px`,
-                animation: `star-twinkle ${star.duration} ease-in-out infinite`,
-                animationDelay: star.delay,
-              }}
-            />
-          ))}
+          {/* Constellation of ambient space star particles */}
+          <div className="absolute inset-0 overflow-hidden">
+            {STARS.map((star, idx) => (
+              <div
+                key={idx}
+                className="absolute rounded-full bg-white"
+                style={{
+                  left: `${star.x}%`,
+                  top: `${star.y}%`,
+                  width: `${star.size}px`,
+                  height: `${star.size}px`,
+                  animation: `star-twinkle ${star.duration} ease-in-out infinite`,
+                  animationDelay: star.delay,
+                }}
+              />
+            ))}
+          </div>
         </div>
 
         {/* 1. Landing State: Bold CATENATE centerpiece (Shown only on landing, fades out as you scroll) */}
@@ -276,8 +305,38 @@ export function Hero() {
         >
           <div
             ref={bannerInnerRef}
-            className="relative size-full overflow-hidden rounded-[inherit] shadow-[0_20px_60px_rgba(0,0,0,0.8)] will-change-transform bg-[#14161f]"
-          />
+            className="relative size-full overflow-hidden rounded-[inherit] shadow-[0_20px_60px_rgba(0,0,0,0.8)] will-change-transform bg-black"
+          >
+            {/* Refracted light, raymarched. Loaded off the critical path. */}
+            <PrismLazy
+              paused={!bannerLive && !reducedMotion}
+              animationType="rotate"
+              timeScale={0.4}
+              height={3.5}
+              baseWidth={5.5}
+              scale={2.4}
+              hueShift={0}
+              colorFrequency={1}
+              noise={0.18}
+              glow={0.7}
+              bloom={0.8}
+            />
+
+            {/* Seats the headline and the stat bar on a darker ground, the way
+                the drawn backdrop does. */}
+            <div
+              className="absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_50%_46%,rgba(0,0,0,0.5),transparent_72%)]"
+              aria-hidden="true"
+            />
+            <div
+              className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 via-black/25 to-transparent"
+              aria-hidden="true"
+            />
+            <div
+              className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black via-black/70 to-transparent"
+              aria-hidden="true"
+            />
+          </div>
         </div>
 
         {/* 3. Revealed State: Foreground White Headline & Action Buttons (Reveals on scroll) */}
