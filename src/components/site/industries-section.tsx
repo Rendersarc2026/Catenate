@@ -49,9 +49,11 @@ export function IndustriesSection() {
   return (
     <section
       id="industries"
-      className="relative overflow-hidden bg-black text-white border-y border-neutral-900 py-[clamp(56px,7vw,96px)] outline-none scroll-mt-24"
+      className="bg-white py-4 sm:py-6 md:py-8 lg:py-10 outline-none scroll-mt-24"
     >
-      <div className="content-pad flex flex-col gap-7 sm:gap-9">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-10">
+        <div className="relative overflow-hidden rounded-[clamp(16px,2vw,28px)] border border-neutral-900 bg-black text-white py-[clamp(56px,7vw,96px)]">
+          <div className="content-pad flex flex-col gap-7 sm:gap-9">
         {/* Header statement matching mockup */}
         <Reveal className="relative z-2">
           <div className="flex flex-col gap-3.5 max-w-3xl">
@@ -129,6 +131,8 @@ export function IndustriesSection() {
           />
         </div>
       </div>
+    </div>
+  </div>
 
       {/* Specification detail modal */}
       <IndustryDetailDialog

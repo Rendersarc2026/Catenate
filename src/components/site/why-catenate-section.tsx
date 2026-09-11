@@ -8,10 +8,11 @@ import { whyCatenate, type WhyCatenatePillar } from "@/data/catenate";
 import { cn } from "@/lib/utils";
 
 export function WhyCatenate() {
-  // Default to index 0 ("01"), as requested.
-  const [activeIndex, setActiveIndex] = React.useState<number>(0);
+  const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
   const [selectedPillar, setSelectedPillar] =
     React.useState<WhyCatenatePillar | null>(null);
+
+  const hasActive = activeIndex !== null;
 
   return (
     <section
@@ -30,6 +31,7 @@ export function WhyCatenate() {
         <Reveal
           stagger
           step={40}
+          onMouseLeave={() => setActiveIndex(null)}
           className="flex w-full flex-col gap-10 sm:grid sm:grid-cols-2 lg:flex lg:flex-row lg:items-start lg:justify-center lg:gap-8 xl:gap-11 2xl:gap-14"
         >
           {whyCatenate.map((item, index) => {
@@ -42,14 +44,19 @@ export function WhyCatenate() {
                 key={item.title}
                 onClick={() => setSelectedPillar(item)}
                 onMouseEnter={() => setActiveIndex(index)}
-                onPointerEnter={() => setActiveIndex(index)}
+                onMouseLeave={() => setActiveIndex(null)}
                 onFocus={() => setActiveIndex(index)}
+                onBlur={() => setActiveIndex(null)}
                 aria-label={`Pillar ${formattedNumber}: ${item.title}`}
                 className={cn(
                   "pillar-card group relative flex min-w-0 flex-col items-center text-center cursor-pointer select-none rounded-2xl px-2.5 py-2 outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4",
                   "h-[390px] sm:h-[410px] lg:h-[430px] justify-start",
                   "lg:flex-1 lg:max-w-[310px] xl:max-w-[325px]",
-                  isSelected ? "z-10 opacity-100" : "opacity-80 hover:opacity-100"
+                  hasActive
+                    ? isSelected
+                      ? "z-10 opacity-100"
+                      : "opacity-60 hover:opacity-100"
+                    : "opacity-100"
                 )}
               >
                 {/* Sliced / Full Numeral Container (Stable height keeps all sub copy aligned) */}

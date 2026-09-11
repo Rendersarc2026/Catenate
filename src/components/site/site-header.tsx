@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils"
 export function SiteHeader() {
   const pathname = usePathname()
   const isHome = pathname === "/"
-  const hasHero = isHome || pathname === "/about"
+  /* Pages that open on a full-bleed dark hero, which the nav sits over. */
+  const hasHero = isHome || pathname === "/about" || pathname === "/technologies"
   const [scrolled, setScrolled] = React.useState(false)
   const [pastHero, setPastHero] = React.useState(!hasHero)
   const [visible, setVisible] = React.useState(true)

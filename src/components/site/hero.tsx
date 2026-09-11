@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import * as React from "react"
-import { ArrowButton } from "@/components/site/arrow-button"
 import { hero, images } from "@/data/catenate"
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
 
@@ -92,10 +91,10 @@ export function Hero() {
             The picture the hero is set on. It is the largest thing above the
             fold, so it is fetched at priority rather than lazily.
 
-            Pulled most of the way to grey and darkened on the way in: the
-            brand palette is monochrome, and a full-colour sunset would be the
-            only saturated thing on the site as well as the brightest ground
-            the white headline ever has to sit on.
+            Shown as photographed. It is a blue-hour port, so it already sits
+            in the palette and needs no grading — the earlier grey-and-black
+            wash buried the gantries the picture is actually of. The only
+            correction is a small brightness trim to hold the white copy.
           */}
           <Image
             src={images.heroBackdrop}
@@ -103,27 +102,20 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            className="object-cover [filter:grayscale(0.88)_contrast(1.08)_brightness(0.58)]"
+            className="object-cover [filter:contrast(1.03)_brightness(0.82)]"
           />
 
-          {/* Carries the remaining colour to the deep end of the palette. */}
+          {/* Only the two edges the interface actually sits on are shaded —
+              the nav along the top and the stat row along the bottom. The
+              middle of the frame is left alone so the picture reads as a
+              photograph rather than a darkened plate; the headline carries its
+              own shadow instead of resting on a scrim. */}
           <div
-            className="absolute inset-0 bg-blue-deep/55 mix-blend-multiply"
-            aria-hidden="true"
-          />
-
-          {/* Seats the headline and the stat bar on a darker ground, the way
-              the drawn backdrop does. */}
-          <div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_50%_46%,rgba(0,0,0,0.5),transparent_72%)]"
+            className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/55 to-transparent"
             aria-hidden="true"
           />
           <div
-            className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 via-black/25 to-transparent"
-            aria-hidden="true"
-          />
-          <div
-            className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black via-black/70 to-transparent"
+            className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/80 via-black/35 to-transparent"
             aria-hidden="true"
           />
         </div>
@@ -133,7 +125,7 @@ export function Hero() {
       <div className="relative z-10 max-w-[1050px] mx-auto my-auto">
         <div ref={mouseParallaxRef} className="will-change-transform">
           {/* White headline text */}
-          <h1 className="mx-auto text-[clamp(1.75rem,3.2vw,2.85rem)] leading-[1.3] font-light tracking-[-0.02em] text-white">
+          <h1 className="mx-auto text-[clamp(1.75rem,3.2vw,2.85rem)] leading-[1.3] font-bold tracking-[-0.02em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.8),0_2px_10px_rgba(0,0,0,0.7),0_4px_40px_rgba(0,0,0,0.8)]">
             {hero.headlineLines.map((line) => (
               <span
                 key={line}
@@ -144,16 +136,6 @@ export function Hero() {
             ))}
           </h1>
         </div>
-
-        {/* CTA Buttons */}
-        <div className="hero-fade mt-7 sm:mt-9 flex flex-wrap justify-center items-center gap-3.5">
-          <ArrowButton href="/#presence" variant="onBlue" size="pill">
-            Explore our global network
-          </ArrowButton>
-          <ArrowButton href="/brands" variant="line" size="pill">
-            Our portfolio
-          </ArrowButton>
-        </div>
       </div>
 
       {/* 3. Stats row anchored along the bottom. */}
@@ -163,10 +145,10 @@ export function Hero() {
             key={stat.label}
             className="border-l border-white/16 px-4 py-1 text-center first:border-l-0 max-[720px]:nth-3:border-l-0"
           >
-            <b className="tnum block text-[clamp(2.1rem,3.6vw,3rem)] leading-none font-light tracking-[-0.025em] text-white">
+            <b className="tnum block text-[clamp(2.1rem,3.6vw,3rem)] leading-none font-bold tracking-[-0.025em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.7),0_2px_18px_rgba(0,0,0,0.6)]">
               {stat.value}
             </b>
-            <span className="mt-2.5 block text-[11px] sm:text-[12px] tracking-[0.18em] text-white/55 uppercase font-medium">
+            <span className="mt-2.5 block text-[11px] sm:text-[12px] tracking-[0.18em] text-white/85 uppercase font-semibold [text-shadow:0_1px_3px_rgba(0,0,0,0.8)]">
               {stat.label}
             </span>
           </div>

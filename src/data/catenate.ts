@@ -16,13 +16,15 @@ const placeholder = (seed: string, w: number, h: number, grayscale = false) =>
 export const images = {
   heroBanner: "/images/hero-banner.jpg",
   /*
-   * The hero's ground: a container terminal at dusk. The stacks frame the
-   * centre of the frame, which is where the headline sits, and the sky behind
-   * them carries the only light in the picture — so the copy reads against it
-   * without the overlays having to blacken the whole photograph.
+   * The hero's ground: a modern production line, shot bright. It shows where
+   * the chemistry Catenate carries actually gets used — the assembly,
+   * fabrication and packaging lines in `industries` — rather than the freight
+   * that moves it, which said more about a haulier than a distributor. Lit and
+   * daylit rather than a night exterior, so the section reads open instead of
+   * heavy; the headline is set bold and shadowed to hold against it.
    */
   heroBackdrop:
-    "https://images.unsplash.com/photo-1759272840538-ae4b07214c71?auto=format&fit=crop&w=2400&q=80",
+    "https://images.unsplash.com/photo-1717386255773-1e3037c81788?auto=format&fit=crop&w=2400&q=80",
   /** Sector photography, keyed by the slug on each `Industry`. */
   industry: (slug: string) => `/images/industries/${slug}.jpg`,
   project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),
@@ -30,7 +32,35 @@ export const images = {
   contactChannel: placeholder("catenatechannel", 700, 525),
   contactPartner: placeholder("catenatepartner", 700, 525),
   contactBg: "/images/contact-bg.jpeg",
+  /** Ground for the technologies page hero — chemistry, not cargo. */
+  technologiesHero: "/images/industries/laboratory-microscope.jpg",
+  /** Panel and inset detail for a chemistry, keyed by `Technology.slug`. */
+  technology: (slug: string) => technologyShots[slug] ?? technologyShots.membranes,
 } as const;
+
+/*
+ * Chemistry photography. Stand-ins borrowed from the sector set until the
+ * product shots land — `panel` is the large picture, `detail` the inset that
+ * rides over its corner. Swapping them is a one-line change here.
+ */
+const technologyShots: Record<string, { panel: string; detail: string }> = {
+  membranes: {
+    panel: "/images/industries/building-infrastructure.jpg",
+    detail: "/images/industries/water-wastewater.jpg",
+  },
+  sealants: {
+    panel: "/images/industries/retail-fit-out.jpg",
+    detail: "/images/industries/hvac-plumbing.jpg",
+  },
+  "instant-adhesives": {
+    panel: "/images/industries/electronics-assembly.jpg",
+    detail: "/images/industries/metals-fabrication.jpg",
+  },
+  "hot-melt": {
+    panel: "/images/industries/packaging-converting.jpg",
+    detail: "/images/industries/furniture-woodworking.jpg",
+  },
+};
 
 /* ------------------------------------------------------------------ *
  * Navigation
@@ -530,16 +560,34 @@ export const brands: Brand[] = [
  * ------------------------------------------------------------------ */
 
 export type Technology = {
+  /** Anchor on the technologies page, and the key its photography is under. */
+  slug: string;
   name: string;
+  /** Short form for chips and captions, where the full name will not fit. */
+  short: string;
+  /** The trade the chemistry belongs to. */
+  family: string;
   description: string;
+  /** Where it goes to work. */
+  uses: string[];
   spec: [label: string, value: string][];
 };
 
 export const technologies: Technology[] = [
   {
+    slug: "membranes",
     name: "Bituminous and liquid-applied membranes",
+    short: "Membranes",
+    family: "Waterproofing",
     description:
       "Waterproofing that has to survive burial, ponding and movement for the design life of the structure. Selection turns on whether the deck is trafficked, whether the membrane is bonded or loose-laid, and how much detailing sits around penetrations.",
+    uses: [
+      "Podium decks",
+      "Basement tanking",
+      "Roof build-ups",
+      "Wet areas",
+      "Buried structures",
+    ],
     spec: [
       ["Service temperature", "−20 to +90 °C"],
       ["Cure mechanism", "Heat fusion or moisture cure"],
@@ -548,9 +596,19 @@ export const technologies: Technology[] = [
     ],
   },
   {
+    slug: "sealants",
     name: "Polyurethane and silicone sealants",
+    short: "Sealants",
+    family: "Sealing and glazing",
     description:
       "Movement joints, glazing perimeters and sanitary junctions. The governing figure is movement accommodation factor, followed by whether the joint will be painted and whether it sees standing water.",
+    uses: [
+      "Movement joints",
+      "Curtain walling",
+      "Facade perimeters",
+      "Sanitary junctions",
+      "Floor joints",
+    ],
     spec: [
       ["Service temperature", "−40 to +120 °C"],
       ["Cure mechanism", "Moisture cure"],
@@ -559,9 +617,19 @@ export const technologies: Technology[] = [
     ],
   },
   {
+    slug: "instant-adhesives",
     name: "Cyanoacrylate and anaerobic adhesives",
+    short: "Instant and anaerobic",
+    family: "Industrial assembly",
     description:
       "Fast fixture on close-fitting parts, and controlled locking on threaded assemblies. Gap fill and material pairing decide the grade far more than headline strength figures do.",
+    uses: [
+      "Threadlocking",
+      "Retaining bearings",
+      "Pipe sealing",
+      "Elastomer fixture",
+      "Form-in-place gasketing",
+    ],
     spec: [
       ["Service temperature", "−55 to +150 °C"],
       ["Cure mechanism", "Anaerobic or surface moisture"],
@@ -570,9 +638,19 @@ export const technologies: Technology[] = [
     ],
   },
   {
+    slug: "hot-melt",
     name: "Hot melt and water-based adhesives",
+    short: "Hot melt",
+    family: "Packaging and converting",
     description:
       "Production bonding where the line speed sets the specification. Open time, set time and heat resistance are balanced against substrate porosity and the temperature the finished pack will see.",
+    uses: [
+      "Case sealing",
+      "Carton forming",
+      "Lamination",
+      "Edge banding",
+      "Labelling",
+    ],
     spec: [
       ["Service temperature", "−10 to +80 °C"],
       ["Cure mechanism", "Cooling or water evaporation"],

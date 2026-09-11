@@ -1315,3 +1315,58 @@
     border-end-end-radius: var(--scroll-round);
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Technologies page
+   ---------------------------------------------------------------------------
+   Two pieces of motion the utility classes cannot express: the hero's picture
+   drifting behind the copy, and the caption under the pinned photograph
+   re-entering each time the chemistry beneath it changes.
+--------------------------------------------------------------------------- */
+
+/*
+ * The hero sits at the top of the document, so the drift is driven by the root
+ * scroller rather than a view timeline — over the first viewport height the
+ * photograph travels down while the page travels up, which is what reads as
+ * depth. It is decoration: browsers without scroll-driven animations get a
+ * still photograph and lose nothing else, so there is no JS fallback.
+ *
+ * The image is held at scale(1.22) in the markup, leaving ~11% of overflow at
+ * each edge — more than the 9% the drift ever asks for, so no edge is exposed.
+ */
+@supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+  .tech-hero-media {
+    animation: tech-hero-drift linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 100vh;
+  }
+}
+
+@keyframes tech-hero-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(9%);
+  }
+}
+
+/*
+ * The caption is re-keyed on the active chemistry, so it mounts fresh on every
+ * swap — the entrance is the swap. It rises a beat after the picture behind it
+ * has started to cross-fade, so the two do not land together.
+ */
+.tech-caption {
+  animation: tech-caption-in 0.7s var(--ease-out-expo) 0.12s both;
+}
+
+@keyframes tech-caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
