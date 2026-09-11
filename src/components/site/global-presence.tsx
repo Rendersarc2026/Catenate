@@ -34,7 +34,9 @@ export function GlobalPresence() {
         />
       </Reveal>
 
-      <Reveal className="content-pad ticker-mask mt-[clamp(28px,3.5vw,44px)]" aria-hidden="true">
+      {/* The same step the section pads its foot with, so the ticker sits
+          centred in the white band rather than crowding the picture. */}
+      <Reveal className="content-pad ticker-mask mt-[clamp(64px,8vw,120px)]" aria-hidden="true">
         <div className="ticker-track">
           {/* Duplicated so the -50% keyframe loops seamlessly. */}
           {[0, 1].map((copy) => (

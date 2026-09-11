@@ -176,14 +176,9 @@ export function RegionSlider({
             <span className="region-rule" aria-hidden="true" />
 
             <div className="region-foot">
-              <div className="region-meta">
-                <span key={`m-${active}`} className="region-market">
-                  {region.markets}
-                </span>
-                <span key={`co-${active}`} className="region-coords">
-                  {region.coordinates}
-                </span>
-              </div>
+              <span key={`m-${active}`} className="region-market">
+                {region.markets}
+              </span>
 
               <span className="region-count tnum">
                 <b key={`c-${active}`}>{pad(active + 1)}</b>-{pad(regions.length)}
@@ -215,7 +210,9 @@ export function RegionSlider({
                   <span className="region-name-index" aria-hidden="true">
                     {index + 1}
                   </span>
-                  {other.name}
+                  <span className="region-name-label" data-label={other.name}>
+                    {other.name}
+                  </span>
                   {isActive ? (
                     <span
                       key={`p-${active}`}

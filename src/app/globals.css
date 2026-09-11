@@ -368,19 +368,6 @@
     display: none;
   }
 
-  /* ---------- Hero background / landing wordmark ---------- */
-  .hero-wordmark {
-    font-size: clamp(3.6rem, 15vw, 14.5rem);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 0.9;
-    color: #ffffff;
-    user-select: none;
-    text-shadow: 0 0 40px rgba(255, 255, 255, 0.25), 0 0 90px rgba(44, 48, 63, 0.65);
-    white-space: nowrap;
-    will-change: transform, opacity, filter;
-  }
-
   /* ---------- Footer wordmark ---------- */
   .foot-mark {
     /* Capped so the whole word fits the content column on one line. */
@@ -846,26 +833,12 @@
   margin-top: clamp(10px, 1.2vw, 16px);
 }
 
-.region-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+.region-market {
   min-width: 0;
   font-size: 12.5px;
-  text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
-}
-
-.region-market {
   color: rgb(255 255 255 / 0.92);
+  text-shadow: 0 1px 12px rgb(8 10 16 / 0.6);
   animation: region-detail-in 0.6s var(--ease-out-expo) 0.14s both;
-}
-
-.region-coords {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
-  letter-spacing: 0.02em;
-  color: rgb(255 255 255 / 0.66);
-  animation: region-detail-in 0.6s var(--ease-out-expo) 0.22s both;
 }
 
 .region-count {
@@ -902,8 +875,10 @@
 }
 
 /*
- * A name, not a thumbnail: the one in view is set larger and pulled a little
- * off the column so the size change reads as emphasis rather than as reflow.
+ * A name, not a thumbnail. Every one is set at the same size, so the column
+ * never reflows as the slider moves: the one in view is marked by weight and
+ * colour alone. Figtree is variable, so the weight interpolates rather than
+ * snapping between two cut faces.
  */
 .region-name {
   position: relative;
@@ -916,27 +891,21 @@
   background: none;
   padding: 0;
   color: rgb(255 255 255 / 0.66);
-  font-size: clamp(0.95rem, 1.5vw, 1.35rem);
-  font-weight: 300;
+  font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+  font-weight: 400;
   line-height: 1;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   text-align: left;
   text-shadow: 0 1px 16px rgb(8 10 16 / 0.5);
-  /* Identity values: the shift below moves this, and declaring it here keeps
-     the transition symmetrical in both directions. */
-  translate: 0 0;
   transition:
     color 0.35s var(--ease-out-expo),
-    font-size 0.5s var(--ease-out-expo),
-    translate 0.5s var(--ease-out-expo);
+    font-weight 0.35s var(--ease-out-expo);
 }
 
 .region-name.is-active {
   color: #fff;
-  font-size: clamp(1.5rem, 2.7vw, 2.45rem);
-  letter-spacing: -0.005em;
-  translate: -0.42em 0;
+  font-weight: 700;
 }
 
 @media (hover: hover) {
@@ -962,6 +931,25 @@
 
 .region-name.is-active .region-name-index {
   color: rgb(255 255 255 / 0.72);
+}
+
+/*
+ * Bold is wider than regular, and the rail sits at the far end of a
+ * space-between row — so without this the whole column shifts a couple of
+ * pixels every time the slider moves. The hidden copy holds the bold measure
+ * at every weight, which pins the width for good.
+ */
+.region-name-label {
+  display: block;
+}
+
+.region-name-label::after {
+  content: attr(data-label);
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  font-weight: 700;
 }
 
 /*
@@ -1059,13 +1047,12 @@
 @media (prefers-reduced-motion: reduce) {
   .region-title-glyph,
   .region-market,
-  .region-coords,
   .region-count b {
     animation: none;
   }
 
   .region-name {
-    transition: color 0.35s var(--ease-out-expo);
+    transition: none;
   }
 }
 
@@ -1075,56 +1062,6 @@
   }
   to {
     transform: translateX(-50%);
-  }
-}
-
-@keyframes hero-wordmark-in {
-  from {
-    opacity: 0;
-    transform: scale(0.92) translateY(20px);
-    filter: blur(8px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    filter: blur(0px);
-  }
-}
-
-@keyframes hero-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes hero-glow-pulse {
-  0%, 100% {
-    opacity: 0.35;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.08);
-  }
-}
-
-@keyframes scroll-wheel {
-  0% {
-    transform: translateY(0);
-    opacity: 0.9;
-  }
-  50% {
-    transform: translateY(6px);
-    opacity: 0.3;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 0.9;
   }
 }
 

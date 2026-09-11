@@ -103,6 +103,20 @@ export const megaMenu: MegaSection[] = [
     ],
   },
   {
+    key: "projects",
+    navLabel: "Projects",
+    label: "Projects",
+    href: "/projects",
+    items: [
+      "Marine and offshore",
+      "Food and beverage",
+      "Building and infrastructure",
+      "HVAC and plumbing",
+      "Healthcare",
+      "Metals and fabrication",
+    ],
+  },
+  {
     key: "finder",
     navLabel: "Solutions Finder",
     label: "Solutions Finder",
@@ -1174,38 +1188,70 @@ export const certificatesPrincipal: Certificate[] = [
  * Projects
  * ------------------------------------------------------------------ */
 
-export type Project = { name: string; sector: string; scope: string };
+export type Project = {
+  name: string;
+  sector: string;
+  scope: string;
+  location?: string;
+  system?: string;
+  challenge?: string;
+  image?: string;
+};
 
 export const projects: Project[] = [
   {
     name: "Harbour terminal deck",
     sector: "Marine and offshore",
     scope: "Torch-applied membrane and protection build-up",
+    location: "Sultan Qaboos Port, Oman",
+    system: "SBS modified bituminous waterproofing & heavy-duty wearing layer",
+    challenge: "High saline exposure, tidal vibration, and direct heavy container transport loading.",
+    image: "/images/industries/marine-offshore.jpg",
   },
   {
     name: "Dairy processing hall",
     sector: "Food and beverage",
     scope: "Resin flooring with hygienic coving and sealants",
+    location: "Sohar Industrial City, Oman",
+    system: "Heavy-duty polyurethane resin screed & antimicrobial jointing",
+    challenge: "Thermal shock from boiling water washdowns, organic acids, and continuous wet processing.",
+    image: "/images/industries/food-beverage.jpg",
   },
   {
     name: "Mixed-use podium",
     sector: "Building and infrastructure",
     scope: "Fully Bonded System across 42,000 m²",
+    location: "Downtown Dubai, UAE",
+    system: "Pre-applied fully bonded waterproofing membrane & expansion joints",
+    challenge: "High water table with extreme hydrostatic pressure and complex multi-level underground geometry.",
+    image: "/images/industries/building-infrastructure.jpg",
   },
   {
     name: "District cooling network",
     sector: "HVAC and plumbing",
     scope: "Solvent cement jointing and thread sealing",
+    location: "Lusail City, Qatar",
+    system: "Industrial CPVC solvent cements & anaerobic thread sealants",
+    challenge: "Continuous chilled water loop circulation under high operating pressures up to 16 bar.",
+    image: "/images/industries/hvac-plumbing.jpg",
   },
   {
     name: "Hospital theatre block",
     sector: "Healthcare",
     scope: "Low-emission flooring and sealant package",
+    location: "London, United Kingdom",
+    system: "EC1 Plus certified conductive flooring adhesives & cleanroom silicone sealants",
+    challenge: "Zero VOC emission tolerance, electrostatic dissipation, and resistance to aggressive chemical disinfectants.",
+    image: "/images/industries/healthcare-life-sciences.jpg",
   },
   {
     name: "Galvanising line",
     sector: "Metals and fabrication",
     scope: "Bonderite pretreatment sequence",
+    location: "Abu Dhabi Industrial Zone, UAE",
+    system: "Henkel Bonderite conversion coating & chemical conversion wash",
+    challenge: "Rigorous corrosion prevention specification meeting 1,000-hour salt spray endurance standards.",
+    image: "/images/industries/metals-fabrication.jpg",
   },
 ];
 
@@ -1452,7 +1498,7 @@ export const footerColumns = [
     heading: "Company",
     links: [
       { label: "Quality and HSE", href: "/about" },
-      { label: "Projects", href: "/#projects" },
+      { label: "Projects", href: "/projects" },
       { label: "Industries", href: "/#industries" },
       { label: "Become a partner", href: "/#contact" },
       { label: "Careers", href: "/#contact" },

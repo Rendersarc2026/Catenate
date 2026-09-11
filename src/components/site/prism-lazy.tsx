@@ -11,7 +11,7 @@ import { useWarmChunk } from "@/lib/warm-chunk"
  * The prism sits behind the hero, which is the first thing painted — so its
  * WebGL library is kept out of the initial bundle and warmed on idle instead.
  * The hero reads perfectly well on its dark ground for the moment before the
- * prism arrives, and the reader is still on the landing wordmark by then.
+ * prism arrives.
  */
 const load = () => import("@/components/site/prism")
 
