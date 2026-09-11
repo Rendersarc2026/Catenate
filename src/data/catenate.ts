@@ -49,44 +49,6 @@ export const megaMenu: MegaSection[] = [
     href: "/",
   },
   {
-    key: "brands",
-    navLabel: "Brands",
-    label: "Brands and Products",
-    href: "/brands",
-    groups: [
-      {
-        title: "Henkel",
-        items: [
-          "Polybit",
-          "Technomelt",
-          "Aquence",
-          "Pattex",
-          "Tangit",
-          "Metylan",
-          "Ceresit",
-          "Bonderite",
-          "Loctite",
-        ],
-      },
-      { title: "Weld-On", items: ["EZ-Weld"] },
-      {
-        title: "Würth",
-        items: [
-          "Anchors and fasteners",
-          "Hand and power tools",
-          "Safety and workwear",
-          "Lubricants and rust removers",
-          "Building chemicals",
-        ],
-      },
-      {
-        title: "GE Sealants",
-        items: ["General purpose", "Weather sealants", "PU sealants and caulks"],
-      },
-      { title: "Browse", items: ["By application", "By chemistry"] },
-    ],
-  },
-  {
     key: "tech",
     navLabel: "Technologies",
     label: "Technologies and Approvals",
