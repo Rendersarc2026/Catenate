@@ -217,7 +217,7 @@ export function ProjectsRail() {
               key={project.name}
               className="group/proj flex-[0_0_clamp(240px,30vw,330px)] snap-start"
             >
-              <div className="relative aspect-3/4 overflow-hidden rounded-block bg-[#e6e7ec]">
+              <div className="relative aspect-3/4 overflow-hidden rounded-none bg-[#e6e7ec]">
                 <Image
                   src={images.project(index)}
                   alt={project.name}

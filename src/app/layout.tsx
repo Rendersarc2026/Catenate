@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
+import { Montserrat } from "next/font/google";
 
 import { SmoothScroll } from "@/components/site/smooth-scroll";
 import "./globals.css";
 
 /*
- * Figtree is variable, so no weight list: one `@font-face` spanning 300-900
- * rather than seven rules that all resolve to the same file. Next already
- * served the variable file either way, so this is tidier CSS, not fewer bytes.
+ * Montserrat stands in for Gotham, which is licensed and cannot be bundled.
+ * It is the closest geometric sans on Google Fonts — same circular bowls and
+ * tall, open apertures — and it is variable, so this is one `@font-face`
+ * spanning 100-900 rather than a rule per weight.
  */
-const figtree = Figtree({
-  variable: "--font-figtree",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
   display: "swap",
 });
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${figtree.variable} antialiased`}>
+    <html lang="en" className={`${montserrat.variable} antialiased`}>
       <body>
         <SmoothScroll>{children}</SmoothScroll>
       </body>

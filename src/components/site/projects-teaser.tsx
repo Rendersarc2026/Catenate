@@ -1,8 +1,5 @@
-"use client"
-
 import Image from "next/image"
 import Link from "next/link"
-import * as React from "react"
 
 import { ArrowButton } from "@/components/site/arrow-button"
 import { Reveal } from "@/components/site/reveal"
@@ -12,8 +9,11 @@ export function ProjectsTeaser() {
   const previewProjects = projects.slice(0, 3)
 
   return (
-    <section id="projects-teaser" className="section bg-off text-ink border-b border-ink/10 overflow-hidden">
-      <div className="content-pad flex flex-col gap-10 sm:gap-14">
+    <section
+      id="projects-teaser"
+      className="section bg-off text-ink border-b border-ink/10 overflow-hidden"
+    >
+      <div className="flex flex-col gap-10 sm:gap-14">
         {/* Header & Direct CTA Button */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <Reveal className="max-w-2xl">
@@ -27,53 +27,41 @@ export function ProjectsTeaser() {
           </Reveal>
 
           <Reveal className="shrink-0">
-            <ArrowButton href="/projects" variant="onBlue" size="pill">
+            <ArrowButton href="/projects" variant="brand" size="pill">
               Explore project portfolio
             </ArrowButton>
           </Reveal>
         </div>
 
-        {/* 3 Interactive Highlight Cards */}
-        <Reveal stagger className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Case-study cards — image, name, delivery type */}
+        <Reveal
+          stagger
+          className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {previewProjects.map((project) => (
             <Link
-              key={project.name}
-              href="/projects"
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-ink/10 bg-white transition-all duration-300 hover:border-ink/25 hover:shadow-md"
+              key={project.slug}
+              href={`/projects/${project.slug}`}
+              className="group block focus-visible:outline-none"
             >
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-neutral-200">
+              <div className="relative aspect-3/4 w-full overflow-hidden rounded-none bg-[#e6e7ec] transition-[box-shadow] duration-300 ease-expo group-hover:shadow-[0_18px_40px_-22px_rgb(26_29_46/0.45)] group-focus-visible:ring-2 group-focus-visible:ring-ink group-focus-visible:ring-offset-2">
                 {project.image ? (
                   <Image
                     src={project.image}
                     alt={project.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 ease-expo group-hover:scale-[1.04]"
                   />
                 ) : null}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <span className="absolute top-3 left-3 rounded-md bg-black/60 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white backdrop-blur-md">
-                  {project.sector}
-                </span>
               </div>
 
-              <div className="flex flex-1 flex-col justify-between p-5">
-                <div>
-                  <h3 className="text-lg font-medium text-ink group-hover:text-blue transition-colors">
-                    {project.name}
-                  </h3>
-                  <p className="mt-1.5 text-xs text-grey line-clamp-2">
-                    {project.scope}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-ink/8 flex items-center justify-between text-xs font-medium text-blue">
-                  <span>View project details</span>
-                  <span className="transition-transform duration-200 group-hover:translate-x-1">
-                    →
-                  </span>
-                </div>
-              </div>
+              <h3 className="mt-4.5 text-[15px] leading-snug font-medium tracking-[-0.01em] text-ink">
+                {project.name}
+              </h3>
+              <p className="mt-1 text-[13px] leading-snug text-grey">
+                {project.type ?? project.sector}
+              </p>
             </Link>
           ))}
         </Reveal>

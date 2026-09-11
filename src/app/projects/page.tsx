@@ -34,11 +34,11 @@ export default function ProjectsPage() {
                 Our certified technical specialists provide joint site surveys, pull-off adhesion testing, and tailored specification packs for architects, contractors, and consultants.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <ArrowButton href="/#contact" variant="onBlue" size="pill">
+                <ArrowButton href="/#contact" variant="brand" size="pill">
                   Request project specification
                 </ArrowButton>
-                <ArrowButton href="/brands" variant="line" size="pill">
-                  Browse principals & products
+                <ArrowButton href="/technologies" variant="quiet" size="pill">
+                  Browse approved chemistries
                 </ArrowButton>
               </div>
             </Reveal>

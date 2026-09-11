@@ -31,7 +31,7 @@ export function ProjectCard({
     >
       <div
         className={cn(
-          "relative aspect-[16/11] sm:aspect-[4/3] overflow-hidden rounded-block bg-[#e6e7ec] transition-all duration-500 ease-expo",
+          "relative aspect-[16/11] sm:aspect-[4/3] overflow-hidden rounded-none bg-[#e6e7ec] transition-all duration-500 ease-expo",
           isActive
             ? "shadow-[0_20px_50px_-10px_rgba(26,29,46,0.22)] ring-1 ring-ink/10"
             : "shadow-sm ring-1 ring-ink/5"

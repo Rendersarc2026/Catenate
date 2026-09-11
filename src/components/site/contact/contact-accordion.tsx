@@ -62,10 +62,10 @@ export function ContactAccordion({
             >
               <span
                 className={cn(
-                  "tracking-[-0.01em] transition-all duration-200 leading-none lg:whitespace-nowrap",
+                  "tracking-[-0.01em] transition-all duration-200 leading-none",
                   isExpanded
-                    ? "text-[clamp(17px,1.48vw,28.5px)] font-normal text-white"
-                    : "text-[clamp(13px,1.05vw,20px)] font-light text-white/80 group-hover:text-white"
+                    ? "text-[clamp(15px,1.22vw,23.5px)] font-normal text-white"
+                    : "text-[clamp(12px,0.87vw,16.5px)] font-light text-white/80 group-hover:text-white"
                 )}
               >
                 {item.title}
@@ -92,7 +92,7 @@ export function ContactAccordion({
                       e.stopPropagation();
                       onSelectAction(item);
                     }}
-                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(13px,1.05vw,20px)] font-light leading-none text-white/85 transition-colors duration-200 hover:text-white focus-visible:underline focus-visible:outline-none"
+                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(12px,0.87vw,16.5px)] font-light leading-none text-white/85 transition-colors duration-200 hover:text-white focus-visible:underline focus-visible:outline-none"
                   >
                     <span>{item.cta}</span>
                     <span
@@ -106,7 +106,7 @@ export function ContactAccordion({
                   <Link
                     href={item.href}
                     onClick={(e) => e.stopPropagation()}
-                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(13px,1.05vw,20px)] font-light leading-none text-white/85 transition-colors duration-200 hover:text-white focus-visible:underline focus-visible:outline-none"
+                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(12px,0.87vw,16.5px)] font-light leading-none text-white/85 transition-colors duration-200 hover:text-white focus-visible:underline focus-visible:outline-none"
                   >
                     <span>{item.cta}</span>
                     <span

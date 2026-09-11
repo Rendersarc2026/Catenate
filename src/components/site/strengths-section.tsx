@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { Reveal } from "@/components/site/reveal";
 import { strengths } from "@/data/catenate";
 import { createScrollTrack } from "@/lib/scroll-track";
 import { useMediaQuery, usePrefersReducedMotion } from "@/lib/use-reduced-motion";
@@ -52,12 +53,12 @@ const numeral = (index: number) => String(index + 1).padStart(2, "0");
 
 function Heading({ className }: { className?: string }) {
   return (
-    <div className={className}>
+    <Reveal className={className}>
       <span className="eyebrow">Our strengths</span>
       <h2 className="max-w-[24ch] text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em]">
         Eight reasons we make a difference.
       </h2>
-    </div>
+    </Reveal>
   );
 }
 

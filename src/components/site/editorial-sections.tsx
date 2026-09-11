@@ -72,7 +72,7 @@ export { ProjectsRail } from "./projects-rail";
 
 export function TechnicalSupport() {
   return (
-    <section className="section bg-white">
+    <section className="section bg-white border-t border-ink/10">
       <Reveal>
         <span className="eyebrow">Technical support</span>
         <TechnicalSupportAccordion items={technicalSupport} />

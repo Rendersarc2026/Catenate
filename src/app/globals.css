@@ -28,6 +28,8 @@
 
   /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Rises fast, overshoots a touch, then settles — the crest of the wave. */
+  --ease-wave: cubic-bezier(0.22, 1.12, 0.32, 1);
 
   /* shadcn semantic layer, mapped onto the brand palette */
   --background: #ffffff;
@@ -80,8 +82,8 @@
   --color-grey: var(--brand-grey);
   --color-amber: var(--brand-amber);
 
-  --font-sans: var(--font-figtree), system-ui, -apple-system, sans-serif;
-  --font-heading: var(--font-figtree), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-montserrat), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-montserrat), system-ui, -apple-system, sans-serif;
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -223,6 +225,58 @@
   }
 
   .reveal-stagger.is-visible > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- Line-by-line text reveal ---------- */
+  /*
+   * Once <Reveal> has measured its copy into lines, the block-level fade is
+   * handed over to them — the container settles and each line rises out of
+   * its own mask instead, one after the next.
+   */
+  .reveal.reveal-lines {
+    opacity: 1;
+    transform: none;
+  }
+
+  .rv-line {
+    display: block;
+    /* The mask would otherwise crop descenders and tall diacritics. */
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+    overflow: hidden;
+  }
+
+  /*
+   * Each word rises and levels out a beat behind the one to its left, so the
+   * crest runs along the line rather than the whole line moving as a slab.
+   * The tilt is what makes it read as a wave: the word pivots up from its
+   * bottom-left corner and settles flat.
+   */
+  .rv-word {
+    display: inline-block;
+    transform: translateY(105%) rotate(2.5deg);
+    transform-origin: 0% 100%;
+    transition: transform 0.95s var(--ease-wave);
+    transition-delay: var(--rv-delay, 0ms);
+    will-change: transform;
+  }
+
+  .is-visible .rv-word {
+    transform: none;
+  }
+
+  .rv-fade {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.75s var(--ease-out-expo),
+      transform 0.75s var(--ease-out-expo);
+    transition-delay: var(--rv-delay, 0ms);
+  }
+
+  .is-visible .rv-fade {
     opacity: 1;
     transform: none;
   }
@@ -1187,6 +1241,8 @@
 
   .reveal,
   .reveal-stagger > *,
+  .rv-word,
+  .rv-fade,
   .hero-line > span,
   .hero-fade,
   .sector-copy > *,
