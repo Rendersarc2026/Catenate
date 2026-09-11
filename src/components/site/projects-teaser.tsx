@@ -44,7 +44,7 @@ export function ProjectsTeaser() {
               href={`/projects/${project.slug}`}
               className="group block focus-visible:outline-none"
             >
-              <div className="relative aspect-3/4 w-full overflow-hidden rounded-none bg-[#e6e7ec] transition-[box-shadow] duration-300 ease-expo group-hover:shadow-[0_18px_40px_-22px_rgb(26_29_46/0.45)] group-focus-visible:ring-2 group-focus-visible:ring-ink group-focus-visible:ring-offset-2">
+              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-none bg-[#e6e7ec] transition-[box-shadow] duration-300 ease-expo group-hover:shadow-[0_18px_40px_-22px_rgb(26_29_46/0.45)] group-focus-visible:ring-2 group-focus-visible:ring-ink group-focus-visible:ring-offset-2">
                 {project.image ? (
                   <Image
                     src={project.image}

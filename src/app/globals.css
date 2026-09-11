@@ -439,6 +439,7 @@
    * The wall is full width the whole way and rides in from the right edge as
    * one block, sweeping across the "What we do" section.
    */
+  /* Enters from the right, so the shadow hangs off its leading left edge. */
   .wall-wipe {
     translate: calc((1 - var(--wall-in, 1)) * 100%) 0;
     will-change: translate;

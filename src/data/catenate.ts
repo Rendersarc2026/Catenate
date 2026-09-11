@@ -15,6 +15,14 @@ const placeholder = (seed: string, w: number, h: number, grayscale = false) =>
 
 export const images = {
   heroBanner: "/images/hero-banner.jpg",
+  /*
+   * The hero's ground: a container terminal at dusk. The stacks frame the
+   * centre of the frame, which is where the headline sits, and the sky behind
+   * them carries the only light in the picture — so the copy reads against it
+   * without the overlays having to blacken the whole photograph.
+   */
+  heroBackdrop:
+    "https://images.unsplash.com/photo-1759272840538-ae4b07214c71?auto=format&fit=crop&w=2400&q=80",
   /** Sector photography, keyed by the slug on each `Industry`. */
   industry: (slug: string) => `/images/industries/${slug}.jpg`,
   project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),

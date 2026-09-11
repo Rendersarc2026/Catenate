@@ -1,9 +1,9 @@
 "use client"
 
+import Image from "next/image"
 import * as React from "react"
 import { ArrowButton } from "@/components/site/arrow-button"
-import { PrismLazy } from "@/components/site/prism-lazy"
-import { hero } from "@/data/catenate"
+import { hero, images } from "@/data/catenate"
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
 
 /** Peak translation of the mouse parallax layer, in px. */
@@ -88,18 +88,28 @@ export function Hero() {
         aria-hidden="true"
       >
         <div className="relative size-full overflow-hidden bg-black">
-          {/* Refracted light, raymarched. Loaded off the critical path. */}
-          <PrismLazy
-            animationType="rotate"
-            timeScale={0.4}
-            height={3.5}
-            baseWidth={5.5}
-            scale={2.4}
-            hueShift={0}
-            colorFrequency={1}
-            noise={0}
-            glow={0.7}
-            bloom={0.8}
+          {/*
+            The picture the hero is set on. It is the largest thing above the
+            fold, so it is fetched at priority rather than lazily.
+
+            Pulled most of the way to grey and darkened on the way in: the
+            brand palette is monochrome, and a full-colour sunset would be the
+            only saturated thing on the site as well as the brightest ground
+            the white headline ever has to sit on.
+          */}
+          <Image
+            src={images.heroBackdrop}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover [filter:grayscale(0.88)_contrast(1.08)_brightness(0.58)]"
+          />
+
+          {/* Carries the remaining colour to the deep end of the palette. */}
+          <div
+            className="absolute inset-0 bg-blue-deep/55 mix-blend-multiply"
+            aria-hidden="true"
           />
 
           {/* Seats the headline and the stat bar on a darker ground, the way
