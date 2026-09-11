@@ -9,7 +9,7 @@ export { StrengthsSection } from "./strengths-section";
 
 export function TrustedBySection() {
   return (
-    <section id="customers" className="section bg-off">
+    <section id="customers" className="section bg-white">
       <Reveal className="mb-[clamp(28px,4vw,52px)] text-center">
         <h2 className="eyebrow text-[22px] font-medium text-black opacity-100">
           Trusted by
@@ -72,11 +72,14 @@ export { ProjectsRail } from "./projects-rail";
 
 export function TechnicalSupport() {
   return (
-    <section className="section bg-white border-t border-ink/10">
+    <section className="section scroll-round-bottom relative z-10 overflow-clip border-t border-ink/10 bg-white">
       <Reveal>
         <span className="eyebrow">Technical support</span>
         <TechnicalSupportAccordion items={technicalSupport} />
       </Reveal>
+
+      {/* Drives the bottom-radius view timeline; see .scroll-round-bottom. */}
+      <span aria-hidden className="scroll-round-sentinel" />
     </section>
   );
 }

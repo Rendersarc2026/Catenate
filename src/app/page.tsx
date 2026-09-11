@@ -19,15 +19,15 @@ export default function Home() {
     <>
       <SiteHeader />
 
-      <main>
+      <main className="bg-white">
         <Hero />
         <HeroStatement />
         <WhatWeDo />
-        <GlobalPresence />
+        <WhyCatenate />
+        <TrustedBySection />
         <IndustriesSection />
         <StrengthsSection />
-        <TrustedBySection />
-        <WhyCatenate />
+        <GlobalPresence />
         <TechnicalSupport />
         <SolutionsFinderTeaser />
         <ContactSection />

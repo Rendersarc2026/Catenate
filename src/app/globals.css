@@ -738,6 +738,7 @@
   height: 100vh;
   height: 100svh;
   overflow: hidden;
+  border-radius: clamp(16px, 2vw, 28px);
   background-color: #0d1018;
   isolation: isolate;
 }
@@ -809,7 +810,7 @@
   /* Now the stage runs edge to edge, the copy and the rail line up with the
      site's content column rather than with the screen — the same gutter the
      nav, the heading and the stats sit on. */
-  padding-inline: max(var(--section-pad), calc((100% - var(--content-max)) / 2));
+  padding-inline: clamp(20px, 3.5vw, 56px);
   color: #fff;
   /* Chrome is a layer above the click target, so it hands pointer events back
      only where something is genuinely interactive. */
@@ -1253,5 +1254,63 @@
 
   html {
     scroll-behavior: auto;
+  }
+}
+
+/* ---------- Scroll-driven bottom radius ---------- */
+/*
+ * The white block's bottom corners stay square until its bottom edge reaches
+ * the middle of the viewport, then round out as it keeps rising, so the dark
+ * section below appears to slide under a curve rather than a fixed notch. A 1px
+ * sentinel pinned to the block's bottom edge drives the view timeline:
+ * measuring the edge itself keeps the scroll distance fixed regardless of how
+ * tall the block grows.
+ *
+ * The section clips with `overflow: clip` rather than `hidden` on purpose —
+ * `hidden` would make it a scroll container and the sentinel would resolve its
+ * view timeline against the section instead of the document.
+ */
+.scroll-round-bottom {
+  --scroll-round: clamp(28px, 4vw, 56px);
+  /* Offset from the viewport bottom at which the corners begin to round. */
+  --scroll-round-start: 22vh;
+  --scroll-round-distance: 58vh;
+
+  timeline-scope: --scroll-round-edge;
+  border-end-start-radius: var(--scroll-round);
+  border-end-end-radius: var(--scroll-round);
+}
+
+.scroll-round-sentinel {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  pointer-events: none;
+  view-timeline: --scroll-round-edge block;
+}
+
+@supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+  .scroll-round-bottom {
+    /*
+     * Near-even rather than eased-out: over this much scroll an ease-out
+     * spends most of the radius in the first few hundred pixels and then
+     * crawls, which reads as a snap followed by nothing happening.
+     */
+    animation: scroll-round-bottom auto cubic-bezier(0.45, 0, 0.55, 1) both;
+    animation-timeline: --scroll-round-edge;
+    animation-range: cover var(--scroll-round-start) cover
+      calc(var(--scroll-round-start) + var(--scroll-round-distance));
+  }
+}
+
+@keyframes scroll-round-bottom {
+  from {
+    border-end-start-radius: 0px;
+    border-end-end-radius: 0px;
+  }
+  to {
+    border-end-start-radius: var(--scroll-round);
+    border-end-end-radius: var(--scroll-round);
   }
 }
