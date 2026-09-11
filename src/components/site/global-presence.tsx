@@ -12,8 +12,8 @@ export function GlobalPresence() {
    * block re-applies the content column for itself.
    */
   return (
-    <section id="presence" className="section section-flush bg-white text-ink overflow-hidden">
-      <Reveal className="content-pad mb-[clamp(34px,4vw,54px)] flex flex-col items-center text-center">
+    <section id="presence" className="section section-flush !pt-0 bg-white text-ink overflow-hidden">
+      <Reveal className="content-pad flex flex-col items-center py-[clamp(56px,6.5vw,88px)] text-center">
         <span className="eyebrow">{presence.eyebrow}</span>
         <h2 className="mx-auto max-w-[24ch] text-balance text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
           {presence.heading}
