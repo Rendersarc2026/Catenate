@@ -125,7 +125,7 @@ export function Hero() {
       <div className="relative z-10 max-w-[1050px] mx-auto my-auto">
         <div ref={mouseParallaxRef} className="will-change-transform">
           {/* White headline text */}
-          <h1 className="mx-auto text-[clamp(1.75rem,3.2vw,2.85rem)] leading-[1.3] font-bold tracking-[-0.02em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.8),0_2px_10px_rgba(0,0,0,0.7),0_4px_40px_rgba(0,0,0,0.8)]">
+          <h1 className="mx-auto text-[clamp(2rem,4vw,3.5rem)] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_16px_rgba(0,0,0,0.5)]">
             {hero.headlineLines.map((line) => (
               <span
                 key={line}
@@ -145,10 +145,10 @@ export function Hero() {
             key={stat.label}
             className="border-l border-white/16 px-4 py-1 text-center first:border-l-0 max-[720px]:nth-3:border-l-0"
           >
-            <b className="tnum block text-[clamp(2.1rem,3.6vw,3rem)] leading-none font-bold tracking-[-0.025em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.7),0_2px_18px_rgba(0,0,0,0.6)]">
+            <b className="tnum block text-[clamp(2.2rem,3.8vw,3.2rem)] leading-none font-light tracking-[-0.03em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.4)]">
               {stat.value}
             </b>
-            <span className="mt-2.5 block text-[11px] sm:text-[12px] tracking-[0.18em] text-white/85 uppercase font-semibold [text-shadow:0_1px_3px_rgba(0,0,0,0.8)]">
+            <span className="mt-2.5 block text-[10px] sm:text-[11px] tracking-[0.18em] text-white/65 uppercase font-normal [text-shadow:0_1px_6px_rgba(0,0,0,0.4)]">
               {stat.label}
             </span>
           </div>
