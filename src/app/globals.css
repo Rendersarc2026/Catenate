@@ -1358,3 +1358,236 @@
     transform: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Principal wall — authorised distributors
+   ---------------------------------------------------------------------------
+   The principals read as a hairline grid laid over a lit field. One cell is
+   always active: the pointer takes it, and left alone the row advances on a
+   timer the reader can watch running along the bottom edge of the open cell.
+
+   Everything that moves here is opacity, transform or a custom property, so a
+   pass across the row never costs layout — which matters because the section
+   is pinned and the scroll track is painting the same frames.
+--------------------------------------------------------------------------- */
+
+.pw-grid {
+  /* Seeded so the light has somewhere to be before the pointer arrives. */
+  --mx: 50%;
+  --my: 50%;
+}
+
+/*
+ * A single light under the whole row rather than one per cell: the hairlines
+ * stay crisp over it, and the row reads as one lit surface instead of five
+ * separately glowing boxes.
+ */
+.pw-glow {
+  background: radial-gradient(
+    260px circle at var(--mx) var(--my),
+    rgb(150 174 236 / 0.26),
+    transparent 68%
+  );
+  opacity: 0;
+  transition: opacity 0.55s var(--ease-out-expo);
+}
+
+.pw-grid:hover .pw-glow,
+.pw-grid:focus-within .pw-glow {
+  opacity: 1;
+}
+
+/* Corner ticks — the crosshair that marks which cell is open. */
+.pw-corners > span {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0 solid rgb(255 255 255 / 0.55);
+  opacity: 0;
+  transition:
+    opacity 0.45s var(--ease-out-expo),
+    translate 0.6s var(--ease-out-expo);
+}
+
+.pw-corners > span:nth-child(1) {
+  top: 10px;
+  left: 10px;
+  border-block-start-width: 1px;
+  border-inline-start-width: 1px;
+  translate: -6px -6px;
+}
+
+.pw-corners > span:nth-child(2) {
+  top: 10px;
+  right: 10px;
+  border-block-start-width: 1px;
+  border-inline-end-width: 1px;
+  translate: 6px -6px;
+}
+
+.pw-corners > span:nth-child(3) {
+  bottom: 10px;
+  left: 10px;
+  border-block-end-width: 1px;
+  border-inline-start-width: 1px;
+  translate: -6px 6px;
+}
+
+.pw-corners > span:nth-child(4) {
+  bottom: 10px;
+  right: 10px;
+  border-block-end-width: 1px;
+  border-inline-end-width: 1px;
+  translate: 6px 6px;
+}
+
+[data-active="true"] .pw-corners > span {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/*
+ * A highlight that crosses the cell once as it opens. It is re-keyed on the
+ * open cell, so it mounts fresh on every change — the entrance is the swap.
+ */
+@keyframes pw-sheen {
+  from {
+    transform: translateX(-130%) skewX(-18deg);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(230%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+.pw-sheen {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.14),
+    transparent
+  );
+  animation: pw-sheen 1.15s var(--ease-out-expo) both;
+}
+
+/* The dwell clock, drawn along the bottom edge of the open cell. */
+@keyframes pw-dwell {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.pw-dwell {
+  transform-origin: left;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0.2),
+    rgb(255 255 255 / 0.85)
+  );
+  animation: pw-dwell var(--pw-dwell, 5200ms) linear both;
+}
+
+.pw-dwell[data-paused="true"] {
+  animation-play-state: paused;
+}
+
+/*
+ * The principal's name in the heading. Each glyph rises out of its own mask a
+ * beat behind the one to its left, so the name is written across rather than
+ * swapped as a slab.
+ */
+@keyframes pw-glyph-in {
+  from {
+    transform: translateY(105%) rotate(3deg);
+  }
+}
+
+.pw-glyph {
+  display: inline-block;
+  transform-origin: 0% 100%;
+  animation: pw-glyph-in 0.85s var(--ease-wave) both;
+  animation-delay: var(--pw-glyph-delay, 0ms);
+}
+
+/* Panel copy cascades in on change, in the order it is read. */
+@keyframes pw-copy-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pw-rise {
+  animation: pw-copy-in 0.75s var(--ease-out-expo) both;
+  animation-delay: var(--pw-rise, 0ms);
+}
+
+/*
+ * A slow drift across the field so the ground under the grid is never quite
+ * still. It is a background-position move on a single layer — no new paint
+ * area, and nothing above it is disturbed.
+ */
+@keyframes pw-drift {
+  from {
+    transform: translate3d(-3%, 0, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(3%, -2%, 0) scale(1.14);
+  }
+}
+
+.pw-drift {
+  animation: pw-drift 19s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pw-sheen,
+  .pw-dwell,
+  .pw-glyph,
+  .pw-rise,
+  .pw-drift {
+    animation: none;
+  }
+
+  .pw-glow {
+    transition: none;
+  }
+}
+
+/*
+ * The section's entrance. Each part holds the start state through its own
+ * delay — `both` is what makes that work — so the cascade can be declared in
+ * one place and still have nothing visible before its turn.
+ */
+@keyframes pw-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pw-in {
+  animation: pw-in 0.85s var(--ease-out-expo) both;
+  animation-delay: var(--pw-in, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pw-in {
+    animation: none;
+  }
+}
