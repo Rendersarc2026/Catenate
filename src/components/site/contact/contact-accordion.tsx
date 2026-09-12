@@ -41,7 +41,8 @@ export function ContactAccordion({
             key={item.title}
             onMouseEnter={() => setActiveIndex(idx)}
             className={cn(
-              "group relative transition-all duration-300 ease-out",
+              "group relative flex flex-col justify-center transition-colors duration-200",
+              "py-3.5 sm:py-4 lg:py-[18px]",
               !isLast && "border-b border-white/25"
             )}
           >
@@ -53,19 +54,15 @@ export function ContactAccordion({
               aria-expanded={isExpanded}
               aria-controls={`contact-panel-${idx}`}
               id={`contact-header-${idx}`}
-              className={cn(
-                "flex w-full cursor-pointer flex-col text-left transition-all duration-250 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50",
-                isExpanded
-                  ? "pt-0 pb-1"
-                  : "pt-[17px] pb-[16px]"
-              )}
+              className="flex w-full cursor-pointer flex-col text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50"
             >
               <span
                 className={cn(
-                  "tracking-[-0.01em] transition-all duration-200 leading-none",
+                  "tracking-[-0.01em] transition-colors duration-200 leading-snug whitespace-nowrap",
+                  "text-[clamp(14px,0.95vw,17.5px)]",
                   isExpanded
-                    ? "text-[clamp(15px,1.22vw,23.5px)] font-normal text-white"
-                    : "text-[clamp(12px,0.87vw,16.5px)] font-light text-white/80 group-hover:text-white"
+                    ? "font-normal text-white"
+                    : "font-light text-white/70 group-hover:text-white"
                 )}
               >
                 {item.title}
@@ -78,10 +75,10 @@ export function ContactAccordion({
               role="region"
               aria-labelledby={`contact-header-${idx}`}
               className={cn(
-                "grid transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                "grid transition-all duration-200 ease-out",
                 isExpanded
-                  ? "grid-rows-[1fr] opacity-100 pb-[10px]"
-                  : "grid-rows-[0fr] opacity-0 pb-0"
+                  ? "grid-rows-[1fr] opacity-100 pt-2"
+                  : "grid-rows-[0fr] opacity-0 pt-0"
               )}
             >
               <div className="overflow-hidden">
@@ -92,12 +89,12 @@ export function ContactAccordion({
                       e.stopPropagation();
                       onSelectAction(item);
                     }}
-                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(12px,0.87vw,16.5px)] font-light leading-none text-white/85 transition-colors duration-200 hover:text-white focus-visible:underline focus-visible:outline-none"
+                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(12px,0.85vw,15px)] font-light leading-none text-white/85 transition-colors duration-150 hover:text-white focus-visible:underline focus-visible:outline-none"
                   >
                     <span>{item.cta}</span>
                     <span
                       aria-hidden="true"
-                      className="ml-1.5 inline-block transition-transform duration-200 ease-out group-hover/cta:translate-x-1"
+                      className="ml-1.5 inline-block transition-transform duration-150 ease-out group-hover/cta:translate-x-1"
                     >
                       &gt;
                     </span>
@@ -106,12 +103,12 @@ export function ContactAccordion({
                   <Link
                     href={item.href}
                     onClick={(e) => e.stopPropagation()}
-                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(12px,0.87vw,16.5px)] font-light leading-none text-white/85 transition-colors duration-200 hover:text-white focus-visible:underline focus-visible:outline-none"
+                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(12px,0.85vw,15px)] font-light leading-none text-white/85 transition-colors duration-150 hover:text-white focus-visible:underline focus-visible:outline-none"
                   >
                     <span>{item.cta}</span>
                     <span
                       aria-hidden="true"
-                      className="ml-1.5 inline-block transition-transform duration-200 ease-out group-hover/cta:translate-x-1"
+                      className="ml-1.5 inline-block transition-transform duration-150 ease-out group-hover/cta:translate-x-1"
                     >
                       &gt;
                     </span>

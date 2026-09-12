@@ -78,8 +78,8 @@ export function ContactSection() {
             </button>
           </div>
 
-          {/* Right Accordion: starts at X = 70.76%, Y = 28%, width = 21.24% */}
-          <div className="relative w-full lg:absolute lg:left-[70.76%] lg:top-[28%] lg:w-[21.24%]">
+          {/* Right Accordion: anchored on the right with responsive width */}
+          <div className="relative w-full lg:absolute lg:right-[5%] xl:right-[7%] 2xl:right-[8%] lg:top-[28%] lg:w-auto lg:max-w-[460px] lg:min-w-[340px]">
             <ContactAccordion
               items={contactCards}
               onSelectAction={handleSelectAction}
