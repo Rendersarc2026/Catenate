@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import * as React from "react";
 import { hero, images } from "@/data/catenate";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
@@ -9,6 +8,75 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 /** Peak translation of the mouse parallax layer, in px. */
 const PARALLAX_X = 14;
 const PARALLAX_Y = 10;
+
+/*
+ * Earth geometry, measured off `public/images/hero-earth.webp` itself: the
+ * crown of the limb sits 0.4471 of the way up the frame, and the arc falls to
+ * 0.0806 at either edge. Re-measure both if the picture is ever replaced — they
+ * describe that file and nothing else.
+ *
+ * Full-bleed `object-cover` cannot give a low horizon with this picture. Earth
+ * fills the bottom 55% of the source, so showing the whole frame always shows a
+ * planet more than half the section tall, and the copy has nowhere to sit but
+ * on top of it. The frame is held wider than the window instead and dropped
+ * until only the crown clears the bottom edge: what is left on screen is the
+ * flat middle of the arc, and the copy sits on open sky.
+ */
+const IMG_W = 2000;
+const IMG_H = 1116;
+const FRAME_ASPECT = `${IMG_W} / ${IMG_H}`;
+/** Frame width against the window. Wider reads flatter and sits lower. */
+const FRAME_VW = 200;
+/** Height of the crown above the frame's own bottom edge, in vw. */
+const CROWN_VW = (FRAME_VW * IMG_H * 0.4471) / IMG_W;
+
+/*
+ * Height of the visible arc at its centre — the one number to reach for when
+ * the planet wants to sit higher or lower. Fenced on both sides, because the
+ * curve is measured in widths and the window is not:
+ *
+ *  - the floor is the sagitta, how far the limb falls away between the centre
+ *    of the window and its edge: 8.9% of the width at this frame size. Any less
+ *    and a wide, short window keeps black in its bottom corners.
+ *  - the ceiling is the picture, which carries only `CROWN_VW` of planet below
+ *    the crown. A tall phone asking for 18vh wants more than that.
+ */
+const ARC = "clamp(9.5vw, 18vh, 34vw)";
+
+/**
+ * The section's ground, and the sky the picture was shot against: rgb(3 5 16).
+ * The two have to match. The frame stops partway up a tall window, and anything
+ * other than the photograph's own black draws a line where it ends.
+ */
+const HERO_SKY = "#030510";
+
+/*
+ * Star field, drawn to carry on where the photograph stops. On a wide window the
+ * frame reaches the top of the section and none of this shows; on a tall one — a
+ * phone especially — it only reaches part way up, and what is above it would
+ * otherwise be an empty wash. Sized and weighted to pass for the picture's own
+ * stars, and biased towards the top, since the bottom of the field sits behind
+ * the planet either way.
+ *
+ * Fixed seed, so the server and the client lay out the same sky and hydration
+ * has nothing to reconcile.
+ */
+const STARS = (() => {
+  let seed = 0x9e3779b9;
+  const rand = () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+
+  return Array.from({ length: 120 }, () => ({
+    x: +(rand() * 1600).toFixed(1),
+    y: +(Math.pow(rand(), 1.35) * 900).toFixed(1),
+    r: +(0.4 + rand() * 0.85).toFixed(2),
+    o: +(0.18 + rand() * 0.5).toFixed(2),
+  }));
+})();
 
 export function Hero() {
   const [ready, setReady] = React.useState(false);
@@ -107,22 +175,49 @@ export function Hero() {
       ref={containerRef}
       id="hero"
       aria-label="Home"
-      className={`${ready ? "is-ready " : ""}on-blue relative isolate h-screen h-dvh min-h-[620px] w-full overflow-hidden [contain:layout_paint] flex flex-col justify-between text-center text-white bg-black pt-[100px] pb-8 sm:pt-[110px] sm:pb-10 content-pad select-none`}
+      style={{ "--earth-arc": ARC, "--hero-sky": HERO_SKY } as React.CSSProperties}
+      className={`${ready ? "is-ready " : ""}on-blue relative isolate h-screen h-dvh min-h-[620px] w-full overflow-hidden [contain:layout_paint] flex flex-col justify-between text-center text-white bg-[var(--hero-sky)] pt-[100px] pb-8 sm:pt-[110px] sm:pb-10 content-pad select-none`}
     >
       {/* 1. Space & Earth: High-resolution orbital Earth with atmospheric limb and stars. */}
       <div
         className="absolute inset-0 -z-10 pointer-events-none overflow-hidden"
         aria-hidden="true"
       >
-        <Image
-          src={images.heroEarth}
-          alt="Planet Earth from orbit"
-          fill
-          priority
-          unoptimized
-          sizes="100vw"
-          className="object-cover object-bottom"
-        />
+        <svg
+          viewBox="0 0 1600 900"
+          preserveAspectRatio="xMidYMid slice"
+          className="absolute inset-0 size-full opacity-70"
+        >
+          {STARS.map((star, i) => (
+            <circle
+              key={i}
+              cx={star.x}
+              cy={star.y}
+              r={star.r}
+              fill="#ffffff"
+              fillOpacity={star.o}
+            />
+          ))}
+        </svg>
+
+        <div
+          className="absolute left-1/2 max-w-none -translate-x-1/2"
+          style={{
+            width: `${FRAME_VW}vw`,
+            aspectRatio: FRAME_ASPECT,
+            bottom: `calc(var(--earth-arc) - ${CROWN_VW.toFixed(2)}vw)`,
+          }}
+        >
+          <Image
+            src={images.heroEarth}
+            alt="Planet Earth from orbit"
+            fill
+            priority
+            unoptimized
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
 
         {/* Subtle radial vignette around the headline for contrast */}
         <div className="absolute inset-0 bg-[radial-gradient(125%_95%_at_50%_40%,transparent_28%,rgba(0,0,0,0.25)_70%,rgba(0,0,0,0.55)_100%)]" />
@@ -132,13 +227,9 @@ export function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
       </div>
 
-      {/* 2. Eyebrow, headline and the one action, centred in the empty sky. */}
+      {/* 2. Headline, centred in the open sky above the limb. */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center">
         <div ref={mouseParallaxRef} className="will-change-transform">
-          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-[10px] sm:text-[11px] font-normal tracking-[0.18em] uppercase text-white/55 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
-            {hero.eyebrow}
-          </p>
-
           <h1 className="mx-auto text-[clamp(2rem,4vw,3.5rem)] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.7),0_6px_38px_rgba(0,0,0,0.8)]">
             {hero.headlineLines.map((line) => (
               <span
@@ -152,8 +243,11 @@ export function Hero() {
         </div>
       </div>
 
-      {/* 3. Stats row, cleanly anchored along the bottom. */}
-      <div className="hero-fade relative z-10 w-full max-w-[1220px] mx-auto grid grid-cols-4 shrink-0 max-[720px]:grid-cols-2 max-[720px]:gap-y-5">
+      {/* 3. Stats row, sat in the dark band above the limb rather than on it. */}
+      <div
+        className="hero-fade relative z-10 mx-auto grid w-full max-w-[1220px] shrink-0 grid-cols-4 max-[720px]:grid-cols-2 max-[720px]:gap-y-5"
+        style={{ marginBottom: "calc(var(--earth-arc) + 3vh)" }}
+      >
         {hero.stats.map((stat) => (
           <div
             key={stat.label}
