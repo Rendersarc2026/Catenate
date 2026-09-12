@@ -1,8 +1,13 @@
-"use client"
+/*
+ * A server component on purpose. Nothing here is interactive — `Reveal` is the
+ * only client piece and it brings its own boundary — and leaving it on the
+ * client meant the whole `projects` array, case-study prose included, was
+ * bundled and shipped so the browser could render markup the server had
+ * already rendered.
+ */
 
 import Image from "next/image"
 import Link from "next/link"
-import * as React from "react"
 
 import { Reveal } from "@/components/site/reveal"
 import { projects } from "@/data/catenate"

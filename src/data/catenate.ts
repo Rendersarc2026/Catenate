@@ -14,7 +14,6 @@ const placeholder = (seed: string, w: number, h: number, grayscale = false) =>
   `https://picsum.photos/seed/${seed}/${w}/${h}${grayscale ? "?grayscale" : ""}`;
 
 export const images = {
-  heroBanner: "/images/hero-banner.jpg",
   /*
    * The hero's ground: Earth from orbit, the limb curving across the bottom of
    * a black sky. A global distributor's opening frame is the globe itself — the
@@ -147,7 +146,7 @@ export const megaMenu: MegaSection[] = [
  * ------------------------------------------------------------------ */
 
 export const hero = {
-  eyebrow: "Global distribution · Bonding · Sealing · Construction chemicals",
+  // eyebrow: "Global distribution · Bonding · Sealing · Construction chemicals",
   headlineLines: [
     "Connecting the world’s",
     "leading brands to your doorstep.",

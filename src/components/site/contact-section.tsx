@@ -30,15 +30,23 @@ export function ContactSection() {
         aria-label="Get in touch with us"
         className="relative w-full overflow-hidden bg-black text-white selection:bg-cyan-500/30 selection:text-white min-h-[520px] sm:min-h-[560px] lg:min-h-0 lg:aspect-[2.1/1] lg:max-h-[760px]"
       >
-        {/* Background Image Container — Lossless & Uncompressed */}
+        {/*
+         * Background image.
+         *
+         * Optimised and lazy, both deliberately. This is the last section on
+         * the page: `priority` here was preloading a full-size background at
+         * the same moment the hero was fetching the picture the page is
+         * actually judged on. And `unoptimized` meant one JPEG for every
+         * device — the optimiser serves AVIF at the width each one asks for
+         * instead. The `quality={100}` that came with it never applied anyway;
+         * the allowlist in `next.config.ts` is the default `[75]`, so it was
+         * being coerced back down.
+         */}
         <div className="pointer-events-none absolute inset-0 select-none overflow-hidden" aria-hidden="true">
           <Image
             src={images.contactBg}
-            alt="Get in touch with us background"
+            alt=""
             fill
-            priority
-            unoptimized
-            quality={100}
             sizes="100vw"
             className="object-cover object-center pointer-events-none"
           />

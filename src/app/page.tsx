@@ -24,10 +24,10 @@ export default function Home() {
         <HeroStatement />
         <WhatWeDo />
         <WhyCatenate />
-        <TrustedBySection />
         <IndustriesSection />
         <StrengthsSection />
         <GlobalPresence />
+        <TrustedBySection />
         <TechnicalSupport />
         <SolutionsFinderTeaser />
         <ContactSection />
