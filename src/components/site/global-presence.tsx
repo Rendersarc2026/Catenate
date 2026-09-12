@@ -17,9 +17,9 @@ export function GlobalPresence() {
       id="presence"
       className="section section-flush !pt-0 !pb-4 sm:!pb-6 md:!pb-8 lg:!pb-10 bg-white text-ink overflow-hidden"
     >
-      <Reveal className="content-pad flex flex-col items-center py-[clamp(56px,6.5vw,88px)] text-center">
+      <Reveal className="content-pad flex flex-col items-start py-[clamp(56px,6.5vw,88px)] text-left">
         <span className="eyebrow">{presence.eyebrow}</span>
-        <h2 className="mx-auto max-w-[24ch] text-balance text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
+        <h2 className="max-w-[24ch] text-balance text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
           {presence.heading}
         </h2>
       </Reveal>
