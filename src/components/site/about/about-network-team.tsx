@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import { Reveal } from "@/components/site/reveal";
 
@@ -13,8 +12,8 @@ export function AboutNetworkTeam() {
           <Reveal className="w-full">
             <div className="relative mb-6 aspect-16/9 w-full overflow-hidden rounded-[2px] bg-white/5">
               <Image
-                src="/images/about/network-logistics.jpg"
-                alt="Distribution and logistics network"
+                src="/images/about/network-delivery.webp"
+                alt="The network behind every delivery: highway transport, warehouse conveyor processing, and marine cargo shipping"
                 fill
                 sizes="(max-width: 1040px) 100vw, 1000px"
                 className="object-cover"
@@ -70,35 +69,6 @@ export function AboutNetworkTeam() {
         />
       </div>
 
-      {/* Join Us Section */}
-      <section className="relative bg-black px-[clamp(24px,5vw,64px)] pt-[clamp(60px,8vw,100px)] pb-16 text-center text-white">
-        <Reveal>
-          <h2 className="mb-6.5 text-[clamp(1.6rem,2.8vw,2.1rem)] font-medium tracking-[-0.02em] text-white">
-            Join us
-          </h2>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-3 rounded-[2px] border border-white px-6.5 py-3.25 text-[14px] font-medium text-white transition-colors duration-200 hover:bg-white hover:text-[#1a1d2e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-          >
-            See openings
-          </Link>
-        </Reveal>
-      </section>
-
-      {/* Illustrative Figures & Equal Opportunity Disclaimers */}
-      <div className="border-t border-white/10 bg-[#050711] px-[clamp(24px,5vw,64px)] py-8 text-[12px] leading-[1.7] text-white/45">
-        <div className="mx-auto max-w-[1240px]">
-          <p className="mb-2">
-            Figures are illustrative and reflect our current scale of operation
-            as an authorised distributor.
-          </p>
-          <p>
-            Catenate is an equal opportunity employer. All qualified applicants
-            will receive consideration for employment without regard to any
-            factor unrelated to their ability to do the job.
-          </p>
-        </div>
-      </div>
     </>
   );
 }

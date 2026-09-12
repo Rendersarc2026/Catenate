@@ -12,8 +12,8 @@ export function AboutHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/about/hero-warehouse.jpg"
-          alt="Catenate distribution warehouse"
+          src="/images/about/hero-climates.webp"
+          alt="Catenate global reach across diverse environments and climates"
           fill
           priority
           sizes="100vw"

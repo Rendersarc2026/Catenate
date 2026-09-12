@@ -31,11 +31,11 @@ export function AboutGlobalChain() {
       {/* Full-width Panorama Port Photography */}
       <div className="relative h-[64vh] min-h-[380px] w-full overflow-hidden">
         <Image
-          src="/images/about/port-panorama.jpg"
-          alt="Aerial view of a distribution and logistics site"
+          src="/images/about/global-chain.webp"
+          alt="Aerial view of multimodal global supply chain with container ship, freight transit, and cargo aircraft"
           fill
           sizes="100vw"
-          className="object-cover brightness-[0.88]"
+          className="object-cover brightness-[0.95]"
         />
       </div>
     </>

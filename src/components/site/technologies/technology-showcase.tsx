@@ -128,7 +128,7 @@ function StickyStack({ active }: { active: number }) {
         {/* Caption. Keyed on the chemistry so the words re-enter on each swap. */}
         <figcaption
           key={current.slug}
-          className="tech-caption absolute inset-x-0 bottom-0 p-[clamp(18px,2vw,28px)] pr-[clamp(120px,16vw,200px)] text-white"
+          className="tech-caption absolute inset-x-0 bottom-0 p-[clamp(18px,2vw,28px)] text-white"
         >
           <span className="block text-[11px] tracking-[0.16em] text-white/65 uppercase">
             {current.family}
@@ -139,27 +139,9 @@ function StickyStack({ active }: { active: number }) {
         </figcaption>
       </div>
 
-      {/* Inset detail, hung off the lower-right corner of the panel. */}
-      <div className="absolute -right-[clamp(10px,1.6vw,26px)] -bottom-[clamp(16px,2vw,32px)] aspect-[4/3] w-[clamp(112px,15vw,190px)] overflow-hidden rounded-[clamp(12px,1.2vw,18px)] shadow-[0_16px_40px_-16px_rgb(26_29_46/0.6)] ring-4 ring-white">
-        {technologies.map((tech, index) => (
-          <Image
-            key={tech.slug}
-            src={images.technology(tech.slug).detail}
-            alt=""
-            fill
-            sizes="190px"
-            className={cn(
-              "object-cover transition-opacity duration-[900ms] ease-expo",
-              index === active ? "opacity-100" : "opacity-0"
-            )}
-          />
-        ))}
-      </div>
-
-      {/* Progress ticks — where you are in the four. They stop short of the
-          inset hanging over the corner rather than running under it. */}
+      {/* Progress ticks — where you are in the four. */}
       <div
-        className="mt-[clamp(26px,3vw,40px)] flex items-center gap-2 pr-[clamp(108px,14vw,178px)]"
+        className="mt-[clamp(26px,3vw,40px)] flex items-center gap-2"
         aria-hidden="true"
       >
         {technologies.map((tech, index) => (
