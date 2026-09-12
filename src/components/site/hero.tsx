@@ -30,6 +30,14 @@ const FRAME_ASPECT = `${IMG_W} / ${IMG_H}`
 /** Height of the crown above the frame's own bottom edge, in vw. */
 const CROWN_VW = (FRAME_VW * IMG_H * 0.4471) / IMG_W
 
+/**
+ * The section's ground, and the photograph's sky once the brightness in the
+ * frame below has been applied to it: the source sits at rgb(3 5 16), and two
+ * thirds of that is this. Matching them is what lets the frame end mid-section
+ * without an edge, so a change to one is a change to both.
+ */
+const HERO_SKY = "#02030b"
+
 /*
  * Height of the visible arc at its centre, and the one number to reach for when
  * the planet wants to sit higher or lower. It is fenced on both sides because
@@ -141,15 +149,15 @@ export function Hero() {
     <section
       ref={containerRef}
       id="hero"
-      style={{ "--earth-arc": ARC } as React.CSSProperties}
-      className={`${ready ? "is-ready " : ""}on-blue relative isolate h-screen h-dvh min-h-[600px] w-full overflow-hidden [contain:layout_paint] flex flex-col text-center text-white bg-[#03050f] pt-[100px] pb-6 sm:pt-[110px] sm:pb-8 content-pad select-none`}
+      style={{ "--earth-arc": ARC, "--hero-sky": HERO_SKY } as React.CSSProperties}
+      className={`${ready ? "is-ready " : ""}on-blue relative isolate h-screen h-dvh min-h-[600px] w-full overflow-hidden [contain:layout_paint] flex flex-col text-center text-white bg-[var(--hero-sky)] pt-[100px] pb-6 sm:pt-[110px] sm:pb-8 content-pad select-none`}
     >
       {/* 1. Space: a fixed sky, then Earth rising along the bottom edge. */}
       <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true">
         <svg
           viewBox="0 0 1600 900"
           preserveAspectRatio="xMidYMid slice"
-          className="absolute inset-0 size-full"
+          className="absolute inset-0 size-full opacity-70"
         >
           {STARS.map((star, i) => (
             <circle
@@ -182,6 +190,12 @@ export function Hero() {
               Local, and served as it is. At this size the frame is wider than
               any device width the optimiser would resize to, and the file is
               already a 177KB WebP cut to the only dimensions the hero uses.
+
+              Taken down to two thirds brightness. Only `brightness` is used, and
+              nothing that bends the curve: it scales the sky along with the
+              planet, which is what keeps the photograph's black and the
+              section's the same colour. `HERO_SKY` below is that sky after the
+              multiplication, and the two have to move together.
             */}
             <Image
               src={images.heroEarth}
@@ -190,23 +204,33 @@ export function Hero() {
               priority
               unoptimized
               sizes="100vw"
-              className="object-cover"
+              className="object-cover [filter:brightness(0.68)_saturate(0.94)]"
             />
           </div>
         </div>
 
-        {/* Keeps the nav legible against the sky. */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 via-black/25 to-transparent" />
+        {/*
+          Shadow. A vignette first, drawn around the copy rather than the frame
+          — its centre sits above the middle, where the headline is, so the
+          corners and the sides fall away and the eye is walked inwards.
+        */}
+        <div className="absolute inset-0 bg-[radial-gradient(125%_95%_at_50%_40%,transparent_28%,rgba(0,0,0,0.42)_70%,rgba(0,0,0,0.72)_100%)]" />
+
+        {/* Then the two edges the interface actually sits on: the nav along the
+            top, and the foot of the planet, which is the brightest thing in the
+            section and otherwise runs straight into the white below it. */}
+        <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/80 via-black/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/55 via-black/18 to-transparent" />
       </div>
 
       {/* 2. Eyebrow, headline and the one action, centred in the empty sky. */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center">
         <div ref={mouseParallaxRef} className="will-change-transform">
-          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-[10px] sm:text-[11px] font-normal tracking-[0.18em] uppercase text-white/45">
+          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-[10px] sm:text-[11px] font-normal tracking-[0.18em] uppercase text-white/45 [text-shadow:0_1px_10px_rgba(0,0,0,0.6)]">
             {hero.eyebrow}
           </p>
 
-          <h1 className="mx-auto text-[clamp(2rem,4vw,3.5rem)] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.55)]">
+          <h1 className="mx-auto text-[clamp(2rem,4vw,3.5rem)] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.45),0_6px_38px_rgba(0,0,0,0.65)]">
             {hero.headlineLines.map((line) => (
               <span
                 key={line}
@@ -219,7 +243,7 @@ export function Hero() {
 
           <Link
             href="#contact"
-            className="hero-fade group mt-8 inline-flex items-center gap-2 text-[13px] sm:text-sm font-normal tracking-[0.02em] text-white/80 transition-colors duration-300 hover:text-white"
+            className="hero-fade group mt-8 inline-flex items-center gap-2 text-[13px] sm:text-sm font-normal tracking-[0.02em] text-white/80 [text-shadow:0_1px_12px_rgba(0,0,0,0.6)] transition-colors duration-300 hover:text-white"
           >
             Get in touch
             <span
@@ -242,10 +266,10 @@ export function Hero() {
             key={stat.label}
             className="border-l border-white/12 px-4 py-1 text-center first:border-l-0 max-[720px]:nth-3:border-l-0"
           >
-            <b className="tnum block text-[clamp(1.5rem,2.6vw,2.1rem)] leading-none font-light tracking-[-0.03em] text-white">
+            <b className="tnum block text-[clamp(1.5rem,2.6vw,2.1rem)] leading-none font-light tracking-[-0.03em] text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)]">
               {stat.value}
             </b>
-            <span className="mt-2 block text-[10px] tracking-[0.18em] text-white/50 uppercase font-normal">
+            <span className="mt-2 block text-[10px] tracking-[0.18em] text-white/50 uppercase font-normal [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
               {stat.label}
             </span>
           </div>
