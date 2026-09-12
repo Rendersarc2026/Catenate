@@ -16,15 +16,17 @@ const placeholder = (seed: string, w: number, h: number, grayscale = false) =>
 export const images = {
   heroBanner: "/images/hero-banner.jpg",
   /*
-   * The hero's ground: a modern production line, shot bright. It shows where
-   * the chemistry Catenate carries actually gets used — the assembly,
-   * fabrication and packaging lines in `industries` — rather than the freight
-   * that moves it, which said more about a haulier than a distributor. Lit and
-   * daylit rather than a night exterior, so the section reads open instead of
-   * heavy; the headline is set bold and shadowed to hold against it.
+   * The hero's ground: Earth from orbit, the limb curving across the bottom of
+   * a black sky. A global distributor's opening frame is the globe itself — the
+   * picture carries the reach that the stat row underneath only counts.
+   *
+   * Local rather than a stock URL, and already a WebP at the size the hero
+   * draws it, so it is served as-is; `hero.tsx` reads the arc's geometry off
+   * this exact frame, so a replacement wants the same framing — limb centred,
+   * crown a little under halfway up — or the constants there have to move with
+   * it.
    */
-  heroBackdrop:
-    "https://images.unsplash.com/photo-1717386255773-1e3037c81788?auto=format&fit=crop&w=2400&q=80",
+  heroEarth: "/images/hero-earth.webp",
   /** Sector photography, keyed by the slug on each `Industry`. */
   industry: (slug: string) => `/images/industries/${slug}.jpg`,
   project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),
