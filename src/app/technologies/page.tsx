@@ -4,7 +4,6 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { TechnologySupport } from "@/components/site/technologies/technology-support";
 import { TechnologyShowcase } from "@/components/site/technologies/technology-showcase";
-import { TechnologiesSection } from "@/components/site/technologies-section";
 
 export const metadata: Metadata = {
   title: "Technologies — Catenate",
@@ -19,7 +18,6 @@ export default function TechnologiesPage() {
 
       <main id="content" className="pt-nav bg-white">
         <TechnologyShowcase />
-        <TechnologiesSection />
         <TechnologySupport />
       </main>
 
