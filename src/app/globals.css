@@ -434,18 +434,6 @@
     user-select: none;
   }
 
-  /* ---------- Principal wall ---------- */
-  /*
-   * The wall is full width the whole way and rides in from the right edge as
-   * one block, sweeping across the "What we do" section.
-   */
-  /* Enters from the right, so the shadow hangs off its leading left edge. */
-  .wall-wipe {
-    translate: calc((1 - var(--wall-in, 1)) * 100%) 0;
-    will-change: translate;
-    box-shadow: -12px 0 36px -4px rgba(0, 0, 0, 0.18);
-  }
-
   /* ---------- Sector showcase ---------- */
   /*
    * Autoplay indicator along the top edge of the panel. It restarts whenever

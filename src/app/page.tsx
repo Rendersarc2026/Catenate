@@ -1,3 +1,4 @@
+import { AuthorisedDistributors } from "@/components/site/authorised-distributors";
 import { ContactSection } from "@/components/site/contact-section";
 import {
   StrengthsSection,
@@ -23,6 +24,7 @@ export default function Home() {
         <Hero />
         <HeroStatement />
         <WhatWeDo />
+        <AuthorisedDistributors />
         <WhyCatenate />
         <IndustriesSection />
         <StrengthsSection />

@@ -397,6 +397,11 @@ export type Brand = {
    * appears as soon as the asset is dropped in.
    */
   logo?: string;
+  /**
+   * White knockout of the mark in `public/images/logos/white`, for the dark
+   * distributor row where the supplied colour marks would not read.
+   */
+  logoWhite?: string;
   /** Optical correction against the shared logo box. Defaults to 1. */
   logoScale?: number;
   groups: MegaGroup[];
@@ -410,6 +415,7 @@ export const brands: Brand[] = [
     familyCount: "9 families",
     wordmarkClass: "text-[#e1000f]",
     logo: "/images/logos/henkel.svg",
+    logoWhite: "/images/logos/white/henkel.svg",
     logoScale: 1.15,
     groups: [
       {
@@ -453,6 +459,7 @@ export const brands: Brand[] = [
     familyCount: "1 family",
     wordmarkClass: "text-[#0b5fa5]",
     logo: "/images/logos/weld-on.png",
+    logoWhite: "/images/logos/white/weld-on.png",
     logoScale: 0.88,
     groups: [
       {
@@ -467,6 +474,7 @@ export const brands: Brand[] = [
     familyCount: "7 families",
     wordmarkClass: "text-[#cc0000]",
     logo: "/images/logos/wurth.svg",
+    logoWhite: "/images/logos/white/wurth.svg",
     logoScale: 1,
     groups: [
       {
@@ -498,6 +506,7 @@ export const brands: Brand[] = [
     familyCount: "3 families",
     wordmarkClass: "text-[#3874c8]",
     logo: "/images/logos/ge-sealants.png",
+    logoWhite: "/images/logos/white/ge-sealants.png",
     logoScale: 1.3,
     groups: [
       {
@@ -518,6 +527,7 @@ export const brands: Brand[] = [
     familyCount: "8 families",
     wordmarkClass: "text-[#d50032]",
     logo: "/images/logos/sika.svg",
+    logoWhite: "/images/logos/white/sika.svg",
     logoScale: 1.25,
     groups: [
       {
