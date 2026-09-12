@@ -5,16 +5,33 @@ import * as React from "react"
 import { createScrollTrack } from "@/lib/scroll-track"
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
 
-/** Share of the scroll track spent growing to full screen. */
-const GROW_END = 0.45
-/** Share of the scroll track spent held at full screen (the "hold" beat). */
-const HOLD_END = 0.75
-/** Upper bound on the enlarged text scale, before the width cap kicks in. */
+/*
+ * The statement arrives whole, and is read as you scroll.
+ *
+ * The panel used to open as a small widescreen card, grow to fill the window
+ * and shrink away again. That entrance is gone: there is nothing to watch
+ * before the section has said anything, and at the top of the track it left a
+ * box of barely-lit text that read as unfinished. The panel is full-bleed black
+ * from the first frame, and the only thing scrolling does to it is shrink it
+ * into a card and hand the reader back to the white.
+ *
+ * The reveal is the part worth keeping, so it stays: the sentence lights up
+ * letter by letter behind a travelling wavefront, and finishes before the
+ * shrink is far along, so the panel carries a lit sentence down rather than
+ * racing it.
+ */
+
+/** Share of the track held full-bleed before the panel starts shrinking. */
+const HOLD_END = 0.3
+/** Share of the track by which the panel has fully shrunk to its card. */
+const SHRINK_END = 0.85
+/** Upper bound on the text scale while full-bleed, before the width cap. */
 const MAX_SCALE = 1.35
 
-/** Scroll track bounds for letter-by-letter reveal */
-const REVEAL_START = 0.08
-const REVEAL_END = 0.68
+/** Scroll track bounds for the letter-by-letter reveal. */
+const REVEAL_START = 0.05
+const REVEAL_END = 0.55
+/** Width of the wavefront, in characters. */
 const FADE_WINDOW = 3.8
 
 interface CharItem {
@@ -48,34 +65,32 @@ function parseLine(text: string, startIndex: number): { words: WordItem[]; nextI
   return { words, nextIndex: curr }
 }
 
-const LINE_1_PARSED = parseLine(
-  "A global market intelligence & distribution platform built around",
-  0
-)
+const LINE_1 = "A global market intelligence & distribution platform built around"
+const LINE_2 =
+  "Trusted Brands, Efficient Teams, Technical knowhow & Dependable Supply Chain."
+
+const LINE_1_PARSED = parseLine(LINE_1, 0)
 const LINE_BREAK_PAUSE = 2
-const LINE_2_PARSED = parseLine(
-  "Trusted Brands, Efficient Teams, Technical knowhow & Dependable Supply Chain.",
-  LINE_1_PARSED.nextIndex + LINE_BREAK_PAUSE
-)
+const LINE_2_PARSED = parseLine(LINE_2, LINE_1_PARSED.nextIndex + LINE_BREAK_PAUSE)
 const TOTAL_CHARS = LINE_2_PARSED.nextIndex
 
-/** 0 → 1 → 0 across the track, with the middle stretch held at 1. */
+/** 1 while the panel is full, falling to 0 as it shrinks, then held there. */
 function phase(p: number) {
-  if (p < GROW_END) return p / GROW_END
   if (p < HOLD_END) return 1
-  return 1 - (p - HOLD_END) / (1 - HOLD_END)
+  if (p > SHRINK_END) return 0
+  return 1 - (p - HOLD_END) / (SHRINK_END - HOLD_END)
 }
 
-/** easeInOutCubic — settles into and out of the held state. */
+/** easeInOutCubic — the panel settles into and out of the shrink. */
 function ease(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
 }
 
 /**
  * Editorial showcase section:
- * - 16:9 widescreen black box with rounded corners and elevation
- * - Centered white headline statement with scroll-driven letter-by-letter reveal
- * - Smooth expansion into full-screen as you scroll
+ * - Opens as a full-bleed black field carrying the statement
+ * - The statement lights up letter by letter as the track is scrolled
+ * - Scrolling on shrinks the black into a 16:9 widescreen card
  */
 export function HeroStatement() {
   const reducedMotion = usePrefersReducedMotion()
@@ -121,7 +136,7 @@ export function HeroStatement() {
     const paint = (p: number) => {
       const e = ease(phase(p))
 
-      // 1. Resting 16:9 widescreen dimensions.
+      // 1. The 16:9 widescreen card the panel shrinks down to.
       const restingW = Math.min(1240, viewportW * 0.88)
       const idealH = restingW * (9 / 16)
       const restingH = Math.max(Math.min(idealH, viewportH * 0.7), 240)
@@ -131,21 +146,19 @@ export function HeroStatement() {
       const radius = ((1 - e) * 24).toFixed(1)
 
       /*
-       * 2. The panel grows by clip, not by box. Animating `inset` moved the
-       * element's own geometry, so every frame of the expansion cost a layout
-       * pass; a clip-path on a panel that is already full-bleed is resolved
-       * during paint and looks identical.
+       * 2. The panel shrinks by clip, not by box. Animating `inset` moves the
+       * element's own geometry, so every frame costs a layout pass; a clip-path
+       * on a panel that is already full-bleed is resolved during paint and
+       * looks identical.
        */
       if (panelRef.current) {
         panelRef.current.style.clipPath = `inset(${insetY}px ${insetX}px round ${radius}px)`
       }
 
-      // 3. Typography container scale and exit fade.
-      const exitP = p > 0.82 ? Math.min((p - 0.82) / 0.18, 1) : 0
+      // 3. The copy rides the panel down, from its full-bleed size to resting.
       if (contentRef.current) {
         const scale = 1 + (scaleCeiling - 1) * e
         contentRef.current.style.transform = `scale(${scale.toFixed(4)})`
-        contentRef.current.style.opacity = (1 - ease(exitP)).toFixed(3)
       }
 
       // 4. Letter-by-letter reveal with a glowing wavefront.
@@ -210,10 +223,10 @@ export function HeroStatement() {
           <div className="relative w-full aspect-[16/9] min-h-[320px] rounded-2xl sm:rounded-3xl bg-black overflow-hidden shadow-2xl flex items-center justify-center p-6 sm:p-12 text-center">
             <h2 className="relative z-10 text-[clamp(1.1rem,1.55vw,1.65rem)] leading-[1.48] sm:leading-[1.54] font-medium tracking-[-0.015em] text-white text-balance max-w-[min(1080px,86vw)] px-4 sm:px-8">
               <span className="block whitespace-normal lg:whitespace-nowrap">
-                A global market intelligence &amp; distribution platform built around
+                {LINE_1}
               </span>
               <span className="block whitespace-normal lg:whitespace-nowrap mt-2 sm:mt-2.5">
-                Trusted Brands, Efficient Teams, Technical knowhow &amp; Dependable Supply Chain.
+                {LINE_2}
               </span>
             </h2>
           </div>
@@ -228,81 +241,60 @@ export function HeroStatement() {
       className="relative bg-white border-b border-ink/8 min-h-[220vh] sm:min-h-[260vh]"
     >
       <div className="sticky top-0 flex h-screen h-dvh w-full items-center justify-center overflow-hidden [contain:layout_paint] content-pad">
-        {/* Backing Widescreen 16:9 Black Box that expands on scroll */}
+        {/* The black field, full-bleed until the scroll takes it down. */}
         <div
           ref={panelRef}
-          /* Collapsed until the first paint sizes it, so the full-bleed box
-             never flashes between hydration and the opening frame. */
-          style={{ clipPath: "inset(50% round 24px)" }}
+          /* Full-bleed until the first paint sizes it, so the section opens on
+             black rather than flashing its resting card between hydration and
+             the opening frame. */
+          style={{ clipPath: "inset(0px 0px round 0px)" }}
           className="absolute inset-0 bg-black will-change-[clip-path] shadow-[0_25px_65px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
           aria-hidden="true"
         />
 
-        {/* White Headline Statement with letter-by-letter reveal */}
+        {/* The statement, lit letter by letter as the track is scrolled. */}
         <div
           ref={contentRef}
           className="relative z-20 w-fit max-w-[min(1080px,86vw)] text-center origin-center will-change-transform px-4 sm:px-8 md:px-12 pointer-events-none"
         >
-          <h2
-            className="text-[clamp(1.1rem,1.55vw,1.65rem)] leading-[1.48] sm:leading-[1.54] font-medium tracking-[-0.015em] text-white/20 text-balance select-none antialiased"
-            aria-label="A global market intelligence & distribution platform built around Trusted Brands, Efficient Teams, Technical knowhow & Dependable Supply Chain."
-          >
+          <h2 className="text-[clamp(1.1rem,1.55vw,1.65rem)] leading-[1.48] sm:leading-[1.54] font-medium tracking-[-0.015em] text-white/20 text-balance select-none antialiased">
+            {/* Read as one sentence; the split below is a visual effect only. */}
             <span className="sr-only">
-              A global market intelligence &amp; distribution platform built around
-              Trusted Brands, Efficient Teams, Technical knowhow &amp; Dependable Supply Chain.
+              {LINE_1} {LINE_2}
             </span>
-            <span aria-hidden="true" className="block">
-              {/* Line 1 */}
-              <span className="block whitespace-normal lg:whitespace-nowrap">
-                {LINE_1_PARSED.words.map((word, wIdx) => (
-                  <React.Fragment key={wIdx}>
-                    <span className="inline-block whitespace-nowrap">
-                      {word.chars.map((item) => (
-                        <span
-                          key={item.globalIndex}
-                          ref={(el) => {
-                            letterRefs.current[item.globalIndex] = el
-                          }}
-                          className="inline-block align-baseline"
-                          style={{
-                            color: "rgba(255, 255, 255, 0.2)",
-                            opacity: 0.2,
-                          }}
-                        >
-                          {item.char}
-                        </span>
-                      ))}
-                    </span>
-                    {wIdx < LINE_1_PARSED.words.length - 1 && " "}
-                  </React.Fragment>
-                ))}
-              </span>
 
-              {/* Line 2 */}
-              <span className="block whitespace-normal lg:whitespace-nowrap mt-2 sm:mt-2.5">
-                {LINE_2_PARSED.words.map((word, wIdx) => (
-                  <React.Fragment key={wIdx}>
-                    <span className="inline-block whitespace-nowrap">
-                      {word.chars.map((item) => (
-                        <span
-                          key={item.globalIndex}
-                          ref={(el) => {
-                            letterRefs.current[item.globalIndex] = el
-                          }}
-                          className="inline-block align-baseline"
-                          style={{
-                            color: "rgba(255, 255, 255, 0.2)",
-                            opacity: 0.2,
-                          }}
-                        >
-                          {item.char}
-                        </span>
-                      ))}
-                    </span>
-                    {wIdx < LINE_2_PARSED.words.length - 1 && " "}
-                  </React.Fragment>
-                ))}
-              </span>
+            <span aria-hidden="true" className="block">
+              {[LINE_1_PARSED, LINE_2_PARSED].map((line, lineIdx) => (
+                <span
+                  key={lineIdx}
+                  className={`block whitespace-normal lg:whitespace-nowrap${
+                    lineIdx > 0 ? " mt-2 sm:mt-2.5" : ""
+                  }`}
+                >
+                  {line.words.map((word, wIdx) => (
+                    <React.Fragment key={wIdx}>
+                      <span className="inline-block whitespace-nowrap">
+                        {word.chars.map((item) => (
+                          <span
+                            key={item.globalIndex}
+                            ref={(el) => {
+                              letterRefs.current[item.globalIndex] = el
+                            }}
+                            className="inline-block align-baseline"
+                            style={{
+                              color: "rgba(255, 255, 255, 0.2)",
+                              opacity: 0.2,
+                            }}
+                          >
+                            {item.char}
+                          </span>
+                        ))}
+                      </span>
+                      {wIdx < line.words.length - 1 && " "}
+                    </React.Fragment>
+                  ))}
+                </span>
+              ))}
             </span>
           </h2>
         </div>

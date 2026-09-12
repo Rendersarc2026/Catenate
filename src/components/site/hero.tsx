@@ -222,9 +222,10 @@ export function Hero() {
         {/* Subtle radial vignette around the headline for contrast */}
         <div className="absolute inset-0 bg-[radial-gradient(125%_95%_at_50%_40%,transparent_28%,rgba(0,0,0,0.25)_70%,rgba(0,0,0,0.55)_100%)]" />
 
-        {/* Soft edge shading for the nav and section boundary */}
+        {/* Soft shading along the top, where the nav sits. Nothing along the
+            bottom: the scrim there was darkening the lit edge of the planet,
+            which is the one thing in the section worth looking at. */}
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/80 via-black/25 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
       </div>
 
       {/* 2. Headline, centred in the open sky above the limb. */}
