@@ -8,10 +8,10 @@ export function ProjectsHero() {
         <Reveal className="flex flex-col items-center text-center">
           <span className="eyebrow mb-3 block">Projects & References</span>
           <h1 className="max-w-[24ch] text-[clamp(2.3rem,4.8vw,4rem)] font-medium leading-[1.08] tracking-[-0.03em] text-ink">
-            Engineering integrity on landmark developments.
+            Engineering excellence across global projects.
           </h1>
           <p className="lead mt-4 max-w-[58ch] text-[clamp(15px,1.2vw,17px)] leading-[1.65] text-grey">
-            From marine berths and district cooling infrastructure to hygienic food processing halls and high-spec cleanrooms, explore our portfolio of specified projects across global markets.
+            From marine infrastructure to food processing and cleanrooms, discover our work across key industries and markets.
           </p>
         </Reveal>
       </div>

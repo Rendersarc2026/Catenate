@@ -36,8 +36,8 @@ export function AboutNetworkTeam() {
           <Reveal className="w-full">
             <div className="relative mb-6 aspect-16/9 w-full overflow-hidden rounded-[2px] bg-white/5">
               <Image
-                src="/images/about/team-onsite.jpg"
-                alt="The Catenate team on site"
+                src="/images/about/team-catenate.jpeg"
+                alt="The Catenate team"
                 fill
                 sizes="(max-width: 1040px) 100vw, 1000px"
                 className="object-cover"

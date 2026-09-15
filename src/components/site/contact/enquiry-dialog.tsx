@@ -36,7 +36,7 @@ const INITIAL_FORM: FormState = {
 
 /** Shared classes for the underlined fields — no boxes, one hairline each. */
 const fieldClass =
-  "w-full border-b border-white/15 bg-transparent pb-2.5 text-[15px] leading-snug text-white transition-colors duration-200 ease-expo placeholder:text-white/25 hover:border-white/30 focus:border-white focus:outline-none";
+  "w-full border-b border-ink/15 bg-transparent pb-2.5 text-[15px] leading-snug text-ink transition-colors duration-200 ease-expo placeholder:text-ink/25 hover:border-ink/30 focus:border-ink focus:outline-none";
 
 interface FieldProps {
   id: string;
@@ -51,17 +51,17 @@ function Field({ id, label, optional, error, children }: FieldProps) {
     <div>
       <label
         htmlFor={id}
-        className="flex items-baseline justify-between text-[10.5px] tracking-[0.14em] text-white/40 uppercase"
+        className="flex items-baseline justify-between text-[10.5px] tracking-[0.14em] text-ink/40 uppercase"
       >
         {label}
         {optional ? (
-          <span className="tracking-[0.06em] text-white/25 normal-case">
+          <span className="tracking-[0.06em] text-ink/25 normal-case">
             Optional
           </span>
         ) : null}
       </label>
       <div className="mt-3">{children}</div>
-      {error ? <p className="mt-2 text-[11px] text-amber">{error}</p> : null}
+      {error ? <p className="mt-2 text-[11px] text-red-600">{error}</p> : null}
     </div>
   );
 }
@@ -113,13 +113,13 @@ function EnquiryForm({ defaultTopic, onClose }: EnquiryFormProps) {
     <>
       <div className="flex items-start justify-between gap-6">
         <div className="space-y-3">
-          <span className="block text-[10.5px] tracking-[0.16em] text-white/40 uppercase">
+          <span className="block text-[10.5px] tracking-[0.16em] text-ink/40 uppercase">
             Technical enquiry
           </span>
-          <DialogTitle className="text-[clamp(1.4rem,2.2vw,1.75rem)] leading-tight font-medium tracking-[-0.02em] text-white">
+          <DialogTitle className="text-[clamp(1.4rem,2.2vw,1.75rem)] leading-tight font-medium tracking-[-0.02em] text-ink">
             {isSuccess ? "Enquiry received" : "Tell us what you're building"}
           </DialogTitle>
-          <DialogDescription className="max-w-[38ch] text-[13.5px] leading-relaxed text-white/50">
+          <DialogDescription className="max-w-[38ch] text-[13.5px] leading-relaxed text-ink/50">
             {isSuccess
               ? "Our technical specialists will respond within one business day."
               : "Share the application and we'll come back with the specification, not a brochure."}
@@ -128,27 +128,27 @@ function EnquiryForm({ defaultTopic, onClose }: EnquiryFormProps) {
 
         <DialogClose
           aria-label="Close"
-          className="-mt-1 -mr-1 grid size-9 shrink-0 cursor-pointer place-items-center rounded-full text-white/50 transition-colors duration-200 ease-expo hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/60"
+          className="-mt-1 -mr-1 grid size-9 shrink-0 cursor-pointer place-items-center rounded-none text-ink/50 transition-colors duration-200 ease-expo hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink/60"
         >
           <X className="size-4" strokeWidth={1.5} />
         </DialogClose>
       </div>
 
       {isSuccess ? (
-        <div className="mt-10 flex flex-col items-start border-t border-white/10 pt-10">
-          <span className="grid size-11 place-items-center rounded-full border border-white/20 text-white">
+        <div className="mt-10 flex flex-col items-start border-t border-ink/10 pt-10">
+          <span className="grid size-11 place-items-center rounded-none border border-ink/20 text-ink">
             <Check className="size-4.5" strokeWidth={1.5} />
           </span>
-          <p className="mt-5 text-[10.5px] tracking-[0.14em] text-white/40 uppercase">
+          <p className="mt-5 text-[10.5px] tracking-[0.14em] text-ink/40 uppercase">
             Reference
           </p>
-          <p className="tnum mt-1.5 text-[22px] font-light tracking-[-0.01em] text-white">
+          <p className="tnum mt-1.5 text-[22px] font-light tracking-[-0.01em] text-ink">
             {referenceNumber}
           </p>
           <button
             type="button"
             onClick={onClose}
-            className="mt-9 cursor-pointer text-[13px] text-white/60 underline underline-offset-[5px] decoration-white/25 transition-colors hover:text-white hover:decoration-white"
+            className="mt-9 cursor-pointer text-[13px] text-ink/60 underline underline-offset-[5px] decoration-ink/25 transition-colors hover:text-ink hover:decoration-ink"
           >
             Close
           </button>
@@ -205,7 +205,7 @@ function EnquiryForm({ defaultTopic, onClose }: EnquiryFormProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="group/submit mt-2 inline-flex h-13 w-full cursor-pointer items-center justify-center gap-2.5 rounded-full bg-white pr-2 pl-6 text-[13.5px] font-medium text-ink transition-[background-color,opacity] duration-250 ease-expo hover:bg-white/90 disabled:cursor-default disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="group/submit mt-2 inline-flex h-13 w-full cursor-pointer items-center justify-center gap-2.5 rounded-none bg-ink pr-2 pl-6 text-[13.5px] font-medium text-white transition-[background-color,opacity] duration-250 ease-expo hover:bg-ink/90 disabled:cursor-default disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           >
             {isSubmitting ? (
               <>
@@ -217,7 +217,7 @@ function EnquiryForm({ defaultTopic, onClose }: EnquiryFormProps) {
                 Send enquiry
                 <span
                   aria-hidden="true"
-                  className="grid size-9 place-items-center rounded-full bg-ink/8 transition-transform duration-250 ease-expo group-hover/submit:rotate-45"
+                  className="grid size-9 place-items-center rounded-none bg-white/10 transition-transform duration-250 ease-expo group-hover/submit:rotate-45"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -230,7 +230,7 @@ function EnquiryForm({ defaultTopic, onClose }: EnquiryFormProps) {
             )}
           </button>
 
-          <p className="text-center text-[11.5px] text-white/35">
+          <p className="text-center text-[11.5px] text-ink/35">
             We reply within one business day.
           </p>
         </form>
@@ -248,7 +248,7 @@ export function EnquiryDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="w-[min(92vw,30rem)] max-h-[88vh] overflow-y-auto rounded-[24px] border border-white/10 bg-[#0b0c11]/92 p-8 text-white shadow-[0_60px_140px_-30px_rgb(0_0_0/0.8)] backdrop-blur-2xl sm:p-10"
+        className="w-[min(92vw,30rem)] max-h-[88vh] overflow-y-auto rounded-none border border-ink/10 bg-white p-8 text-ink shadow-[0_60px_140px_-30px_rgb(0_0_0/0.1)] sm:p-10"
       >
         {open && (
           <EnquiryForm
