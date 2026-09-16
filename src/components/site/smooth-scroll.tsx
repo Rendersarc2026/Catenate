@@ -4,14 +4,7 @@ import Lenis from "lenis"
 import { usePathname } from "next/navigation"
 import * as React from "react"
 
-/** The running instance, so a section can move the page without Lenis fighting it. */
-let active: Lenis | null = null
-
-/** Jumps the page to `y` at once, keeping Lenis' own target in step. */
-export function jumpTo(y: number) {
-  if (active) active.scrollTo(y, { immediate: true, force: true })
-  else window.scrollTo({ top: y, behavior: "instant" })
-}
+import { setActiveLenis } from "@/lib/scroll-jump"
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -50,7 +43,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     })
 
     lenisRef.current = lenis
-    active = lenis
+    setActiveLenis(lenis)
 
     let frameId: number | null = null
 
@@ -97,7 +90,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       if (frameId !== null) cancelAnimationFrame(frameId)
       lenis.destroy()
       lenisRef.current = null
-      active = null
+      setActiveLenis(null)
     }
   }, [])
 

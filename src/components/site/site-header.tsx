@@ -6,6 +6,7 @@ import * as React from "react"
 
 import { ArrowButton } from "@/components/site/arrow-button"
 import { megaMenu } from "@/data/catenate"
+import { consumeJump } from "@/lib/scroll-jump"
 import { cn } from "@/lib/utils"
 
 
@@ -48,9 +49,12 @@ export function SiteHeader() {
       setScrolled(currentScrollY > 30)
       setPastHero(hasHero ? currentScrollY >= heroBottom : true)
 
-      // Hide when scrolling down, show when scrolling up.
+      // Hide when scrolling down, show when scrolling up. A jump made by the
+      // page itself is not the reader scrolling, so it leaves the header be.
       const diff = currentScrollY - lastScrollYRef.current
-      if (currentScrollY <= 40) {
+      if (consumeJump(currentScrollY)) {
+        // Held as it is.
+      } else if (currentScrollY <= 40) {
         setVisible(true)
       } else if (diff > 8 && currentScrollY > 90) {
         setVisible(false)

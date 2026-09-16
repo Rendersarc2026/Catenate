@@ -3,8 +3,8 @@
 import Image from "next/image"
 import * as React from "react"
 
-import { jumpTo } from "@/components/site/smooth-scroll"
 import { brands, type Brand } from "@/data/catenate"
+import { jumpTo } from "@/lib/scroll-jump"
 import { createScrollTrack } from "@/lib/scroll-track"
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
