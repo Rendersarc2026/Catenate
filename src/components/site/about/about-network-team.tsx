@@ -58,16 +58,19 @@ export function AboutNetworkTeam() {
         </div>
       </section>
 
-      {/* Wide On-Site Team Photography */}
-      <div className="relative h-[66vh] min-h-[340px] w-full overflow-hidden">
-        <Image
-          src="/images/about/team-wide.jpg"
-          alt="Team members on a construction site"
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-      </div>
+      {/* Wide On-Site Footage */}
+      <video
+        src="/videos/about.webm"
+        width={2880}
+        height={1234}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden="true"
+        className="block aspect-[2880/1234] h-auto w-full"
+      />
 
     </>
   );

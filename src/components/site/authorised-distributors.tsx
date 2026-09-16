@@ -1,9 +1,9 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
 import * as React from "react"
 
+import { jumpTo } from "@/components/site/smooth-scroll"
 import { brands, type Brand } from "@/data/catenate"
 import { createScrollTrack } from "@/lib/scroll-track"
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
@@ -18,20 +18,42 @@ import { cn } from "@/lib/utils"
  * 2. The marks arrive one after another, left to right.
  * 3. Once the last one has landed, the row is armed: one column is always
  *    open, and its detail hangs underneath the mark it belongs to.
+ * 4. The rest of the track walks the open column across every mark in turn,
+ *    so the section only lets go once each principal has been read.
  */
 
+/** Viewport heights of scroll for the arrival, and for each mark after it. */
+const INTRO_VH = 100
+const STEP_VH = 60
+const TRACK_VH = INTRO_VH + STEP_VH * brands.length
+/** Share of the track spent on the arrival; the rest steps through the marks. */
+const INTRO = INTRO_VH / TRACK_VH
+
+/* The arrival beats below are fractions of the intro, not of the whole track. */
+
 /** Where the heading has fully arrived. */
-const HEAD_IN = 0.22
+const HEAD_IN = 0.3
 /** Where the first mark starts arriving. */
-const MARKS_START = 0.16
-/** Share of the track between one mark arriving and the next. */
-const MARK_STAGGER = 0.075
+const MARKS_START = 0.2
+/** Share of the intro between one mark arriving and the next. */
+const MARK_STAGGER = 0.1
 /** How long a single mark takes to land. */
-const MARK_SPAN = 0.2
-/** Progress past which the row is settled enough to accept the pointer. */
+const MARK_SPAN = 0.3
+/** Intro progress past which the row is settled enough to accept the pointer. */
 const ARM_AT = MARKS_START + MARK_STAGGER * (brands.length - 1) + MARK_SPAN
 
-/** The column that is open before the pointer arrives. */
+/** Track progress at the middle of a column's stretch of scroll. */
+const progressFor = (index: number) =>
+  INTRO + ((index + 0.5) / brands.length) * (1 - INTRO)
+
+/** The column the scroll has reached, once the intro is over. */
+const stepAt = (p: number) =>
+  Math.min(
+    Math.floor((Math.max(p - INTRO, 0) / (1 - INTRO)) * brands.length),
+    brands.length - 1
+  )
+
+/** The column that is open before the scroll reaches the marks. */
 const DEFAULT_OPEN = 0
 
 /*
@@ -94,20 +116,6 @@ function BrandDetail({ brand }: { brand: Brand }) {
           </li>
         ))}
       </ul>
-
-      <Link
-        href="/brands"
-        className="mt-5 inline-flex items-center gap-2 text-[13px] tracking-[0.02em] text-white transition-opacity duration-250 ease-expo hover:opacity-70"
-      >
-        Explore the range
-        <svg
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-          className="size-3.5 fill-none stroke-current stroke-[1.6]"
-        >
-          <path d="M5 12h14M13 6l6 6-6 6" />
-        </svg>
-      </Link>
     </>
   )
 }
@@ -115,20 +123,31 @@ function BrandDetail({ brand }: { brand: Brand }) {
 type FieldProps = {
   /** Set until the marks have landed, so the row ignores the pointer. */
   idle?: boolean
+  /** The column the scroll has opened. */
+  step?: number
+  /**
+   * Moves the scroll to a column, so reading carries on from the one picked.
+   * Left out where nothing is pinned, and the row keeps its own pick instead.
+   */
+  onPick?: (index: number) => void
   headingRef?: React.Ref<HTMLHeadingElement>
   columnRef?: (index: number) => (element: HTMLDivElement | null) => void
 }
 
-function Field({ idle = false, headingRef, columnRef }: FieldProps) {
-  const [open, setOpen] = React.useState(DEFAULT_OPEN)
+function Field({
+  idle = false,
+  step,
+  onPick,
+  headingRef,
+  columnRef,
+}: FieldProps) {
+  const [picked, setPicked] = React.useState(DEFAULT_OPEN)
+  const open = step ?? picked
+  const setOpen = onPick ?? setPicked
   const last = brands.length - 1
 
   return (
     <div
-      onPointerLeave={(event) => {
-        /* A tap ends with a leave; only a mouse leaving should reset. */
-        if (event.pointerType === "mouse") setOpen(DEFAULT_OPEN)
-      }}
       className={cn("content-pad w-full", idle && "pointer-events-none")}
     >
       <h2
@@ -152,10 +171,6 @@ function Field({ idle = false, headingRef, columnRef }: FieldProps) {
                 type="button"
                 aria-expanded={isOpen}
                 onFocus={() => setOpen(index)}
-                onPointerEnter={(event) => {
-                  /* Touch fires a pointerenter on tap; leave those to the click. */
-                  if (event.pointerType === "mouse") setOpen(index)
-                }}
                 /* Focus lands first on a tap, so a toggle here would undo it. */
                 onClick={() => setOpen(index)}
                 className={cn(
@@ -170,17 +185,19 @@ function Field({ idle = false, headingRef, columnRef }: FieldProps) {
                * The detail hangs off the row rather than sitting in it, so no
                * column moves as the reader crosses the marks. The outer two
                * anchor to their own edge so a long panel cannot run off the
-               * side of the section. It leaves quicker than it arrives, so two
-               * panels are never readable at once on the way between marks.
+               * side of the section; once the row is wide enough every panel
+               * centres under its own mark. It leaves quicker than it arrives,
+               * so two panels are never readable at once on the way between
+               * marks.
                */}
               <div
                 inert={!isOpen}
                 className={cn(
                   "absolute top-full z-1 mt-[clamp(34px,5vw,70px)] w-[min(330px,64vw)] text-left transition-[opacity,translate] ease-expo max-md:hidden",
                   index === 0
-                    ? "left-0"
+                    ? "left-0 xl:left-1/2 xl:-translate-x-1/2"
                     : index === last
-                      ? "right-0"
+                      ? "right-0 xl:right-auto xl:left-1/2 xl:-translate-x-1/2"
                       : "left-1/2 -translate-x-1/2",
                   isOpen
                     ? "translate-y-0 opacity-100 duration-700"
@@ -219,6 +236,9 @@ export function AuthorisedDistributors() {
   const headingRef = React.useRef<HTMLHeadingElement>(null)
   const columns = React.useRef<(HTMLDivElement | null)[]>([])
   const [armed, setArmed] = React.useState(false)
+  const [step, setStep] = React.useState(DEFAULT_OPEN)
+  /** A column picked by hand, held open while the smoothed scroll catches up. */
+  const pending = React.useRef<number | null>(null)
 
   const columnRef = React.useCallback(
     (index: number) => (element: HTMLDivElement | null) => {
@@ -234,10 +254,13 @@ export function AuthorisedDistributors() {
     if (!track) return
 
     let live = false
+    let current = DEFAULT_OPEN
 
     const paint = (p: number) => {
+      const intro = clamp01(p / INTRO)
+
       // 1. The heading rises into the field.
-      const heading = easeOut(clamp01(p / HEAD_IN))
+      const heading = easeOut(clamp01(intro / HEAD_IN))
       if (headingRef.current) {
         headingRef.current.style.opacity = heading.toFixed(3)
         headingRef.current.style.transform = `translate3d(0, ${((1 - heading) * 44).toFixed(1)}px, 0)`
@@ -247,22 +270,46 @@ export function AuthorisedDistributors() {
       columns.current.forEach((column, index) => {
         if (!column) return
         const at = easeOut(
-          clamp01((p - (MARKS_START + index * MARK_STAGGER)) / MARK_SPAN)
+          clamp01((intro - (MARKS_START + index * MARK_STAGGER)) / MARK_SPAN)
         )
         column.style.opacity = at.toFixed(3)
         column.style.transform = `translate3d(0, ${((1 - at) * 60).toFixed(1)}px, 0)`
       })
 
       // 3. Settled, so the row can be read with the pointer.
-      const settled = p >= ARM_AT
+      const settled = intro >= ARM_AT
       if (settled !== live) {
         live = settled
         setArmed(settled)
+      }
+
+      // 4. The open column follows the scroll across the row. A jump to a
+      //    picked column sweeps past the ones between, so those are skipped.
+      const next = stepAt(p)
+      if (pending.current !== null) {
+        if (next !== pending.current) return
+        pending.current = null
+      }
+      if (next !== current) {
+        current = next
+        setStep(next)
       }
     }
 
     return createScrollTrack({ element: track, paint, smoothing: 0.09 })
   }, [reducedMotion])
+
+  const pick = React.useCallback((index: number) => {
+    const track = trackRef.current
+    if (!track) return
+
+    pending.current = index
+    setStep(index)
+
+    const top = track.getBoundingClientRect().top + window.scrollY
+    const scrollable = track.offsetHeight - window.innerHeight
+    jumpTo(Math.round(top + scrollable * progressFor(index)))
+  }, [])
 
   if (reducedMotion) {
     return (
@@ -280,11 +327,18 @@ export function AuthorisedDistributors() {
     <section
       ref={trackRef}
       id="authorised-distributors"
-      className="on-blue relative isolate min-h-[260vh] w-full bg-[#090c15] text-white"
+      className="on-blue relative isolate w-full bg-[#090c15] text-white"
+      style={{ minHeight: `${TRACK_VH + 100}vh` }}
     >
       <div className="sticky top-0 flex h-dvh w-full flex-col overflow-hidden pt-[clamp(72px,18vh,200px)] [contain:layout_paint]">
         <Backdrop />
-        <Field idle={!armed} headingRef={headingRef} columnRef={columnRef} />
+        <Field
+          idle={!armed}
+          step={step}
+          onPick={pick}
+          headingRef={headingRef}
+          columnRef={columnRef}
+        />
       </div>
     </section>
   )
