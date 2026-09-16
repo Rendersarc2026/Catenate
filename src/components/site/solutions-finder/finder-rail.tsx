@@ -22,7 +22,7 @@ export type RailStep = {
  */
 export function FinderRail({ steps }: { steps: RailStep[] }) {
   return (
-    <div className="sticky top-nav z-40 border-b border-ink/10 bg-white/88 backdrop-blur-[18px]">
+    <div className="finder-rail sticky top-nav z-40 border-b border-ink/10 bg-white/88 backdrop-blur-[18px]">
       <nav aria-label="Solutions finder progress" className="content-pad">
         <ol className="grid grid-cols-3 gap-x-3 sm:gap-x-8">
           {steps.map((step) => {

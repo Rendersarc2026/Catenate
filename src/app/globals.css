@@ -1163,6 +1163,15 @@
   will-change: translate, transform;
 }
 
+body:has(.site-header.-translate-y-full) .finder-rail {
+  transform: translateY(calc(-1 * var(--nav-height)));
+}
+
+.finder-rail {
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
 /* Why Catenate Pillar Expansion */
 .pillar-card {
   transition: flex 600ms cubic-bezier(0.16, 1, 0.3, 1),

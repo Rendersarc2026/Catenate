@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Playwright MCP scratch output (screenshots, snapshots, console logs)
 .playwright-mcp/
+node_modules/
+dist/
+.env
