@@ -34,7 +34,7 @@ export function AboutHero() {
   return (
     <section
       id="hero"
-      className="relative isolate flex h-[64vh] min-h-[380px] w-full flex-col justify-between overflow-hidden text-white select-none"
+      className="relative isolate flex h-screen h-dvh min-h-[560px] w-full flex-col justify-between overflow-hidden text-white select-none"
       aria-label="About Us Hero"
     >
       {/* Background Image */}
@@ -68,7 +68,7 @@ export function AboutHero() {
       </div>
 
       {/* Bottom Bar: 3 Key Stats */}
-      <div className="relative z-10 flex justify-center px-[clamp(24px,5vw,64px)] pb-[34px] pt-[26px]">
+      <div className="relative z-10 flex justify-center px-[clamp(24px,5vw,64px)] pb-[clamp(48px,10vh,104px)] pt-[26px]">
         {/* Each stat rises in after the one before it. */}
         <Reveal
           stagger

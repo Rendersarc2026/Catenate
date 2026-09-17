@@ -28,8 +28,10 @@ export function AboutGlobalChain() {
         </Reveal>
       </section>
 
-      {/* Full-width Panorama Port Photography */}
-      <div className="relative h-[64vh] min-h-[380px] w-full overflow-hidden">
+      {/* Full-width panorama. On narrow screens a tall crop would show only one
+          or two of the four climates, so it becomes a wide strip that keeps
+          the whole road in frame. */}
+      <div className="relative aspect-[10/3] w-full overflow-hidden md:aspect-auto md:h-[64vh] md:min-h-[380px]">
         <Image
           src="/images/about/hero-climates.webp"
           alt="Aerial views of one road crossing forest, farmland, snow and desert"

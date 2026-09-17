@@ -142,7 +142,7 @@ export function WhyCatenate() {
                     className={cn(
                       "pillar-num font-heading font-extrabold tracking-[-0.04em] text-[clamp(5.8rem,7.6vw,8.6rem)]",
                       isSelected
-                        ? "is-expanded text-[#f2f0ea]"
+                        ? "is-expanded text-white"
                         : "text-white/30 group-hover:text-white/60"
                     )}
                   >
