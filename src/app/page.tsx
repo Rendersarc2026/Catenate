@@ -1,7 +1,6 @@
 import { AuthorisedDistributors } from "@/components/site/authorised-distributors";
 import { ContactSection } from "@/components/site/contact-section";
 import {
-  StrengthsSection,
   TechnicalSupport,
   TrustedBySection,
   WhyCatenate,
@@ -28,7 +27,6 @@ export default function Home() {
         <GlobalPresence />
         <IndustriesSection />
         <WhyCatenate />
-        <StrengthsSection />
         <TrustedBySection />
         <TechnicalSupport />
         <SolutionsFinderTeaser />

@@ -7,6 +7,7 @@ import { AboutNetworkTeam } from "@/components/site/about/about-network-team";
 import { AboutPowerBuild } from "@/components/site/about/about-power-build";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
+import { StrengthsSection } from "@/components/site/strengths-section";
 
 export const metadata: Metadata = {
   title: "About Us — Catenate",
@@ -22,6 +23,7 @@ export default function AboutPage() {
       <main id="content" className="bg-black">
         <AboutHero />
         <AboutGlobalChain />
+        <StrengthsSection />
         <AboutPowerBuild />
         <AboutFeature />
         <AboutNetworkTeam />
