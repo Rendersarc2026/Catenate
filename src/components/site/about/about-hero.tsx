@@ -4,6 +4,7 @@ import { Reveal } from "@/components/site/reveal";
 
 const STATS = [
   {
+    key: "employees",
     value: "150+",
     label: "Employees",
     icon: (
@@ -14,6 +15,7 @@ const STATS = [
     ),
   },
   {
+    key: "mission",
     value: "One Mission",
     label: null,
     icon: (
@@ -24,6 +26,7 @@ const STATS = [
     ),
   },
   {
+    key: "customers",
     value: "1,500+",
     label: "Customers served",
     icon: <path d="M20 6L9 17l-5-5" />,
@@ -69,9 +72,15 @@ export function AboutHero() {
 
       {/* Bottom Bar: 3 Key Stats */}
       <div className="relative z-10 flex justify-center px-[clamp(24px,5vw,64px)] pb-[34px] pt-[26px]">
-        <ul className="flex flex-wrap items-start justify-center gap-x-14 gap-y-5">
-          {STATS.map(({ value, label, icon }) => (
-            <li key={value} className="flex items-start gap-3">
+        {/* Each stat rises in after the one before it. */}
+        <Reveal
+          stagger
+          step={140}
+          role="list"
+          className="flex flex-wrap items-start justify-center gap-x-14 gap-y-5"
+        >
+          {STATS.map(({ key, value, label, icon }) => (
+            <div key={key} role="listitem" className="flex items-start gap-3">
               <span className="grid h-6 w-5 shrink-0 place-items-center" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
@@ -84,9 +93,9 @@ export function AboutHero() {
                 <p className="text-[16px] leading-6 font-semibold text-white">{value}</p>
                 {label && <p className="text-[11.5px] leading-4 text-white/70">{label}</p>}
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </Reveal>
       </div>
     </section>
   );
