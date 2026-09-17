@@ -4,7 +4,6 @@ import { Reveal } from "@/components/site/reveal";
 
 const STATS = [
   {
-    key: "employees",
     value: "150+",
     label: "Employees",
     icon: (
@@ -15,7 +14,6 @@ const STATS = [
     ),
   },
   {
-    key: "mission",
     value: "One Mission",
     label: null,
     icon: (
@@ -26,7 +24,6 @@ const STATS = [
     ),
   },
   {
-    key: "customers",
     value: "1,500+",
     label: "Customers served",
     icon: <path d="M20 6L9 17l-5-5" />,
@@ -43,8 +40,8 @@ export function AboutHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/about/hero-sky.webp"
-          alt="Sunrise sky over distant mountain ridges"
+          src="/images/about/about-hero-sky.webp"
+          alt="Sunrise sky"
           fill
           priority
           sizes="100vw"
@@ -79,8 +76,8 @@ export function AboutHero() {
           role="list"
           className="flex flex-wrap items-start justify-center gap-x-14 gap-y-5"
         >
-          {STATS.map(({ key, value, label, icon }) => (
-            <div key={key} role="listitem" className="flex items-start gap-3">
+          {STATS.map(({ value, label, icon }) => (
+            <div key={value} role="listitem" className="flex items-start gap-3">
               <span className="grid h-6 w-5 shrink-0 place-items-center" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
