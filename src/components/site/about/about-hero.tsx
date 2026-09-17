@@ -2,6 +2,34 @@ import Image from "next/image";
 
 import { Reveal } from "@/components/site/reveal";
 
+const STATS = [
+  {
+    value: "150+",
+    label: "Employees",
+    icon: (
+      <>
+        <circle cx="9" cy="8" r="3.5" />
+        <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6" />
+      </>
+    ),
+  },
+  {
+    value: "One Mission",
+    label: null,
+    icon: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z" />
+      </>
+    ),
+  },
+  {
+    value: "1,500+",
+    label: "Customers served",
+    icon: <path d="M20 6L9 17l-5-5" />,
+  },
+];
+
 export function AboutHero() {
   return (
     <section
@@ -39,66 +67,26 @@ export function AboutHero() {
         </Reveal>
       </div>
 
-      {/* Bottom Bar: Play Action & 3 Key Stats */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-5 px-[clamp(24px,5vw,64px)] pb-[34px] pt-[26px]">
-        <button
-          type="button"
-          aria-label="Play video"
-          className="grid size-10 shrink-0 place-items-center rounded-full border border-white/50 text-white transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-        >
-          <svg viewBox="0 0 12 14" className="ml-0.5 size-[11px] fill-white" aria-hidden="true">
-            <path d="M0 0l12 7-12 7z" />
-          </svg>
-        </button>
-
-        <div className="flex flex-wrap items-center gap-10 sm:gap-14">
-          {/* Stat 1: 150+ Employees */}
-          <div className="flex items-center gap-2.5">
-            <svg
-              viewBox="0 0 24 24"
-              className="size-[18px] shrink-0 fill-none stroke-white stroke-[1.4]"
-              aria-hidden="true"
-            >
-              <path d="M16 11a4 4 0 1 0-4-4M6 21v-2a4 4 0 0 1 4-4h1M14 21v-1a4 4 0 0 1 4-4h1a3 3 0 0 1 3 3v2" />
-              <circle cx="9" cy="8" r="3" />
-            </svg>
-            <div>
-              <b className="block text-[16px] font-semibold text-white">150+</b>
-              <span className="block text-[11.5px] text-white/70">Employees</span>
-            </div>
-          </div>
-
-          {/* Stat 2: One Mission */}
-          <div className="flex items-center gap-2.5">
-            <svg
-              viewBox="0 0 24 24"
-              className="size-[18px] shrink-0 fill-none stroke-white stroke-[1.4]"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z" />
-            </svg>
-            <div>
-              <b className="block text-[16px] font-semibold text-white">One Mission</b>
-              <span className="block text-[11.5px] text-white/70">&nbsp;</span>
-            </div>
-          </div>
-
-          {/* Stat 3: 1,500+ Customers served */}
-          <div className="flex items-center gap-2.5">
-            <svg
-              viewBox="0 0 24 24"
-              className="size-[18px] shrink-0 fill-none stroke-white stroke-[1.4]"
-              aria-hidden="true"
-            >
-              <path d="M20 6L9 17l-5-5" />
-            </svg>
-            <div>
-              <b className="block text-[16px] font-semibold text-white">1,500+</b>
-              <span className="block text-[11.5px] text-white/70">Customers served</span>
-            </div>
-          </div>
-        </div>
+      {/* Bottom Bar: 3 Key Stats */}
+      <div className="relative z-10 flex justify-end px-[clamp(24px,5vw,64px)] pb-[34px] pt-[26px]">
+        <ul className="flex flex-wrap items-start gap-x-14 gap-y-5">
+          {STATS.map(({ value, label, icon }) => (
+            <li key={value} className="flex items-start gap-3">
+              <span className="grid h-6 w-5 shrink-0 place-items-center" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-[18px] fill-none stroke-white stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round]"
+                >
+                  {icon}
+                </svg>
+              </span>
+              <div>
+                <p className="text-[16px] leading-6 font-semibold text-white">{value}</p>
+                {label && <p className="text-[11.5px] leading-4 text-white/70">{label}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
