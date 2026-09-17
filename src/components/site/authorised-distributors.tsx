@@ -226,7 +226,7 @@ function Backdrop() {
   return (
     <span
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(130%_82%_at_50%_-14%,rgba(126,146,198,0.32),transparent_62%),radial-gradient(100%_70%_at_50%_118%,rgba(86,102,148,0.16),transparent_66%)]"
+      className="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(130%_82%_at_50%_-14%,rgba(150,152,158,0.26),transparent_62%),radial-gradient(100%_70%_at_50%_118%,rgba(110,112,118,0.14),transparent_66%)]"
     />
   )
 }
@@ -317,7 +317,7 @@ export function AuthorisedDistributors() {
     return (
       <section
         id="authorised-distributors"
-        className="on-blue relative isolate flex min-h-dvh w-full flex-col justify-center overflow-hidden bg-[#090c15] py-[clamp(64px,10vh,120px)] text-white"
+        className="on-blue relative isolate flex min-h-dvh w-full flex-col justify-center overflow-hidden bg-[#0a0a0b] py-[clamp(64px,10vh,120px)] text-white"
       >
         <Backdrop />
         <Field />
@@ -329,7 +329,7 @@ export function AuthorisedDistributors() {
     <section
       ref={trackRef}
       id="authorised-distributors"
-      className="on-blue relative isolate w-full bg-[#090c15] text-white"
+      className="on-blue relative isolate w-full bg-[#0a0a0b] text-white"
       style={{ minHeight: `${TRACK_VH + 100}vh` }}
     >
       <div className="sticky top-0 flex h-dvh w-full flex-col overflow-hidden pt-[clamp(72px,18vh,200px)] [contain:layout_paint]">

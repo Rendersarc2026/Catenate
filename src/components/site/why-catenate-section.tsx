@@ -87,11 +87,11 @@ export function WhyCatenate() {
       id="why-catenate"
       className="section on-blue relative isolate flex min-h-screen min-h-[100dvh] flex-col justify-center items-center bg-black py-12 sm:py-16 lg:py-20 overflow-x-clip text-white"
     >
-      {/* Night sky: black crown falling into deep navy, with a blue horizon
+      {/* Night sky: black crown falling into graphite, with a grey horizon
           glow rising from the foot of the section. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(72%_40%_at_50%_110%,rgba(178,218,255,1)_0%,rgba(84,150,248,0.92)_26%,rgba(22,74,214,0.55)_54%,transparent_78%),linear-gradient(180deg,#000_0%,#01020f_28%,#020626_52%,#03105a_78%,#04166f_100%)]"
+        className="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(72%_40%_at_50%_110%,rgba(214,216,222,1)_0%,rgba(136,140,150,0.9)_26%,rgba(62,65,74,0.55)_54%,transparent_78%),linear-gradient(180deg,#000_0%,#040405_28%,#0c0d10_52%,#1b1c21_78%,#23242a_100%)]"
       />
       <div className="mx-auto flex w-full max-w-[1600px] 2xl:max-w-[1720px] px-6 sm:px-8 xl:px-12 flex-col items-center">
         {/* Section Header: Centered display heading */}
