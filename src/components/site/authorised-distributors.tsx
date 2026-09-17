@@ -67,12 +67,22 @@ const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 /** easeOutCubic — for arriving elements to decelerate into place. */
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 
-function BrandMark({ brand, open }: { brand: Brand; open: boolean }) {
+function BrandMark({
+  brand,
+  open,
+  className,
+}: {
+  brand: Brand
+  open: boolean
+  className?: string
+}) {
   const source = brand.logoWhite ?? brand.logo
 
   if (!source) {
     return (
-      <span className="text-[clamp(15px,1.5vw,22px)] whitespace-nowrap">{brand.name}</span>
+      <span className={cn("text-[clamp(15px,1.5vw,22px)] whitespace-nowrap", className)}>
+        {brand.name}
+      </span>
     )
   }
 
@@ -85,7 +95,8 @@ function BrandMark({ brand, open }: { brand: Brand; open: boolean }) {
       style={{ transform: `scale(${brand.logoScale ?? 1})` }}
       className={cn(
         "h-[clamp(30px,3.4vw,58px)] w-[clamp(92px,8.6vw,150px)] object-contain transition-opacity duration-700 ease-expo",
-        open ? "opacity-100" : "opacity-90"
+        open ? "opacity-100" : "opacity-90",
+        className
       )}
     />
   )
@@ -157,9 +168,7 @@ function Field({
         Authorised Distributor of
       </h2>
 
-      {/* Stacked, the marks sit in an even two-column grid, with an odd last
-          mark centred beneath the pair above it. */}
-      <div className="mx-auto mt-[clamp(56px,16vh,200px)] flex items-center justify-center gap-[clamp(20px,8vw,140px)] max-md:mt-[clamp(40px,8vh,72px)] max-md:grid max-md:max-w-[320px] max-md:grid-cols-2 max-md:justify-items-center max-md:gap-x-6 max-md:gap-y-8">
+      <div className="mx-auto mt-[clamp(56px,16vh,200px)] flex items-center justify-center gap-[clamp(20px,8vw,140px)] max-md:hidden">
         {brands.map((brand, index) => {
           const isOpen = !idle && open === index
 
@@ -167,7 +176,7 @@ function Field({
             <div
               key={brand.name}
               ref={columnRef?.(index)}
-              className="relative flex flex-col items-center will-change-[opacity,transform] max-md:odd:last:col-span-2"
+              className="relative flex flex-col items-center will-change-[opacity,transform]"
             >
               <button
                 type="button"
@@ -213,9 +222,72 @@ function Field({
         })}
       </div>
 
-      {/* Stacked marks have nowhere to hang from, so the detail follows them. */}
-      <div className="mx-auto mt-[clamp(40px,8vw,56px)] w-full max-w-[340px] text-center md:hidden">
-        <BrandDetail brand={brands[open]} />
+      {/*
+       * Phones have no room for the row, so the principals take the stage one
+       * at a time: the scroll that walks the open column across the row on a
+       * wide screen swaps the single mark here, the outgoing one lifting away
+       * as the next rises into its place.
+       */}
+      <div
+        className={cn(
+          "transition-opacity duration-700 ease-expo md:hidden",
+          idle ? "opacity-0" : "opacity-100"
+        )}
+      >
+        <div className="relative mx-auto mt-[clamp(44px,9vh,80px)] h-[clamp(96px,15vh,132px)] w-full max-w-[260px]">
+          {brands.map((brand, index) => (
+            <div
+              key={brand.name}
+              aria-hidden={index !== open}
+              className={cn(
+                "absolute inset-0 grid place-items-center transition-[opacity,translate,scale] duration-700 ease-expo motion-reduce:transition-none",
+                index === open
+                  ? "translate-y-0 scale-100 opacity-100"
+                  : index < open
+                    ? "-translate-y-8 scale-95 opacity-0"
+                    : "translate-y-8 scale-95 opacity-0"
+              )}
+            >
+              <BrandMark
+                brand={brand}
+                open
+                className="h-[clamp(64px,10vh,96px)] w-[min(240px,68vw)] text-[28px]"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="mt-[clamp(28px,5vh,44px)] flex items-center justify-center gap-2.5"
+          role="tablist"
+          aria-label="Authorised distributors"
+        >
+          {brands.map((brand, index) => (
+            <button
+              key={brand.name}
+              type="button"
+              role="tab"
+              aria-selected={index === open}
+              aria-label={brand.name}
+              onClick={() => setOpen(index)}
+              className="grid h-6 cursor-pointer place-items-center px-0.5"
+            >
+              <span
+                className={cn(
+                  "block h-1.5 rounded-full transition-[width,background-color] duration-500 ease-expo",
+                  index === open ? "w-6 bg-white" : "w-1.5 bg-white/30"
+                )}
+              />
+            </button>
+          ))}
+        </div>
+
+        <div
+          key={open}
+          className="mx-auto mt-[clamp(24px,4vh,36px)] w-full max-w-[340px] animate-in text-center duration-500 ease-expo fade-in slide-in-from-bottom-2"
+        >
+          <BrandDetail brand={brands[open]} />
+        </div>
       </div>
     </div>
   )

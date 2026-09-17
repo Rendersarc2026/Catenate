@@ -40,8 +40,8 @@ export function AboutHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/about/about-hero-sky.webp"
-          alt="Sunrise sky"
+          src="/images/about/about-hero-sunset.webp"
+          alt="Clear sky at sunset"
           fill
           priority
           sizes="100vw"
