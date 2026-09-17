@@ -17,12 +17,18 @@ export function WhyCatenate() {
   return (
     <section
       id="why-catenate"
-      className="section flex min-h-screen min-h-[100dvh] flex-col justify-center items-center bg-white py-12 sm:py-16 lg:py-20 overflow-x-clip"
+      className="section on-blue relative isolate flex min-h-screen min-h-[100dvh] flex-col justify-center items-center bg-black py-12 sm:py-16 lg:py-20 overflow-x-clip text-white"
     >
+      {/* Night sky: black crown falling into deep navy, with a blue horizon
+          glow rising from the foot of the section. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(72%_40%_at_50%_110%,rgba(178,218,255,1)_0%,rgba(84,150,248,0.92)_26%,rgba(22,74,214,0.55)_54%,transparent_78%),linear-gradient(180deg,#000_0%,#01020f_28%,#020626_52%,#03105a_78%,#04166f_100%)]"
+      />
       <div className="mx-auto flex w-full max-w-[1600px] 2xl:max-w-[1720px] px-6 sm:px-8 xl:px-12 flex-col items-center">
         {/* Section Header: Centered display heading */}
         <Reveal className="mb-12 flex flex-col items-center text-center sm:mb-16 lg:mb-20">
-          <h2 className="text-center text-[clamp(2.2rem,4.2vw,3.8rem)] font-medium leading-tight tracking-[-0.03em] text-ink whitespace-nowrap">
+          <h2 className="text-center text-[clamp(2.2rem,4.2vw,3.8rem)] font-medium leading-tight tracking-[-0.03em] text-white whitespace-nowrap">
             Why Catenate
           </h2>
         </Reveal>
@@ -49,7 +55,7 @@ export function WhyCatenate() {
                 onBlur={() => setActiveIndex(null)}
                 aria-label={`Pillar ${formattedNumber}: ${item.title}`}
                 className={cn(
-                  "pillar-card group relative flex min-w-0 flex-col items-center text-center cursor-pointer select-none rounded-2xl px-2.5 py-2 outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4",
+                  "pillar-card group relative flex min-w-0 flex-col items-center text-center cursor-pointer select-none rounded-2xl px-2.5 py-2 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0",
                   "h-[390px] sm:h-[410px] lg:h-[430px] justify-start",
                   "lg:flex-1 lg:max-w-[310px] xl:max-w-[325px]",
                   hasActive
@@ -68,8 +74,8 @@ export function WhyCatenate() {
                     className={cn(
                       "pillar-num font-heading font-extrabold tracking-[-0.04em] text-[clamp(5.8rem,7.6vw,8.6rem)]",
                       isSelected
-                        ? "is-expanded text-[#1e2230]"
-                        : "text-[#d2d6df] group-hover:text-ink/60"
+                        ? "is-expanded text-[#f2f0ea]"
+                        : "text-white/30 group-hover:text-white/60"
                     )}
                   >
                     {formattedNumber}
@@ -81,7 +87,7 @@ export function WhyCatenate() {
                 <h3
                   className={cn(
                     "pillar-copy pillar-copy--title relative font-bold leading-tight tracking-[-0.02em] whitespace-nowrap mt-4 text-[15px] sm:text-[16px] lg:text-[17px]",
-                    isSelected ? "is-expanded z-20 text-ink" : "text-ink/80"
+                    isSelected ? "is-expanded z-20 text-white" : "text-white/80"
                   )}
                 >
                   {item.title}
@@ -96,8 +102,8 @@ export function WhyCatenate() {
                     className={cn(
                       "pillar-copy pillar-copy--body relative w-[150px] text-center text-[11px] sm:text-[11.5px] leading-[1.6]",
                       isSelected
-                        ? "is-expanded z-20 text-grey opacity-100"
-                        : "text-grey/80 opacity-75"
+                        ? "is-expanded z-20 text-white/85 opacity-100"
+                        : "text-white/50 opacity-75"
                     )}
                   >
                     {item.body}
