@@ -77,19 +77,19 @@ export function AboutHero() {
           className="flex flex-wrap items-start justify-center gap-x-14 gap-y-5"
         >
           {STATS.map(({ value, label, icon }) => (
-            <div key={value} role="listitem" className="flex items-start gap-3">
-              <span className="grid h-6 w-5 shrink-0 place-items-center" aria-hidden="true">
+            // Icon and figure form one centred row; the label centres under both.
+            <div key={value} role="listitem" className="flex flex-col items-center text-center">
+              <p className="flex items-center gap-3 text-[16px] leading-6 font-semibold text-white">
                 <svg
                   viewBox="0 0 24 24"
-                  className="size-[18px] fill-none stroke-white stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round]"
+                  aria-hidden="true"
+                  className="size-[18px] shrink-0 fill-none stroke-white stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round]"
                 >
                   {icon}
                 </svg>
-              </span>
-              <div>
-                <p className="text-[16px] leading-6 font-semibold text-white">{value}</p>
-                {label && <p className="text-[11.5px] leading-4 text-white/70">{label}</p>}
-              </div>
+                {value}
+              </p>
+              {label && <p className="text-[11.5px] leading-4 text-white/70">{label}</p>}
             </div>
           ))}
         </Reveal>
