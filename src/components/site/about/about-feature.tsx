@@ -11,8 +11,8 @@ export function AboutFeature() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/about/site-application.jpg"
-          alt="Construction site application"
+          src="/images/about/global-chain.webp"
+          alt="Aerial view of a container ship, freight truck and cargo aircraft"
           fill
           sizes="100vw"
           className="object-cover brightness-[0.75]"

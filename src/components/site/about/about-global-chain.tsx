@@ -31,8 +31,8 @@ export function AboutGlobalChain() {
       {/* Full-width Panorama Port Photography */}
       <div className="relative h-[64vh] min-h-[380px] w-full overflow-hidden">
         <Image
-          src="/images/about/global-chain.webp"
-          alt="Aerial view of multimodal global supply chain with container ship, freight transit, and cargo aircraft"
+          src="/images/about/hero-climates.webp"
+          alt="Aerial views of one road crossing forest, farmland, snow and desert"
           fill
           sizes="100vw"
           className="object-cover brightness-[0.95]"

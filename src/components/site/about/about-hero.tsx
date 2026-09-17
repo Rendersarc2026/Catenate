@@ -34,14 +34,14 @@ export function AboutHero() {
   return (
     <section
       id="hero"
-      className="relative isolate flex h-[100svh] min-h-[560px] w-full flex-col justify-between overflow-hidden text-white select-none"
+      className="relative isolate flex h-[64vh] min-h-[380px] w-full flex-col justify-between overflow-hidden text-white select-none"
       aria-label="About Us Hero"
     >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/about/hero-climates.webp"
-          alt="Catenate global reach across diverse environments and climates"
+          src="/images/about/hero-mountains.webp"
+          alt="Layered mountain ridges at sunrise"
           fill
           priority
           sizes="100vw"
