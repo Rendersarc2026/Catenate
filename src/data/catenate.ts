@@ -251,7 +251,7 @@ export const regions: Region[] = [
 
 export const presence = {
   eyebrow: "Global presence",
-  heading: "Specified in 38 markets, across four regions.",
+  heading: "Specified in 38 markets, across 4 regions.",
   stats: [
     { to: 38, suffix: "", label: "Markets served" },
     { to: 14, suffix: "", label: "Industries supplied" },
