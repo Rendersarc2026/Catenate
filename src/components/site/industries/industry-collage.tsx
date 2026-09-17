@@ -25,7 +25,15 @@ export function IndustryCollage({
 }: IndustryCollageProps) {
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-5 w-full">
+      {/* Phones get a swipeable row that bleeds to the screen edges and snaps
+          card by card; from `sm` up it is a wrapping grid. */}
+      <div
+        className={cn(
+          "flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          "-mx-[var(--section-pad)] px-[var(--section-pad)] scroll-px-[var(--section-pad)]",
+          "sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:py-0 md:grid-cols-3 lg:grid-cols-5 lg:gap-5"
+        )}
+      >
         {industries.map((industry, index) => (
           <IndustryCard
             key={industry.slug}
@@ -65,7 +73,10 @@ const IndustryCard = React.memo(function IndustryCard({
      * transform, and the lift shadow isn't clipped by the card's own overflow.
      */
     <div
-      className={cn("industry-tile", stagger && "industry-tile-enter")}
+      className={cn(
+        "industry-tile w-[78%] shrink-0 snap-start sm:w-auto",
+        stagger && "industry-tile-enter"
+      )}
       style={
         {
           "--tile-index": index,
@@ -89,7 +100,7 @@ const IndustryCard = React.memo(function IndustryCard({
             src={images.industry(industry.slug)}
             alt={industry.name}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
+            sizes="(max-width: 640px) 80vw, (max-width: 1024px) 33vw, 20vw"
             className="object-cover scale-100 transition-[scale] duration-700 ease-expo motion-safe:group-hover:scale-105"
           />
 

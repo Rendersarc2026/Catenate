@@ -152,12 +152,14 @@ function Field({
     >
       <h2
         ref={headingRef}
-        className="text-center text-[clamp(1.8rem,3.8vw,3.4rem)] leading-[1.1] font-light tracking-[-0.03em] will-change-[opacity,transform]"
+        className="text-center text-balance text-[clamp(1.8rem,3.8vw,3.4rem)] leading-[1.1] font-light tracking-[-0.03em] will-change-[opacity,transform]"
       >
         Authorised Distributor of
       </h2>
 
-      <div className="mt-[clamp(56px,16vh,200px)] flex items-center justify-center gap-[clamp(20px,8vw,140px)] max-md:flex-wrap max-md:gap-[clamp(22px,6vw,40px)]">
+      {/* Stacked, the marks sit in an even two-column grid, with an odd last
+          mark centred beneath the pair above it. */}
+      <div className="mx-auto mt-[clamp(56px,16vh,200px)] flex items-center justify-center gap-[clamp(20px,8vw,140px)] max-md:mt-[clamp(40px,8vh,72px)] max-md:grid max-md:max-w-[320px] max-md:grid-cols-2 max-md:justify-items-center max-md:gap-x-6 max-md:gap-y-8">
         {brands.map((brand, index) => {
           const isOpen = !idle && open === index
 
@@ -165,7 +167,7 @@ function Field({
             <div
               key={brand.name}
               ref={columnRef?.(index)}
-              className="relative flex flex-col items-center will-change-[opacity,transform]"
+              className="relative flex flex-col items-center will-change-[opacity,transform] max-md:odd:last:col-span-2"
             >
               <button
                 type="button"
@@ -212,7 +214,7 @@ function Field({
       </div>
 
       {/* Stacked marks have nowhere to hang from, so the detail follows them. */}
-      <div className="mx-auto mt-[clamp(34px,6vw,48px)] w-full max-w-[420px] text-left md:hidden">
+      <div className="mx-auto mt-[clamp(40px,8vw,56px)] w-full max-w-[340px] text-center md:hidden">
         <BrandDetail brand={brands[open]} />
       </div>
     </div>

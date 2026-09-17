@@ -12,10 +12,78 @@ export function WhyCatenate() {
   const [selectedPillar, setSelectedPillar] =
     React.useState<WhyCatenatePillar | null>(null);
 
+  const sectionRef = React.useRef<HTMLElement>(null);
+  /*
+   * Touch screens have no hover, so below `lg` the pillar nearest the middle
+   * of the viewport opens as the reader scrolls past it. Pointer and focus
+   * events stand down while the scroll owns the pick, or a tap would close it.
+   */
+  const [scrollDriven, setScrollDriven] = React.useState(false);
+
+  React.useEffect(() => {
+    const query = window.matchMedia("(max-width: 1023px)");
+    const list = sectionRef.current;
+    if (!list) return;
+
+    let frame: number | null = null;
+
+    const pick = () => {
+      frame = null;
+      const cards = Array.from(list.querySelectorAll<HTMLElement>(".pillar-card"));
+      const middle = window.innerHeight / 2;
+      let closest: number | null = null;
+      let distance = Infinity;
+
+      cards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        // Measure from the numeral, which is what the reader's eye lands on.
+        const offset = Math.abs(rect.top + rect.height * 0.3 - middle);
+        if (rect.bottom > 0 && rect.top < window.innerHeight && offset < distance) {
+          distance = offset;
+          closest = index;
+        }
+      });
+
+      setActiveIndex(closest);
+    };
+
+    const onScroll = () => {
+      if (frame === null) frame = requestAnimationFrame(pick);
+    };
+
+    const sync = () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      setScrollDriven(query.matches);
+      if (!query.matches) {
+        setActiveIndex(null);
+        return;
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      onScroll();
+    };
+
+    sync();
+    query.addEventListener("change", sync);
+
+    return () => {
+      query.removeEventListener("change", sync);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  const hover = (index: number | null) => {
+    if (!scrollDriven) setActiveIndex(index);
+  };
+
   const hasActive = activeIndex !== null;
 
   return (
     <section
+      ref={sectionRef}
       id="why-catenate"
       className="section on-blue relative isolate flex min-h-screen min-h-[100dvh] flex-col justify-center items-center bg-black py-12 sm:py-16 lg:py-20 overflow-x-clip text-white"
     >
@@ -37,7 +105,7 @@ export function WhyCatenate() {
         <Reveal
           stagger
           step={40}
-          onMouseLeave={() => setActiveIndex(null)}
+          onMouseLeave={() => hover(null)}
           className="flex w-full flex-col gap-10 sm:grid sm:grid-cols-2 lg:flex lg:flex-row lg:items-start lg:justify-center lg:gap-8 xl:gap-11 2xl:gap-14"
         >
           {whyCatenate.map((item, index) => {
@@ -49,10 +117,10 @@ export function WhyCatenate() {
                 type="button"
                 key={item.title}
                 onClick={() => setSelectedPillar(item)}
-                onMouseEnter={() => setActiveIndex(index)}
-                onMouseLeave={() => setActiveIndex(null)}
-                onFocus={() => setActiveIndex(index)}
-                onBlur={() => setActiveIndex(null)}
+                onMouseEnter={() => hover(index)}
+                onMouseLeave={() => hover(null)}
+                onFocus={() => hover(index)}
+                onBlur={() => hover(null)}
                 aria-label={`Pillar ${formattedNumber}: ${item.title}`}
                 className={cn(
                   "pillar-card group relative flex min-w-0 flex-col items-center text-center cursor-pointer select-none rounded-2xl px-2.5 py-2 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0",

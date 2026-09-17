@@ -21,6 +21,13 @@ import { useMediaQuery, usePrefersReducedMotion } from "@/lib/use-reduced-motion
 
 /** Angular gap between neighbouring strengths on the rim. */
 const STEP_DEG = 13;
+/*
+ * Narrow screens have no room beside the dial, so the wheel turns on its side:
+ * its centre drops below the screen and the strengths ride the top of the rim,
+ * seating at twelve o'clock with the copy set underneath. Nearer neighbours
+ * there sit further apart, so the step opens up.
+ */
+const ARC_STEP_DEG = 15;
 /** Scroll spent on each strength past the first, in viewport heights. */
 const STEP_VH = 30;
 /*
@@ -42,12 +49,14 @@ const easeInOut = (t: number) =>
 
 /**
  * The dial needs room across the page for the rim, the seated numeral and the
- * copy beside it. Narrower than this and the strengths set as a plain list.
- * The list is the safe first paint: it is correct at every width.
+ * copy beside it. Narrower than this the wheel turns on its side instead.
  */
 function useDialFits() {
   return useMediaQuery("(min-width: 1024px)");
 }
+
+/** Which layout the strengths take. */
+type Layout = "side" | "arc" | "list";
 
 const numeral = (index: number) => String(index + 1).padStart(2, "0");
 
@@ -65,7 +74,8 @@ function Heading({ className }: { className?: string }) {
 export function StrengthsSection() {
   const reducedMotion = usePrefersReducedMotion();
   const dialFits = useDialFits();
-  const showDial = dialFits && !reducedMotion;
+  const layout: Layout = reducedMotion ? "list" : dialFits ? "side" : "arc";
+  const showDial = layout !== "list";
 
   const trackRef = React.useRef<HTMLElement>(null);
   const numeralRefs = React.useRef<(HTMLSpanElement | null)[]>([]);
@@ -80,6 +90,8 @@ export function StrengthsSection() {
     if (!track) return;
 
     const last = strengths.length - 1;
+    const arc = layout === "arc";
+    const step = arc ? ARC_STEP_DEG : STEP_DEG;
 
     /**
      * Progress to a position on the dial. Each strength holds the three
@@ -127,10 +139,13 @@ export function StrengthsSection() {
 
         /* 1 while seated at three o'clock, 0 by the next strength along. */
         const seated = clamp01(1 - distance);
-        const theta = (offset * STEP_DEG).toFixed(2);
+        const angle = offset * step;
+        const theta = (arc ? angle - 90 : angle).toFixed(2);
 
         if (holder) {
-          holder.style.transform = `rotate(${theta}deg) translateX(calc(var(--dial-r) + var(--dial-pull) * ${seated.toFixed(3)}))`;
+          /* On the arc the frame is turned back upright at the rim, so the
+             numeral only leans by its own angle off twelve o'clock. */
+          holder.style.transform = `rotate(${theta}deg) translateX(calc(var(--dial-r) + var(--dial-pull) * ${seated.toFixed(3)}))${arc ? " rotate(90deg)" : ""}`;
           holder.style.opacity = visible.toFixed(3);
           holder.style.visibility = "visible";
         }
@@ -141,7 +156,9 @@ export function StrengthsSection() {
              the label. The percentages track the glyph's own box, so they
              stay correct as it grows. */
           glyph.style.fontSize = `calc(var(--numeral-rim) + (var(--numeral-seat) - var(--numeral-rim)) * ${seated.toFixed(3)})`;
-          glyph.style.transform = `translate(${(-50 + 50 * seated).toFixed(1)}%, -50%)`;
+          glyph.style.transform = arc
+            ? `translate(-50%, ${(-50 - 50 * seated).toFixed(1)}%)`
+            : `translate(${(-50 + 50 * seated).toFixed(1)}%, -50%)`;
           glyph.style.color = `rgb(26 29 46 / ${(0.11 + 0.89 * seated).toFixed(3)})`;
         }
 
@@ -168,10 +185,10 @@ export function StrengthsSection() {
       paint,
       smoothing: 0.096,
     });
-  }, [showDial]);
+  }, [showDial, layout]);
 
-  /* Off the dial — too narrow for it, or motion turned down — the strengths
-     set as the numbered list they already are. */
+  /* With motion turned down the strengths set as the numbered list they
+     already are. */
   if (!showDial) {
     return (
       <section id="strengths" className="section bg-white">
@@ -193,6 +210,94 @@ export function StrengthsSection() {
             </li>
           ))}
         </ol>
+      </section>
+    );
+  }
+
+  if (layout === "arc") {
+    return (
+      <section
+        ref={trackRef}
+        id="strengths"
+        className="relative bg-white"
+        style={{ minHeight: `calc(100svh + ${(strengths.length - 1) * STEP_VH}vh)` }}
+      >
+        <div className="content-pad sticky top-0 flex h-svh flex-col overflow-hidden [contain:layout_paint] pt-[calc(var(--nav-height)+clamp(20px,4vh,40px))] pb-[clamp(20px,4vh,40px)]">
+          <Heading className="relative z-10" />
+
+          <ol
+            className="relative mt-[clamp(8px,2vh,24px)] min-h-0 flex-1"
+            style={
+              {
+                "--dial-r": "clamp(420px, 115vw, 760px)",
+                "--dial-pull": "clamp(14px, 3vw, 24px)",
+                /* Height of twelve o'clock within the list. */
+                "--arc-apex": "clamp(96px, 32%, 240px)",
+                "--numeral-rim": "clamp(1.4rem, 5.4vw, 2rem)",
+                "--numeral-seat": "clamp(3rem, 14vw, 4.6rem)",
+              } as React.CSSProperties
+            }
+          >
+            {/* The rim, its top edge crossing the screen as a shallow arc. */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute rounded-full border border-ink/8"
+              style={{
+                width: "calc(var(--dial-r) * 2)",
+                height: "calc(var(--dial-r) * 2)",
+                left: "calc(50% - var(--dial-r))",
+                top: "var(--arc-apex)",
+              }}
+            />
+
+            {strengths.map((item, index) => (
+              <li key={item.title}>
+                {/* A zero-size pivot at the wheel's centre, below the screen. */}
+                <span
+                  ref={(el) => {
+                    numeralRefs.current[index] = el;
+                  }}
+                  aria-hidden
+                  className="pointer-events-none absolute left-1/2 block size-0 origin-top-left will-change-transform"
+                  style={{ top: "calc(var(--arc-apex) + var(--dial-r))" }}
+                >
+                  <span
+                    ref={(el) => {
+                      glyphRefs.current[index] = el;
+                    }}
+                    className="tnum absolute top-0 left-0 block text-[length:var(--numeral-rim)] leading-none font-extrabold tracking-[-0.045em] whitespace-nowrap"
+                  >
+                    {numeral(index)}
+                  </span>
+                </span>
+
+                <span
+                  ref={(el) => {
+                    dotRefs.current[index] = el;
+                  }}
+                  aria-hidden
+                  className="pointer-events-none absolute left-1/2 size-1.25 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink origin-top-left will-change-transform"
+                  style={{ top: "calc(var(--arc-apex) + var(--dial-r))" }}
+                />
+
+                <div
+                  ref={(el) => {
+                    copyRefs.current[index] = el;
+                  }}
+                  className="absolute left-1/2 w-full max-w-[36ch] -translate-x-1/2 text-center will-change-[opacity,transform]"
+                  style={{ top: "calc(var(--arc-apex) + clamp(48px, 9vh, 72px))" }}
+                >
+                  <h3 className="text-[clamp(1.2rem,4.8vw,1.5rem)] leading-[1.2] font-semibold tracking-[-0.02em] text-ink text-balance">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2.5 text-[15px] leading-[1.6] text-grey">
+                    {item.body}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
     );
   }
