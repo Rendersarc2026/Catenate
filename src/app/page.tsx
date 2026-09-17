@@ -25,10 +25,10 @@ export default function Home() {
         <HeroStatement />
         <WhatWeDo />
         <AuthorisedDistributors />
-        <WhyCatenate />
-        <IndustriesSection />
-        <StrengthsSection />
         <GlobalPresence />
+        <IndustriesSection />
+        <WhyCatenate />
+        <StrengthsSection />
         <TrustedBySection />
         <TechnicalSupport />
         <SolutionsFinderTeaser />
