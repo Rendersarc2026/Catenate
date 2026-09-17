@@ -146,7 +146,7 @@ export const megaMenu: MegaSection[] = [
  * ------------------------------------------------------------------ */
 
 export const hero = {
-  // eyebrow: "Global distribution · Bonding · Sealing · Construction chemicals",
+  eyebrow: "Global distribution · Bonding · Sealing · Construction chemicals",
   headlineLines: [
     "Connecting the world’s",
     "leading brands to your doorstep.",

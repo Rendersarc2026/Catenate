@@ -228,9 +228,13 @@ export function Hero() {
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/80 via-black/25 to-transparent" />
       </div>
 
-      {/* 2. Headline, centred in the open sky above the limb. */}
+      {/* 2. Eyebrow and headline, centred in the open sky above the limb. */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center">
         <div ref={mouseParallaxRef} className="will-change-transform">
+          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-center text-[10px] sm:text-[11px] font-normal tracking-[0.18em] uppercase text-white/55 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
+            {hero.eyebrow}
+          </p>
+
           <h1 className="mx-auto text-[clamp(2rem,4vw,3.5rem)] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.7),0_6px_38px_rgba(0,0,0,0.8)]">
             {hero.headlineLines.map((line) => (
               <span
