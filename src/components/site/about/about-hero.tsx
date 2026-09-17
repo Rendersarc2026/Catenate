@@ -40,18 +40,18 @@ export function AboutHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/about/hero-mountains.webp"
-          alt="Layered mountain ridges at sunrise"
+          src="/images/about/hero-sky.webp"
+          alt="Sunrise sky over distant mountain ridges"
           fill
           priority
           sizes="100vw"
-          className="object-cover brightness-[0.72]"
+          className="object-cover brightness-[0.9]"
         />
       </div>
 
       {/* Scrim Overlay */}
       <div
-        className="pointer-events-none absolute inset-0 z-1 bg-gradient-to-b from-black/35 via-transparent via-40% to-black/60"
+        className="pointer-events-none absolute inset-0 z-1 bg-gradient-to-b from-black/35 via-transparent via-40% to-black/25"
         aria-hidden="true"
       />
 
