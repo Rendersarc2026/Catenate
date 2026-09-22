@@ -47,6 +47,40 @@ function anchorTop(selector: string) {
 }
 
 /*
+ * The scroll map is mirrored into session storage, because the map itself only
+ * lives as long as the document does. A phone drops a backgrounded page far
+ * more readily than a desktop browser: the trip back to it then builds it
+ * again from scratch — `popstate` belongs to the document that was thrown
+ * away, so it never fires, and everything this component remembered is gone —
+ * where the same back on a desktop is served from memory. Session storage is
+ * per tab and outlives the document, so a rebuilt page still knows where its
+ * reader was.
+ */
+const STORE = "catenate:scroll-positions"
+
+function readStored(): [string, number][] {
+  try {
+    const raw = window.sessionStorage.getItem(STORE)
+    if (!raw) return []
+    return Object.entries(JSON.parse(raw) as Record<string, number>)
+  } catch {
+    /* Blocked, or something else in the slot: the map simply starts empty. */
+    return []
+  }
+}
+
+function writeStored(positions: Map<string, number>) {
+  try {
+    window.sessionStorage.setItem(
+      STORE,
+      JSON.stringify(Object.fromEntries(positions))
+    )
+  } catch {
+    /* A full quota or a blocked store; this document still has its own map. */
+  }
+}
+
+/*
  * The route the document opened on, and whether the reader has since moved off
  * it. Module scope rather than refs: React mounts every effect twice in
  * development, and a ref consumed by the throwaway first pass leaves the
@@ -70,6 +104,38 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const route = React.useRef(pathname)
   /** Set by `popstate`, so the next reset knows it is a back or a forward. */
   const popped = React.useRef(false)
+
+  /*
+   * The map the last document in this tab left behind, for a back the browser
+   * could not serve from memory. A layout effect, and declared above the
+   * placement below, so the positions are in hand before the page is placed
+   * for the first time.
+   */
+  useIsomorphicLayoutEffect(() => {
+    for (const [path, at] of readStored()) {
+      if (!positions.current.has(path)) positions.current.set(path, at)
+    }
+  }, [])
+
+  /*
+   * Written out where a phone will actually let us: a page the system drops
+   * may never run another line of ours, and the last thing it is given is the
+   * chance to hide. The placement below files it again on every route change,
+   * because an in-app navigation never hides the page at all.
+   */
+  React.useEffect(() => {
+    const save = () => writeStored(positions.current)
+    const onHidden = () => {
+      if (document.visibilityState === "hidden") save()
+    }
+
+    window.addEventListener("pagehide", save)
+    document.addEventListener("visibilitychange", onHidden)
+    return () => {
+      window.removeEventListener("pagehide", save)
+      document.removeEventListener("visibilitychange", onHidden)
+    }
+  }, [])
 
   /*
    * Where each route is, filed as the reader scrolls rather than as the route
@@ -212,25 +278,43 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     const restoring = popped.current
     popped.current = false
 
-    /*
-     * A document the browser rebuilt under the reader — a reload, or a back
-     * that missed the cache — opens at the top, whatever fragment is still
-     * sitting in the address bar from earlier. Restoration is off, so a reload
-     * without one never moves at all; the zero below is what overrides the
-     * browser's own jump to a fragment, which restoration has no say over.
-     */
-    const rebuilt = opening && openedBy() !== "navigate"
+    /* Carried over for a document the browser has to build again. */
+    writeStored(positions.current)
+
+    const opened = openedBy()
 
     /*
-     * The fragment to honour, if this navigation is one that asks for it.
-     * Neither a rebuilt document nor a back or forward does: see above, and
-     * see `place` for restoration.
+     * A reload opens at the top, whatever fragment is still sitting in the
+     * address bar from earlier. Restoration is off, so a reload without one
+     * never moves at all; the zero below is what overrides the browser's own
+     * jump to a fragment, which restoration has no say over.
+     */
+    const reloaded = opening && opened === "reload"
+
+    /*
+     * A back or a forward the browser could not serve from memory, so it built
+     * the document again. It is the ordinary way back onto a page from a
+     * phone, and nothing in this document announces it: the `popstate` above
+     * fired in the page that was dropped. Reading it from the navigation entry
+     * is what makes a back behave the same on a phone as on a desktop —
+     * otherwise it is indistinguishable from a reload here, and the reader is
+     * put back at the top of the page rather than where they were reading.
+     */
+    const rebuilt = opening && opened === "back_forward"
+
+    /* A back or a forward onto this route, from either side of a rebuild. */
+    const returning = restoring || rebuilt
+
+    /*
+     * The fragment to honour, if this navigation is one that asks for it. Only
+     * a reload's is stale — a back's fragment is part of the entry the reader
+     * asked for, and is the best guess left once the map above has none.
      */
     const hash = window.location.hash
-    const wanted = !rebuilt && !restoring && hash.length > 1 ? hash : null
+    const wanted = !reloaded && hash.length > 1 ? hash : null
 
-    /* Where the reader was, for a back or a forward inside the session. */
-    const left = restoring ? positions.current.get(pathname) : undefined
+    /* Where the reader was, for a back or a forward onto this route. */
+    const left = returning ? positions.current.get(pathname) : undefined
 
     /*
      * Where the page should sit, measured afresh every time it is asked: a
@@ -239,14 +323,14 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
      * than against the finished page.
      *
      * `null` leaves the page where the browser put it — a back onto a route
-     * this session has no position for. A fragment still sitting in the
-     * address bar from an earlier visit is not where the reader was, and
-     * sending them to it is the worse guess of the two.
+     * this tab has neither a position nor a fragment for, where any guess
+     * would be worse than none.
      */
     const place = (): number | null => {
-      if (rebuilt) return 0
-      if (restoring) return left === undefined ? null : Math.min(left, furthest())
+      if (reloaded) return 0
+      if (left !== undefined) return Math.min(left, furthest())
       if (wanted) return anchorTop(wanted)
+      if (returning) return null
       return 0
     }
 
@@ -276,7 +360,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         done = true
         if (frame !== null) cancelAnimationFrame(frame)
         window.removeEventListener("wheel", release)
-        window.removeEventListener("touchstart", release)
+        window.removeEventListener("touchmove", release)
         window.removeEventListener("keydown", release)
       }
 
@@ -303,9 +387,14 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         frame = requestAnimationFrame(step)
       }
 
-      /* The reader moving the page themselves ends the watch at once. */
+      /*
+       * The reader moving the page themselves ends the watch at once.
+       * `touchmove` rather than `touchstart`: a finger landing on a phone is
+       * not the reader scrolling, and the tap that opened the page often
+       * arrives here, which abandoned the placement before it had run.
+       */
       window.addEventListener("wheel", release, { passive: true })
-      window.addEventListener("touchstart", release, { passive: true })
+      window.addEventListener("touchmove", release, { passive: true })
       window.addEventListener("keydown", release)
       frame = requestAnimationFrame(step)
 
