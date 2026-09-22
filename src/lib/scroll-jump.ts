@@ -22,8 +22,25 @@ export function setActiveLenis(lenis: Lenis | null) {
 /** Jumps the page to `y` at once, keeping Lenis' own target in step. */
 export function jumpTo(y: number) {
   jumpTarget = y
-  if (active) active.scrollTo(y, { immediate: true, force: true })
-  else window.scrollTo({ top: y, behavior: "instant" })
+
+  if (active) {
+    /*
+     * Re-measured first, because `scrollTo` clamps its target to the page
+     * length Lenis last measured — `force` waives its locks, not this — and
+     * that measurement is debounced by a quarter of a second. A jump made in
+     * the moment after a route arrives is therefore cut short at the bottom
+     * of the page being left, which is how a back onto a long page landed the
+     * reader in a section they had never been in and only reached the place
+     * they left a few hundred milliseconds later, once the debounce fired.
+     * One measurement here costs a layout read that the caller has usually
+     * forced already.
+     */
+    active.resize()
+    active.scrollTo(y, { immediate: true, force: true })
+    return
+  }
+
+  window.scrollTo({ top: y, behavior: "instant" })
 }
 
 /**
