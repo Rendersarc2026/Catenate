@@ -43,6 +43,18 @@ export default async function BrandPage({ params }: BrandPageProps) {
     0
   )
 
+  /*
+   * Longest family first, because the grid below rows the families up and a
+   * row is as tall as the deepest family in it. In the order they are written
+   * a thirteen-item family can sit beside a one-item one, and the two short
+   * columns are left holding half a screen of white space until the next row
+   * starts. Sorted, each row is made of families of roughly one depth and the
+   * ragged edge is pushed to the bottom of the grid, where it reads as the end
+   * of the list rather than as a hole in it. The sort is stable, so families
+   * of equal depth keep the order they are written in.
+   */
+  const groups = [...brand.groups].sort((a, b) => b.items.length - a.items.length)
+
   return (
     <>
       <SiteHeader />
@@ -104,7 +116,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
             stagger
             className="mt-[clamp(44px,6vw,88px)] grid grid-cols-3 gap-x-[clamp(24px,3vw,56px)] gap-y-[clamp(32px,4vw,56px)] border-t border-ink/10 pt-[clamp(32px,4vw,56px)] max-lg:grid-cols-2 max-md:grid-cols-1"
           >
-            {brand.groups.map((group) => (
+            {groups.map((group) => (
               <div key={group.title}>
                 <h2 className="mb-2.5 text-[11px] font-medium tracking-[0.16em] text-grey uppercase">
                   {group.title}
