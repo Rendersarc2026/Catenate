@@ -3,6 +3,7 @@ import { ChevronDown } from "lucide-react"
 
 import { ArrowButton } from "@/components/site/arrow-button"
 import { FinderStep } from "@/components/site/solutions-finder/finder-step"
+import { brandByName } from "@/data/catenate"
 import type { Recommendation } from "@/lib/solutions-finder"
 
 /** Where the site already sends people who want a specification written. */
@@ -68,11 +69,16 @@ export function RecommendationPanel({
             </div>
 
             {/*
-             * There is no per-product page on the site; the principal's range
-             * on the brands page is the nearest real destination.
+             * There is no per-product page on the site; the principal's own
+             * page is the nearest real destination, and the row of marks on
+             * the home page covers a step shared between two of them.
              */}
             <Link
-              href="/brands"
+              href={
+                brandByName(step.principal)
+                  ? `/brands/${brandByName(step.principal)!.slug}`
+                  : "/#authorised-distributors"
+              }
               className="col-start-2 mt-3 w-fit rounded-full bg-white/12 px-3.5 py-1.5 text-[11px] font-medium tracking-[0.12em] whitespace-nowrap text-white/85 uppercase transition-colors duration-250 ease-expo hover:bg-white/22 hover:text-white sm:col-start-3 sm:row-start-1 sm:mt-0 sm:justify-self-end"
             >
               <span className="sr-only">Products from </span>

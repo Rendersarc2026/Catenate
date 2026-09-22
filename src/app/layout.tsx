@@ -25,7 +25,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${montserrat.variable} antialiased`}>
-      <body>
+      {/*
+       * Extensions such as ColorZilla stamp their own attributes onto <body>
+       * before React hydrates (`cz-shortcut-listen`), which React reports as a
+       * mismatch against the server HTML. The suppression is one level deep,
+       * so it covers the body tag's own attributes and nothing inside it.
+       */}
+      <body suppressHydrationWarning>
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

@@ -20,7 +20,7 @@ export function AboutGlobalChain() {
             delivery.
           </p>
           <Link
-            href="/brands"
+            href="/#authorised-distributors"
             className="inline-flex items-center gap-3 rounded-[2px] border border-[#1a1d2e] px-6.5 py-3.25 text-[14px] font-medium text-[#1a1d2e] transition-colors duration-200 hover:bg-[#1a1d2e] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1d2e]/70"
           >
             Explore our alliance

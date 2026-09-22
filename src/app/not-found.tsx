@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/site/site-header";
 
 const shortcuts = [
   { label: "Industries we serve", href: "/#industries" },
-  { label: "Brands and products", href: "/brands" },
+  { label: "Brands and products", href: "/#authorised-distributors" },
   { label: "Solutions finder", href: "/solutions-finder" },
   { label: "Approvals", href: "/about" },
 ];

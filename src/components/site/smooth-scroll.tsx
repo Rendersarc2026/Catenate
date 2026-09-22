@@ -4,17 +4,100 @@ import Lenis from "lenis"
 import { usePathname } from "next/navigation"
 import * as React from "react"
 
-import { setActiveLenis } from "@/lib/scroll-jump"
+import { jumpTo, setActiveLenis } from "@/lib/scroll-jump"
+
+/*
+ * The page is placed before the scroll-driven sections prime themselves, and
+ * they prime from a passive effect — so this has to be a layout effect, which
+ * React runs first. Guarded because the component still renders on the server.
+ */
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? React.useEffect : React.useLayoutEffect
+
+/** How the browser opened this document. Fixed for its lifetime. */
+function openedBy() {
+  const entry = performance.getEntriesByType("navigation")[0] as
+    | PerformanceNavigationTiming
+    | undefined
+  return entry?.type
+}
+
+/** Clearance kept above a section a fragment names, for the header. */
+const HEADER_GAP = 80
+
+/*
+ * Following a fragment: how long the target is kept under watch, and how many
+ * frames it has to hold still before the page is left alone. See `follow`.
+ */
+const FOLLOW_MS = 1500
+const STEADY_FRAMES = 3
+
+/** The furthest down the page can currently sit. */
+function furthest() {
+  return Math.max(document.documentElement.scrollHeight - window.innerHeight, 0)
+}
+
+/** Where the page has to sit for `selector` to be read, or null if it is not in yet. */
+function anchorTop(selector: string) {
+  const el = document.querySelector(selector)
+  if (!el) return null
+
+  const at = el.getBoundingClientRect().top + window.scrollY - HEADER_GAP
+  return Math.min(Math.max(at, 0), furthest())
+}
+
+/*
+ * The route the document opened on, and whether the reader has since moved off
+ * it. Module scope rather than refs: React mounts every effect twice in
+ * development, and a ref consumed by the throwaway first pass leaves the
+ * second — the one that sticks — believing the document has already been
+ * placed once. These reset when the document does, which is what is actually
+ * being asked.
+ */
+let entryPath: string | null = null
+let navigatedAway = false
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const lenisRef = React.useRef<Lenis | null>(null)
 
+  /*
+   * Where each route was left, so back and forward return to it. Kept by hand
+   * because scroll restoration is off: see the effect below.
+   */
+  const positions = React.useRef(new Map<string, number>())
+  /** The route on screen, for the handler below. Set as each one is placed. */
+  const route = React.useRef(pathname)
+  /** Set by `popstate`, so the next reset knows it is a back or a forward. */
+  const popped = React.useRef(false)
+
+  /*
+   * Where each route is, filed as the reader scrolls rather than as the route
+   * is torn down. By the time a teardown runs the incoming page is already in
+   * the document, and a shorter one clamps the scroll — so the position filed
+   * against the route being left is the clamped one, and coming back lands
+   * short of what the reader was reading. `route` rather than
+   * `location.pathname` for the same reason: the router has already moved on.
+   */
   React.useEffect(() => {
-    // Prevent browser from restoring old scroll positions on navigation
+    const onScroll = () => positions.current.set(route.current, window.scrollY)
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  React.useEffect(() => {
+    /*
+     * A reload opens the page at the top, so the browser is told not to put
+     * the old position back. Doing it this way rather than scrolling to the
+     * top ourselves is what keeps it clean: the browser simply never moves,
+     * so there is no moment where the reader sees the page somewhere else
+     * first. Back and forward are served from the map above instead.
+     */
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual"
     }
+
 
     // Check if user prefers reduced motion
     const prefersReducedMotion = window.matchMedia(
@@ -65,14 +148,14 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         const el = document.querySelector(href)
         if (el) {
           e.preventDefault()
-          lenis.scrollTo(el as HTMLElement, { offset: -80, duration: 1.1 })
+          lenis.scrollTo(el as HTMLElement, { offset: -HEADER_GAP, duration: 1.1 })
         }
       } else if (href.startsWith("/#") && window.location.pathname === "/") {
         const hash = href.substring(1)
         const el = document.querySelector(hash)
         if (el) {
           e.preventDefault()
-          lenis.scrollTo(el as HTMLElement, { offset: -80, duration: 1.1 })
+          lenis.scrollTo(el as HTMLElement, { offset: -HEADER_GAP, duration: 1.1 })
         }
       } else if (
         href === window.location.pathname ||
@@ -94,39 +177,163 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  // When switching pages (pathname changes), ensure page starts from the top
+  /* Notes a back or a forward, so the placement below can tell one apart. */
   React.useEffect(() => {
+    const onPopState = () => {
+      popped.current = true
+    }
+
+    window.addEventListener("popstate", onPopState)
+    return () => window.removeEventListener("popstate", onPopState)
+  }, [])
+
+  /*
+   * Places the page on every navigation.
+   *
+   * A layout effect, not a passive one: each scroll-driven section primes
+   * itself against the current scroll position from its own passive effect,
+   * and React runs those after this. Placing the page here means they prime
+   * where the reader is about to be, rather than priming at the top and then
+   * smoothing across the whole page once this moves it — which is what made
+   * the home page lurch after a back.
+   *
+   * `jumpTo` rather than a bare `scrollTo` for the same reason it exists: it
+   * keeps Lenis' own target in step, so the next wheel tick does not drag the
+   * page back, and it marks the position as one the page moved to, so the
+   * header does not read it as the reader scrolling and slide away.
+   */
+  useIsomorphicLayoutEffect(() => {
+    if (entryPath === null) entryPath = pathname
+    else if (pathname !== entryPath) navigatedAway = true
+
+    /* Still on the route the document opened with. */
+    const opening = !navigatedAway
+
+    const restoring = popped.current
+    popped.current = false
+
+    /*
+     * A document the browser rebuilt under the reader — a reload, or a back
+     * that missed the cache — opens at the top, whatever fragment is still
+     * sitting in the address bar from earlier. Restoration is off, so a reload
+     * without one never moves at all; the zero below is what overrides the
+     * browser's own jump to a fragment, which restoration has no say over.
+     */
+    const rebuilt = opening && openedBy() !== "navigate"
+
+    /*
+     * The fragment to honour, if this navigation is one that asks for it.
+     * Neither a rebuilt document nor a back or forward does: see above, and
+     * see `place` for restoration.
+     */
     const hash = window.location.hash
-    if (hash && hash.length > 1) {
-      const el = document.querySelector(hash)
-      if (el) {
-        if (lenisRef.current) {
-          lenisRef.current.scrollTo(el as HTMLElement, {
-            offset: -80,
-            immediate: true,
-          })
-        } else {
-          el.scrollIntoView()
+    const wanted = !rebuilt && !restoring && hash.length > 1 ? hash : null
+
+    /* Where the reader was, for a back or a forward inside the session. */
+    const left = restoring ? positions.current.get(pathname) : undefined
+
+    /*
+     * Where the page should sit, measured afresh every time it is asked: a
+     * route that is still arriving is a few hundred pixels tall, and both a
+     * fragment and a remembered position mean something different against it
+     * than against the finished page.
+     *
+     * `null` leaves the page where the browser put it — a back onto a route
+     * this session has no position for. A fragment still sitting in the
+     * address bar from an earlier visit is not where the reader was, and
+     * sending them to it is the worse guess of the two.
+     */
+    const place = (): number | null => {
+      if (rebuilt) return 0
+      if (restoring) return left === undefined ? null : Math.min(left, furthest())
+      if (wanted) return anchorTop(wanted)
+      return 0
+    }
+
+    /*
+     * Neither a fragment nor a remembered position can be honoured in one
+     * measurement. The route this effect runs for is often still arriving —
+     * the section a fragment names is not in the document yet, and the page is
+     * too short to hold a deep position at all — and once it is there, the
+     * sections above it settle over the next few frames, so a position taken
+     * too early lands short. That is what left a link to a section on the home
+     * page sitting on the hero, and a back onto it high of where it was left.
+     *
+     * So the target is followed rather than jumped to: every frame it is
+     * worked out again and the page moved onto it, until both it and the
+     * page's height hold still, the watch runs out, or the reader takes the
+     * page over themselves.
+     */
+    const follow = () => {
+      const until = performance.now() + FOLLOW_MS
+      let height = -1
+      let steady = 0
+      let frame: number | null = null
+      let done = false
+
+      const release = () => {
+        if (done) return
+        done = true
+        if (frame !== null) cancelAnimationFrame(frame)
+        window.removeEventListener("wheel", release)
+        window.removeEventListener("touchstart", release)
+        window.removeEventListener("keydown", release)
+      }
+
+      const step = () => {
+        const at = place()
+
+        /* A page still growing under the target has not settled on one. */
+        const now = document.documentElement.scrollHeight
+        if (now !== height) {
+          height = now
+          steady = 0
         }
-        return
+
+        if (at !== null) {
+          if (Math.abs(at - window.scrollY) >= 1) {
+            steady = 0
+            jumpTo(at)
+          } else if (++steady >= STEADY_FRAMES) {
+            return release()
+          }
+        }
+
+        if (performance.now() >= until) return release()
+        frame = requestAnimationFrame(step)
       }
+
+      /* The reader moving the page themselves ends the watch at once. */
+      window.addEventListener("wheel", release, { passive: true })
+      window.addEventListener("touchstart", release, { passive: true })
+      window.addEventListener("keydown", release)
+      frame = requestAnimationFrame(step)
+
+      return release
     }
 
-    // Reset scroll to top immediately
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { immediate: true })
+    route.current = pathname
+
+    const to = place()
+    let frameId: number | null = null
+    let release: (() => void) | null = null
+
+    if (to !== null) jumpTo(to)
+
+    if (wanted || left !== undefined) {
+      release = follow()
+    } else if (to !== null) {
+      /*
+       * Reinforce once the route's layout has flushed: a page whose height is
+       * still settling measures short, and a deep position would land high.
+       */
+      frameId = requestAnimationFrame(() => jumpTo(to))
     }
-    window.scrollTo(0, 0)
 
-    // Reinforce on next animation frame in case of route layout flush
-    const frameId = requestAnimationFrame(() => {
-      if (lenisRef.current) {
-        lenisRef.current.scrollTo(0, { immediate: true })
-      }
-      window.scrollTo(0, 0)
-    })
-
-    return () => cancelAnimationFrame(frameId)
+    return () => {
+      if (frameId !== null) cancelAnimationFrame(frameId)
+      release?.()
+    }
   }, [pathname])
 
   return <>{children}</>

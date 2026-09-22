@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import * as React from "react"
 
 import { brands, type Brand } from "@/data/catenate"
@@ -57,6 +58,17 @@ const stepAt = (p: number) =>
 const DEFAULT_OPEN = 0
 
 /*
+ * The section's anchor does not sit at its top. The track opens on 100vh of
+ * arrival — a heading and five marks at opacity 0 — so a link to the top of it
+ * lands on an empty black field and the reader has to scroll before anything
+ * is there. The anchor is placed at the point the row is armed and the first
+ * mark is open instead, which is what a link to this section means. The
+ * scrollable part of the track is TRACK_VH tall, so a child at this offset
+ * scrolls to the same place `pick(0)` jumps to.
+ */
+const ANCHOR_VH = TRACK_VH * (INTRO + (0.5 / brands.length) * (1 - INTRO))
+
+/*
  * How much larger the open mark stands against its neighbours. Stacked rows
  * sit closer together, so the lift is held back until the row is one line.
  */
@@ -102,6 +114,15 @@ function BrandMark({
   )
 }
 
+/*
+ * Group rows the pinned column has room for before it has to summarise. The
+ * panel hangs off the row on `absolute top-full`, so nothing in the layout can
+ * bound it: on a short viewport the section's own `h-dvh` clip is all that
+ * stops it, and it would run under the section below. Four rows plus the tail
+ * clear the shortest viewport the row itself is shown on.
+ */
+const DETAIL_ROWS = 4
+
 function BrandDetail({ brand }: { brand: Brand }) {
   return (
     <>
@@ -114,10 +135,10 @@ function BrandDetail({ brand }: { brand: Brand }) {
 
       {/* The first thing to go where the section is short. */}
       <ul className="mt-4 list-none max-md:hidden">
-        {brand.groups.map((group) => (
+        {brand.groups.slice(0, DETAIL_ROWS).map((group) => (
           <li
             key={group.title}
-            className="flex items-center gap-2.5 border-t border-white/16 py-2 text-[13px] text-white/70"
+            className="flex items-center gap-2.5 border-t border-white/16 py-1.5 text-[13px] text-white/70"
           >
             <span
               aria-hidden="true"
@@ -126,7 +147,29 @@ function BrandDetail({ brand }: { brand: Brand }) {
             {group.title}
           </li>
         ))}
+
       </ul>
+
+      {/*
+       * The column is pinned, so every principal has to cost the same height
+       * however deep its portfolio runs. The rest of the families — and the
+       * markets they are qualified for — are on the principal's own page,
+       * which is also the only way into the detail from a phone, where the
+       * list above is not shown at all.
+       */}
+      <Link
+        href={`/brands/${brand.slug}`}
+        className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-white/60 transition-colors duration-250 ease-expo hover:text-white max-md:mt-5 md:border-t md:border-white/16 md:mt-0 md:w-full md:py-2"
+      >
+        View all {brand.familyCount}
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          className="size-3 shrink-0 fill-none stroke-current stroke-[2]"
+        >
+          <path d="M9 5l7 7-7 7" />
+        </svg>
+      </Link>
     </>
   )
 }
@@ -204,7 +247,7 @@ function Field({
               <div
                 inert={!isOpen}
                 className={cn(
-                  "absolute top-full z-1 mt-[clamp(34px,5vw,70px)] w-[min(330px,64vw)] text-left transition-[opacity,translate] ease-expo max-md:hidden",
+                  "absolute top-full z-1 mt-[clamp(28px,4vw,56px)] w-[min(330px,64vw)] text-left transition-[opacity,translate] ease-expo max-md:hidden",
                   index === 0
                     ? "left-0 xl:left-1/2 xl:-translate-x-1/2"
                     : index === last
@@ -400,10 +443,16 @@ export function AuthorisedDistributors() {
   return (
     <section
       ref={trackRef}
-      id="authorised-distributors"
       className="on-blue relative isolate w-full bg-[#0a0a0b] text-white"
       style={{ minHeight: `${TRACK_VH + 100}vh` }}
     >
+      <span
+        id="authorised-distributors"
+        aria-hidden="true"
+        className="pointer-events-none absolute left-0 w-px"
+        style={{ top: `${ANCHOR_VH}vh` }}
+      />
+
       <div className="sticky top-0 flex h-dvh w-full flex-col overflow-hidden pt-[clamp(72px,18vh,200px)] [contain:layout_paint]">
         <Backdrop />
         <Field

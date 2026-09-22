@@ -386,6 +386,8 @@ export const industries: Industry[] = [
  * ------------------------------------------------------------------ */
 
 export type Brand = {
+  /** URL segment for the principal's own page under /brands. */
+  slug: string;
   name: string;
   description: string;
   familyCount: string;
@@ -405,105 +407,285 @@ export type Brand = {
   /** Optical correction against the shared logo box. Defaults to 1. */
   logoScale?: number;
   groups: MegaGroup[];
+  /**
+   * Markets the principal's ranges are qualified for, listed under the panel.
+   * Only set where the principal publishes them.
+   */
+  industries?: string[];
 };
 
 export const brands: Brand[] = [
   {
+    slug: "henkel",
     name: "Henkel",
     description:
       "Umbrella principal across construction, industrial and consumer bonding",
-    familyCount: "9 families",
+    familyCount: "14 families",
     wordmarkClass: "text-[#e1000f]",
     logo: "/images/logos/henkel.svg",
     logoWhite: "/images/logos/white/henkel.svg",
     logoScale: 1.15,
     groups: [
       {
-        title: "Construction systems",
+        title: "Polybit waterproofing",
         items: [
-          "Polybit waterproofing",
-          "Polybit concrete repair",
-          "Polybit sealants",
-          "Polybit tiling",
-          "Polybit flooring",
-          "Polybit Fully Bonded System",
-          "Ceresit flooring and screeds",
-          "Metylan wallcovering",
+          "Acrylic coatings",
+          "Bitumen membranes, torch-applied and self-adhesive",
+          "Bitumen primers and tapes",
+          "Bitumen thin coatings",
+          "Cement slurry waterproofing coatings",
+          "Curing compounds",
+          "Epoxy coatings and special liquids",
+          "Chemical injection liquids and hoses",
+          "Protection boards and filler boards",
+          "PU coatings",
+          "Fully bonded HDPE system (FBS)",
+          "Combo waterproofing system",
         ],
       },
       {
-        title: "Industrial",
+        title: "Polybit sealants",
         items: [
-          "Technomelt hot melt",
-          "Aquence water-based",
-          "Bonderite pretreatment",
-          "Bonderite cleaning",
-          "Bonderite coating",
+          "Bitumen sealants",
+          "Polysulfide sealants",
+          "Polyurethane sealants",
+          "Sealant primers and backing rods",
+          "Bitumen fibre and polyethylene joint fillers",
         ],
       },
       {
-        title: "Specialty and trade",
+        title: "Polybit concrete repair",
         items: [
-          "Loctite threadlockers",
-          "Loctite instant adhesives",
-          "Loctite sealants and foams",
-          "Pattex trade adhesives",
-          "Tangit pipe cements",
+          "Structural repair mortars",
+          "Protective coatings",
+          "Cementitious repair mortars and fairing coats",
+          "Non-shrink grout and micro concrete",
+          "Epoxy bedding grout and mortar",
+          "Pile head epoxy bedding grout",
         ],
       },
+      {
+        title: "Polybit flooring",
+        items: [
+          "Industrial wear and top coatings with primers",
+          "Self-levelling compounds and screeds",
+          "Floor hardeners",
+          "Epoxy crack repair mortars",
+        ],
+      },
+      {
+        title: "Ceresit tiling",
+        items: [
+          "Standard cementitious adhesives",
+          "Flexible polymer-modified adhesives",
+          "Cement-based tile grouts",
+          "Epoxy tile adhesives and grouts",
+        ],
+      },
+      {
+        title: "Aquence water-based",
+        items: ["Water-based adhesive solutions"],
+      },
+      {
+        title: "Technomelt hot melt",
+        items: [
+          "PUR and PA reactive ranges",
+          "SUPRA and COOL non-reactive ranges",
+        ],
+      },
+      {
+        title: "Bonderite surface treatment",
+        items: ["Metal forming", "Machining", "Cleaning", "Coating"],
+      },
+      {
+        title: "Loctite specialties",
+        items: [
+          "Acrylates",
+          "Thermosets",
+          "Silicones and silane-modified polymers",
+          "Thermal management",
+          "Surface treatments and cleaners",
+          "Lubricants and dispersions",
+          "Polyurethanes",
+          "Hot melts",
+          "Water-based adhesives",
+          "Rubber and plastisols",
+          "Engineered infrastructure systems",
+          "Inorganic construction adhesives",
+        ],
+      },
+      {
+        title: "Loctite industrial range",
+        items: [
+          "Industrial adhesives and sealants",
+          "Dispensing equipment",
+          "Thermal management materials",
+          "Industrial coatings",
+          "Compounds for electronics",
+          "Industrial lubricants",
+          "Surface treatments",
+          "Industrial cleaners",
+          "Industrial repair materials",
+          "Composite assembly materials",
+        ],
+      },
+      {
+        title: "Tobacoll tobacco adhesives",
+        items: [
+          "Cigarette manufacturing adhesives",
+          "Specialty tobacco adhesives",
+          "Filter assembly adhesives",
+          "Side-seam adhesives",
+          "Packaging adhesives",
+          "Labelling adhesives",
+          "EVA water-based adhesives",
+          "Technomelt hot melt adhesives",
+        ],
+      },
+      {
+        title: "Pattex trade and DIY",
+        items: [
+          "Super glues and instant repair",
+          "No More Nails and PL construction adhesives",
+          "Silicone, acrylic and polymer sealants",
+          "Epoxy metal repair",
+          "Contact and wood adhesives",
+          "Mounting tapes",
+          "PU foams",
+        ],
+      },
+      {
+        title: "Tangit pipe cements",
+        items: ["PVC-U piping adhesives"],
+      },
+      {
+        title: "Metylan wallcoverings",
+        items: ["Normal wallpaper adhesives", "Special wallpaper adhesives"],
+      },
+    ],
+    industries: [
+      "Aerospace",
+      "Automotive",
+      "Building and construction components",
+      "Consumer electronics",
+      "Data and telecommunications",
+      "Food and beverage manufacturing",
+      "Furniture and interiors",
+      "Industrial maintenance and repair",
+      "Industrial manufacturing",
+      "Medical",
+      "Metals",
+      "Packaging, printing and converting",
+      "Personal care and hygiene",
+      "Power",
+      "Semiconductor",
+      "Sports and fashion",
+      "Tobacco and cigarette manufacturing",
+      "Transportation",
+      "Water bottling",
     ],
   },
   {
+    slug: "weld-on",
     name: "Weld-On",
     description: "Solvent cement systems for pressure pipework",
-    familyCount: "1 family",
+    familyCount: "2 families",
     wordmarkClass: "text-[#0b5fa5]",
     logo: "/images/logos/weld-on.png",
     logoWhite: "/images/logos/white/weld-on.png",
     logoScale: 0.88,
     groups: [
       {
-        title: "EZ-Weld",
-        items: ["UPVC cements", "CPVC cements", "Primers and cleaners", "Pipe lubricants"],
+        title: "EZ-Weld solvent cements",
+        items: [
+          "218 PVC cement",
+          "UPVC cements",
+          "CPVC cements",
+          "Primers and cleaners",
+        ],
+      },
+      {
+        title: "EZ-Weld lubricants",
+        items: ["Pipe joint lubricant"],
       },
     ],
   },
   {
+    slug: "wurth",
     name: "Würth",
     description: "Fixings, tools and building chemicals for the working site",
-    familyCount: "7 families",
+    familyCount: "6 families",
     wordmarkClass: "text-[#cc0000]",
     logo: "/images/logos/wurth.svg",
     logoWhite: "/images/logos/white/wurth.svg",
     logoScale: 1,
     groups: [
       {
-        title: "Fixing",
+        title: "Fixing and fastening",
+        items: ["Anchors", "Direct fastening", "Fasteners", "Metal fittings"],
+      },
+      {
+        title: "Tools",
         items: [
-          "Chemical anchors",
-          "Mechanical anchors",
-          "Screws and fasteners",
-          "Direct fastening",
+          "Hand tools",
+          "Power tools",
+          "Machining",
+          "Measuring",
+          "Brazing, soldering and welding",
         ],
       },
-      { title: "Tools", items: ["Hand tools", "Power tools", "Abrasives and accessories"] },
       {
-        title: "Chemicals and safety",
+        title: "Technical chemicals",
         items: [
-          "Sealants and adhesives",
-          "Tapes",
-          "Aerosols and lubricants",
-          "Rust removers",
-          "Cleaning agents",
-          "Safety and workwear",
+          "Adhesives and sealants",
+          "Adhesive tapes",
+          "Building chemicals",
+          "Lubricants and rust removers",
+          "Cleaning agents and care products",
+          "Surface protection and coatings",
+        ],
+      },
+      {
+        title: "Building and site supplies",
+        items: [
+          "Building supplies",
+          "Plumbing and HVAC",
+          "Electrical installation",
+          "Fire protection",
+          "Traffic and construction site safety",
+          "Agriculture and gardening",
+        ],
+      },
+      {
+        title: "Automotive and workshop",
+        items: [
+          "Automotive parts",
+          "Vehicle interior equipment",
+          "Work equipment",
+          "ORSY storage system",
+          "Hoses, couplings and hose clamps",
+          "Hydraulic, pneumatic and drive components",
+          "Technical rubber and engineering plastics",
+        ],
+      },
+      {
+        title: "Safety and workwear",
+        items: [
+          "Personal protective equipment",
+          "Occupational safety",
+          "Footwear",
+          "Workwear",
+          "Skin protection",
+          "Emergency equipment",
         ],
       },
     ],
   },
   {
+    slug: "ge-sealants",
     name: "GE Sealants",
     description: "Silicone and polyurethane sealing for envelope and interior",
-    familyCount: "3 families",
+    familyCount: "1 family",
     wordmarkClass: "text-[#3874c8]",
     logo: "/images/logos/ge-sealants.png",
     logoWhite: "/images/logos/white/ge-sealants.png",
@@ -521,6 +703,7 @@ export const brands: Brand[] = [
     ],
   },
   {
+    slug: "sika",
     name: "Sika",
     description:
       "Concrete, waterproofing and building-finish systems for refurbishment and new build",
@@ -531,40 +714,90 @@ export const brands: Brand[] = [
     logoScale: 1.25,
     groups: [
       {
-        title: "Structural",
+        title: "Refurbishment",
         items: [
-          "Refurbishment: grouting, anchoring and structural strengthening",
-          "Concrete repair and protection",
-          "Concrete admixtures and cement additives",
+          "Grouting",
+          "Anchoring",
+          "Structural strengthening",
+          "Concrete repair",
+          "Concrete protection",
         ],
       },
       {
-        title: "Waterproofing and roofing",
+        title: "Concrete",
         items: [
-          "Liquid-applied and injection waterproofing",
-          "Joint waterproofing and sheet membrane",
-          "Single-ply and bituminous roof membranes",
+          "Concrete admixtures",
+          "Additives for dry mortar and gypsum",
+          "Cement additives",
         ],
       },
       {
-        title: "Flooring and sealing",
+        title: "Waterproofing",
         items: [
-          "Industrial coating and decorative floor systems",
-          "Construction adhesives and expansion foam",
+          "Liquid-applied waterproofing",
+          "Injection",
+          "Joint waterproofing",
+          "Sheet membrane",
+          "Waterproofing mortar",
+          "Bituminous sheet membrane",
+        ],
+      },
+      {
+        title: "Roofing",
+        items: [
+          "Single-ply roof membrane",
+          "Liquid-applied membrane",
+          "Bituminous membrane",
+          "Roof repair",
+        ],
+      },
+      {
+        title: "Flooring and coating",
+        items: [
+          "Industrial coating",
+          "Floor joints",
+          "Car park and traffic coating",
+          "Decorative floor coating",
+          "Concrete flooring",
+        ],
+      },
+      {
+        title: "Sealing and bonding",
+        items: [
+          "Construction adhesives",
+          "Expansion foam",
+          "Floor joint sealant",
+          "Building envelope solutions",
           "Firestop systems",
         ],
       },
       {
-        title: "Facade and finishing",
+        title: "Wall and facade systems",
         items: [
-          "Hygienic and interior wall coatings",
+          "Hygienic wall coating",
+          "Interior wall coating",
           "Facade mortars and protection",
-          "Tiling systems and external wall insulation",
         ],
+      },
+      {
+        title: "Building finishing",
+        items: ["Tiling systems", "External wall insulation systems"],
       },
     ],
   },
 ];
+
+/** Look a principal up by its URL segment. */
+export const brandBySlug = (slug: string): Brand | undefined =>
+  brands.find((brand) => brand.slug === slug);
+
+/**
+ * Look a principal up by the name a system step carries. A step shared between
+ * two principals ("Henkel / Weld-On") matches neither, and the caller falls
+ * back to the row of marks on the home page.
+ */
+export const brandByName = (name: string): Brand | undefined =>
+  brands.find((brand) => brand.name === name);
 
 /* ------------------------------------------------------------------ *
  * Technologies
@@ -1522,7 +1755,7 @@ export const whyCatenate: WhyCatenatePillar[] = [
   {
     title: "One Accountable Line",
     headline: "A single point of technical responsibility.",
-    body: "Direct responsibility across five world-class principals and twenty-eight product families.",
+    body: "Direct responsibility across five world-class principals and thirty-one product families.",
     detail: "No finger-pointing between manufacturers when multiple chemistries intersect. Catenate acts as your single technical and commercial point of responsibility, guaranteeing cohesive performance from sub-grade foundations to the finished surface.",
     image: "/images/industries/oil-gas-petrochemical.jpg",
     tag: "Unified Warranty",
@@ -1665,7 +1898,10 @@ export const company = {
 export const footerColumns = [
   {
     heading: "Brands",
-    links: brands.map((brand) => ({ label: brand.name, href: "/brands" })),
+    links: brands.map((brand) => ({
+      label: brand.name,
+      href: `/brands/${brand.slug}`,
+    })),
   },
   {
     heading: "Systems",
