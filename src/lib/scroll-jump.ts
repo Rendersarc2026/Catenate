@@ -52,3 +52,24 @@ export function consumeJump(y: number) {
   jumpTarget = null
   return true
 }
+
+/**
+ * Glides the page to `y`, for a move the reader asked for (the scroll arrows).
+ * Unlike `jumpTo` it animates, and it is left for the header to read as
+ * ordinary scrolling — the reader did ask to travel.
+ */
+export function glideTo(y: number) {
+  if (active) {
+    /* Re-measured for the same reason as `jumpTo`: a stale length clamps it. */
+    active.resize()
+    active.scrollTo(y, { duration: 1.2 })
+    return
+  }
+
+  /*
+   * No Lenis means reduced motion was asked for. The glide is kept anyway, as
+   * the browser's own: an instant move to the far end of a long page reads as
+   * the button having done nothing, and the reader asked to travel.
+   */
+  window.scrollTo({ top: y, behavior: "smooth" })
+}

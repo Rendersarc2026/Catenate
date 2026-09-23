@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 
+import { ScrollArrows } from "@/components/site/scroll-arrows";
 import { SmoothScroll } from "@/components/site/smooth-scroll";
 import "./globals.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
        */}
       <body suppressHydrationWarning>
         <SmoothScroll>{children}</SmoothScroll>
+        <ScrollArrows />
       </body>
     </html>
   );
