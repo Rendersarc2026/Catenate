@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import * as React from "react"
 
 import { ArrowButton } from "@/components/site/arrow-button"
+import { BrandLogo } from "@/components/site/brand-logo"
 import { megaMenu } from "@/data/catenate"
 import { consumeJump } from "@/lib/scroll-jump"
 import { cn } from "@/lib/utils"
@@ -143,12 +144,14 @@ export function SiteHeader() {
         <div className="flex flex-1 items-center justify-start">
           <Link
             href="/"
+            aria-label="Catenate Alliances — home"
             className={cn(
-              "text-[21px] font-semibold tracking-[-0.02em] transition-colors duration-300 ease-expo",
-              isDarkNav && !open ? "text-white" : "text-blue"
+              "text-[18px] transition-colors duration-300 ease-expo",
+              isDarkNav && !open ? "text-white" : "text-ink"
             )}
           >
-            CATEN<span className="tracking-[-0.05em]">ATE</span>
+            {/* Over the dark hero the gradient mark loses its deep blues, so it goes one-colour. */}
+            <BrandLogo tone={isDarkNav && !open ? "mono" : "color"} />
           </Link>
         </div>
 

@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { BrandLogo } from "@/components/site/brand-logo"
 import { company, footerColumns } from "@/data/catenate"
 
 export function SiteFooter() {
@@ -7,9 +8,13 @@ export function SiteFooter() {
     <footer className="content-pad overflow-hidden bg-black pt-[clamp(40px,4.5vw,68px)] pb-[clamp(20px,2.5vw,40px)] text-white">
       <div className="grid grid-cols-[1.3fr_repeat(3,1fr)] gap-8.5 border-b border-white/12 pb-13 max-lg:grid-cols-2">
         <div>
-          <h4 className="mb-4 text-[11px] font-medium tracking-[0.16em] text-white uppercase">
-            Catenate
-          </h4>
+          <Link
+            href="/"
+            aria-label="Catenate Alliances — home"
+            className="mb-5 inline-block text-[17px] text-white"
+          >
+            <BrandLogo tone="mono" />
+          </Link>
           <address className="text-[14.5px] leading-[1.9] not-italic text-white/80">
             {company.address.map((line) => (
               <span key={line} className="block">

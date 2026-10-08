@@ -363,7 +363,7 @@ function createLabelElement(
       ? "0 4px 14px rgba(0,0,0,0.35)"
       : "0 4px 14px rgba(0,0,0,0.16)",
     fontFamily:
-      "var(--font-montserrat), Inter, system-ui, -apple-system, sans-serif",
+      "var(--font-space-grotesk), system-ui, -apple-system, sans-serif",
     fontSize: "11px",
     fontWeight: "500",
     letterSpacing: "-0.01em",

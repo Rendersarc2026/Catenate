@@ -104,7 +104,7 @@ export function TechnologiesHero() {
             key={figure.label}
             className="border-l border-white/16 px-4 py-1 text-center first:border-l-0 max-[720px]:nth-3:border-l-0"
           >
-            <dd className="tnum block text-[clamp(2.1rem,3.6vw,3rem)] leading-none font-light tracking-[-0.025em] text-white">
+            <dd className="tnum block font-heading text-[clamp(2.1rem,3.6vw,3rem)] leading-none font-light tracking-[-0.025em] text-white">
               {figure.value}
             </dd>
             <dt className="mt-2.5 block text-[11px] tracking-[0.18em] text-white/55 uppercase sm:text-[12px]">

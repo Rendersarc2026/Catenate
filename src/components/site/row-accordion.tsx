@@ -59,7 +59,7 @@ export function RowAccordion({ rows, onRowHover, className }: RowAccordionProps)
                 {String(index + 1).padStart(2, "0")}
               </span>
 
-              <span className="block text-[clamp(1.15rem,2.1vw,1.9rem)] font-medium tracking-[-0.015em]">
+              <span className="block font-heading text-[clamp(1.15rem,2.1vw,1.9rem)] font-medium tracking-[-0.015em]">
                 {row.name}
               </span>
 

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-39 -10 308 308">
+  <defs>
+    <linearGradient id="crescent" gradientUnits="userSpaceOnUse" x1="190" y1="0" x2="90" y2="288">
+      <stop offset="0.08" stop-color="#0633c0"/>
+      <stop offset="0.2" stop-color="#2f66cb"/>
+      <stop offset="0.64" stop-color="#4c85d5"/>
+      <stop offset="0.7" stop-color="#70a4e2"/>
+      <stop offset="0.78" stop-color="#a1cdf4"/>
+      <stop offset="0.83" stop-color="#b3dafb"/>
+      <stop offset="1" stop-color="#a7d6fd"/>
+    </linearGradient>
+    <radialGradient id="sheen" gradientUnits="userSpaceOnUse" cx="76" cy="264" r="50">
+      <stop offset="0" stop-color="#5a86de" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#5a86de" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="inner" gradientUnits="userSpaceOnUse" cx="218" cy="251" r="125">
+      <stop offset="0" stop-color="#a7d6fd"/>
+      <stop offset="0.45" stop-color="#9ecdfa"/>
+      <stop offset="0.6" stop-color="#8ab8f2"/>
+      <stop offset="0.73" stop-color="#5e8ce2"/>
+      <stop offset="0.85" stop-color="#2d5ad0"/>
+      <stop offset="1" stop-color="#002cbf"/>
+    </radialGradient>
+  </defs>
+  <path d="M229.14 27.86A144 144 0 1 0 229.14 260.14A124.6 124.6 0 1 1 229.14 27.86Z" fill="url(#crescent)"/>
+  <path d="M229.14 27.86A144 144 0 1 0 229.14 260.14A124.6 124.6 0 1 1 229.14 27.86Z" fill="url(#sheen)"/>
+  <path d="M213.8 47.2A132 106 0 1 0 213.8 240.8L185.45 212.45A79 79 0 1 1 185.45 75.55Z" fill="url(#inner)"/>
+</svg>

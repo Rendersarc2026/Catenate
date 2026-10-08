@@ -142,7 +142,7 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
               >
                 {project.stats.map((stat) => (
                   <div key={stat.label} className="flex flex-col">
-                    <span className="tnum text-[clamp(1.4rem,2.2vw,2rem)] leading-none font-light tracking-[-0.02em] text-ink">
+                    <span className="tnum font-heading text-[clamp(1.4rem,2.2vw,2rem)] leading-none font-light tracking-[-0.02em] text-ink">
                       {stat.value}
                     </span>
                     <span className="mt-2.5 text-[12px] leading-snug text-grey">

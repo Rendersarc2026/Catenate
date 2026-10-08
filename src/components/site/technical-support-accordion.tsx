@@ -38,7 +38,7 @@ export function TechnicalSupportAccordion({
           aria-controls="technical-support-panel"
           className="group/main flex w-full cursor-pointer items-center justify-between gap-6 rounded-none text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4"
         >
-          <span className="block text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
+          <span className="block font-heading text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
             {title}
           </span>
 
