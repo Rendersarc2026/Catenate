@@ -67,7 +67,7 @@ function parseLine(text: string, startIndex: number): { words: WordItem[]; nextI
 
 const LINE_1 = "A global market intelligence & distribution platform built around"
 const LINE_2 =
-  "Trusted Brands, Efficient Teams, Technical knowhow & Dependable Supply Chain."
+  "Trusted Brands, Efficient Teams, Technical know-how & Dependable Supply Chain."
 
 const LINE_1_PARSED = parseLine(LINE_1, 0)
 const LINE_BREAK_PAUSE = 2

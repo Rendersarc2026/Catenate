@@ -2,20 +2,11 @@ import Image from "next/image";
 
 import { Reveal } from "@/components/site/reveal";
 
+// A stat leads with either a figure or an icon; the label sits beneath it.
 const STATS = [
+  { value: "150+", label: "Employees" },
   {
-    value: "150+",
-    label: "Employees",
-    icon: (
-      <>
-        <circle cx="9" cy="8" r="3.5" />
-        <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6" />
-      </>
-    ),
-  },
-  {
-    value: "One Mission",
-    label: null,
+    label: "One Mission",
     icon: (
       <>
         <circle cx="12" cy="12" r="9" />
@@ -23,11 +14,7 @@ const STATS = [
       </>
     ),
   },
-  {
-    value: "1,500+",
-    label: "Customers served",
-    icon: <path d="M20 6L9 17l-5-5" />,
-  },
+  { value: "1,500+", label: "Customers served" },
 ];
 
 export function AboutHero() {
@@ -68,28 +55,33 @@ export function AboutHero() {
       </div>
 
       {/* Bottom Bar: 3 Key Stats */}
-      <div className="relative z-10 flex justify-center px-[clamp(24px,5vw,64px)] pb-[clamp(48px,10vh,104px)] pt-[26px]">
+      <div className="relative z-10 px-[clamp(16px,5vw,64px)] pb-[clamp(48px,10vh,104px)] pt-[26px]">
         {/* Each stat rises in after the one before it. */}
         <Reveal
           stagger
           step={140}
           role="list"
-          className="flex flex-wrap items-start justify-center gap-x-14 gap-y-5"
+          className="mx-auto grid w-full max-w-[1100px] grid-cols-3 gap-x-4"
         >
           {STATS.map(({ value, label, icon }) => (
-            // Icon and figure form one centred row; the label centres under both.
-            <div key={value} role="listitem" className="flex flex-col items-center text-center">
-              <p className="flex items-center gap-3 text-[16px] leading-6 font-semibold text-white">
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  className="size-[18px] shrink-0 fill-none stroke-white stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round]"
-                >
-                  {icon}
-                </svg>
-                {value}
-              </p>
-              {label && <p className="text-[11.5px] leading-4 text-white/70">{label}</p>}
+            // Figure (or icon) on top, label centred beneath; the fixed top row keeps labels level.
+            <div key={label} role="listitem" className="flex flex-col items-center gap-[clamp(10px,1.6vw,20px)] text-center">
+              <div className="flex h-[clamp(36px,4.2vw,56px)] items-center">
+                {icon ? (
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    className="h-full w-auto fill-none stroke-white stroke-[1.4] [stroke-linecap:round] [stroke-linejoin:round]"
+                  >
+                    {icon}
+                  </svg>
+                ) : (
+                  <p className="text-[clamp(1.6rem,3.4vw,2.75rem)] leading-none font-semibold tracking-[-0.02em] text-white">
+                    {value}
+                  </p>
+                )}
+              </div>
+              <p className="text-[clamp(13px,1.5vw,20px)] leading-tight font-medium text-white">{label}</p>
             </div>
           ))}
         </Reveal>

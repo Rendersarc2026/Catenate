@@ -25,7 +25,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "Catenate — Bonding, sealing and construction chemicals",
   description:
-    "A global market intelligence and distribution platform for bonding, sealing and construction chemicals — trusted brands, technical knowhow and a dependable supply chain.",
+    "A global market intelligence and distribution platform for bonding, sealing and construction chemicals — trusted brands, technical know-how and a dependable supply chain.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

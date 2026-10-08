@@ -152,7 +152,7 @@ export const hero = {
     "leading brands to your doorstep.",
   ],
   body:
-    "A global market intelligence & distribution platform built around Trusted Brands, Efficient Teams, Technical knowhow & Dependable Supply Chain.",
+    "A global market intelligence & distribution platform built around Trusted Brands, Efficient Teams, Technical know-how & Dependable Supply Chain.",
   stats: [
     { value: "38", label: "Markets served" },
     { value: "4", label: "Regions" },
