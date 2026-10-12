@@ -11,24 +11,24 @@ const PARALLAX_Y = 10;
 
 /*
  * Earth geometry, measured off `public/images/hero-earth.webp` itself: the
- * crown of the limb sits 0.4471 of the way up the frame, and the arc falls to
- * 0.0806 at either edge. Re-measure both if the picture is ever replaced — they
+ * crown of the limb sits 0.2398 of the way up the frame, and the arc falls to
+ * 0.0395 at either edge. Re-measure both if the picture is ever replaced — they
  * describe that file and nothing else.
  *
- * Full-bleed `object-cover` cannot give a low horizon with this picture. Earth
- * fills the bottom 55% of the source, so showing the whole frame always shows a
- * planet more than half the section tall, and the copy has nowhere to sit but
- * on top of it. The frame is held wider than the window instead and dropped
+ * Full-bleed `object-cover` cannot give a low, flat horizon with this picture.
+ * Earth fills the bottom quarter of the source and its limb falls almost to the
+ * bottom corners, so showing the whole frame shows a tight dome that crowds the
+ * stats row. The frame is held wider than the window instead and dropped
  * until only the crown clears the bottom edge: what is left on screen is the
  * flat middle of the arc, and the copy sits on open sky.
  */
-const IMG_W = 2000;
-const IMG_H = 1116;
+const IMG_W = 3762;
+const IMG_H = 1672;
 const FRAME_ASPECT = `${IMG_W} / ${IMG_H}`;
 /** Frame width against the window. Wider reads flatter and sits lower. */
 const FRAME_VW = 200;
 /** Height of the crown above the frame's own bottom edge, in vw. */
-const CROWN_VW = (FRAME_VW * IMG_H * 0.4471) / IMG_W;
+const CROWN_VW = (FRAME_VW * IMG_H * 0.2398) / IMG_W;
 
 /*
  * Height of the visible arc at its centre — the one number to reach for when
@@ -36,19 +36,19 @@ const CROWN_VW = (FRAME_VW * IMG_H * 0.4471) / IMG_W;
  * curve is measured in widths and the window is not:
  *
  *  - the floor is the sagitta, how far the limb falls away between the centre
- *    of the window and its edge: 8.9% of the width at this frame size. Any less
+ *    of the window and its edge: 4.3% of the width at this frame size. Any less
  *    and a wide, short window keeps black in its bottom corners.
  *  - the ceiling is the picture, which carries only `CROWN_VW` of planet below
  *    the crown. A tall phone asking for 18vh wants more than that.
  */
-const ARC = "clamp(9.5vw, 18vh, 34vw)";
+const ARC = "clamp(5vw, 18vh, 21vw)";
 
 /**
- * The section's ground, and the sky the picture was shot against: rgb(3 5 16).
+ * The section's ground, and the sky the picture was shot against: rgb(2 2 5).
  * The two have to match. The frame stops partway up a tall window, and anything
  * other than the photograph's own black draws a line where it ends.
  */
-const HERO_SKY = "#030510";
+const HERO_SKY = "#020205";
 
 /*
  * Star field, drawn to carry on where the photograph stops. On a wide window the
