@@ -15,33 +15,20 @@ const PARALLAX_Y = 10;
  * 0.0395 at either edge. Re-measure both if the picture is ever replaced — they
  * describe that file and nothing else.
  *
- * Full-bleed `object-cover` cannot give a low, flat horizon with this picture.
- * Earth fills the bottom quarter of the source and its limb falls almost to the
- * bottom corners, so showing the whole frame shows a tight dome that crowds the
- * stats row. The frame is held wider than the window instead and dropped
- * until only the crown clears the bottom edge: what is left on screen is the
- * flat middle of the arc, and the copy sits on open sky.
+ * The whole picture is shown, uncropped: it is contained in the section and
+ * anchored to the bottom edge, so the planet sits along the foot of the window
+ * and the sky above it is carried on by the star field below.
  */
 const IMG_W = 3762;
 const IMG_H = 1672;
-const FRAME_ASPECT = `${IMG_W} / ${IMG_H}`;
-/** Frame width against the window. Wider reads flatter and sits lower. */
-const FRAME_VW = 200;
-/** Height of the crown above the frame's own bottom edge, in vw. */
-const CROWN_VW = (FRAME_VW * IMG_H * 0.2398) / IMG_W;
+const CROWN = 0.2398;
 
 /*
- * Height of the visible arc at its centre — the one number to reach for when
- * the planet wants to sit higher or lower. Fenced on both sides, because the
- * curve is measured in widths and the window is not:
- *
- *  - the floor is the sagitta, how far the limb falls away between the centre
- *    of the window and its edge: 4.3% of the width at this frame size. Any less
- *    and a wide, short window keeps black in its bottom corners.
- *  - the ceiling is the picture, which carries only `CROWN_VW` of planet below
- *    the crown. A tall phone asking for 18vh wants more than that.
+ * Height of the crown above the bottom of the section. The picture is held by
+ * whichever of the window's width or height runs out first, so the crown is
+ * the smaller of the two measurements.
  */
-const ARC = "clamp(5vw, 18vh, 21vw)";
+const ARC = `min(${((100 * IMG_H * CROWN) / IMG_W).toFixed(2)}vw, ${(100 * CROWN).toFixed(2)}dvh)`;
 
 /**
  * The section's ground, and the sky the picture was shot against: rgb(2 2 5).
@@ -200,24 +187,15 @@ export function Hero() {
           ))}
         </svg>
 
-        <div
-          className="absolute left-1/2 max-w-none -translate-x-1/2"
-          style={{
-            width: `${FRAME_VW}vw`,
-            aspectRatio: FRAME_ASPECT,
-            bottom: `calc(var(--earth-arc) - ${CROWN_VW.toFixed(2)}vw)`,
-          }}
-        >
-          <Image
-            src={images.heroEarth}
-            alt="Planet Earth from orbit"
-            fill
-            priority
-            unoptimized
-            sizes="100vw"
-            className="object-cover"
-          />
-        </div>
+        <Image
+          src={images.heroEarth}
+          alt="Planet Earth from orbit"
+          fill
+          priority
+          unoptimized
+          sizes="100vw"
+          className="object-contain object-bottom"
+        />
 
         {/* Subtle radial vignette around the headline for contrast */}
         <div className="absolute inset-0 bg-[radial-gradient(125%_95%_at_50%_40%,transparent_28%,rgba(0,0,0,0.25)_70%,rgba(0,0,0,0.55)_100%)]" />
