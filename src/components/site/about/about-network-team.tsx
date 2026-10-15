@@ -10,15 +10,6 @@ export function AboutNetworkTeam() {
         <div className="mx-auto flex max-w-[1000px] flex-col gap-20 sm:gap-28">
           {/* Network Block */}
           <Reveal className="w-full">
-            <div className="relative mb-6 aspect-16/9 w-full overflow-hidden rounded-[2px] bg-white/5">
-              <Image
-                src="/images/about/network-delivery.webp"
-                alt="The network behind every delivery: highway transport, warehouse conveyor processing, and marine cargo shipping"
-                fill
-                sizes="(max-width: 1040px) 100vw, 1000px"
-                className="object-cover"
-              />
-            </div>
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:gap-10">
               <h3 className="text-balance text-[clamp(1.25rem,2vw,1.55rem)] font-medium tracking-[-0.02em] text-white sm:max-w-[20ch]">
                 The network behind every delivery
