@@ -25,7 +25,7 @@ const figures = [
 ]
 
 /** The headline, one masked line each. */
-const headlineLines = ["Four chemistries,", "four sets of rules."]
+const headlineLines = ["Every chemistry,", "its own set of rules."]
 
 /**
  * The page opener, set out like the home hero: centred headline over a

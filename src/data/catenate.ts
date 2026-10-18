@@ -61,6 +61,42 @@ const technologyShots: Record<string, { panel: string; detail: string }> = {
     panel: "/images/industries/packaging-converting.jpg",
     detail: "/images/industries/furniture-woodworking.jpg",
   },
+  "flooring-repair": {
+    panel: "/images/industries/retail-fit-out.jpg",
+    detail: "/images/industries/building-infrastructure.jpg",
+  },
+  "facade-silicones": {
+    panel: "/images/industries/building-infrastructure.jpg",
+    detail: "/images/industries/retail-fit-out.jpg",
+  },
+  "pipe-cements": {
+    panel: "/images/industries/hvac-plumbing.jpg",
+    detail: "/images/industries/water-wastewater.jpg",
+  },
+  "metal-treatment": {
+    panel: "/images/industries/laboratory-microscope.jpg",
+    detail: "/images/industries/metals-fabrication.jpg",
+  },
+  "oil-gas": {
+    panel: "/images/industries/oil-gas-petrochemical.jpg",
+    detail: "/images/industries/marine-offshore.jpg",
+  },
+  "bus-body": {
+    panel: "/images/industries/automotive-transport.jpg",
+    detail: "/images/industries/metals-fabrication.jpg",
+  },
+  solar: {
+    panel: "/images/industries/electronics-assembly.jpg",
+    detail: "/images/industries/laboratory-microscope.jpg",
+  },
+  mattress: {
+    panel: "/images/industries/furniture-woodworking.jpg",
+    detail: "/images/industries/packaging-converting.jpg",
+  },
+  "safety-cutting": {
+    panel: "/images/industries/metals-fabrication.jpg",
+    detail: "/images/industries/building-infrastructure.jpg",
+  },
 };
 
 /* ------------------------------------------------------------------ *
@@ -811,6 +847,8 @@ export type Technology = {
   short: string;
   /** The trade the chemistry belongs to. */
   family: string;
+  /** The principal ranges it is supplied from, e.g. "Loctite". */
+  range: string;
   description: string;
   /** Where it goes to work. */
   uses: string[];
@@ -823,6 +861,7 @@ export const technologies: Technology[] = [
     name: "Bituminous and liquid-applied membranes",
     short: "Membranes",
     family: "Waterproofing",
+    range: "Polybit",
     description:
       "Waterproofing that has to survive burial, ponding and movement for the design life of the structure. Selection turns on whether the deck is trafficked, whether the membrane is bonded or loose-laid, and how much detailing sits around penetrations.",
     uses: [
@@ -844,6 +883,7 @@ export const technologies: Technology[] = [
     name: "Polyurethane and silicone sealants",
     short: "Sealants",
     family: "Sealing and glazing",
+    range: "GE Sealants and Polybit",
     description:
       "Movement joints, glazing perimeters and sanitary junctions. The governing figure is movement accommodation factor, followed by whether the joint will be painted and whether it sees standing water.",
     uses: [
@@ -865,6 +905,7 @@ export const technologies: Technology[] = [
     name: "Cyanoacrylate and anaerobic adhesives",
     short: "Instant and anaerobic",
     family: "Industrial assembly",
+    range: "Loctite",
     description:
       "Fast fixture on close-fitting parts, and controlled locking on threaded assemblies. Gap fill and material pairing decide the grade far more than headline strength figures do.",
     uses: [
@@ -886,6 +927,7 @@ export const technologies: Technology[] = [
     name: "Hot melt and water-based adhesives",
     short: "Hot melt",
     family: "Packaging and converting",
+    range: "Technomelt and Aquence",
     description:
       "Production bonding where the line speed sets the specification. Open time, set time and heat resistance are balanced against substrate porosity and the temperature the finished pack will see.",
     uses: [
@@ -902,6 +944,205 @@ export const technologies: Technology[] = [
       ["Application", "Slot, wheel, spray, roller"],
     ],
   },
+  {
+    slug: "flooring-repair",
+    name: "Epoxy flooring and concrete repair",
+    short: "Flooring and repair",
+    family: "Construction chemicals",
+    range: "Master Builders and Polybit",
+    description:
+      "Seamless resin floors for plants, warehouses and car parks, and the mortars that put damaged concrete back to profile underneath them. Traffic, chemical exposure and the slab's own moisture decide the system before colour or finish does.",
+    uses: [
+      "Industrial floors",
+      "Warehouses",
+      "Car park decks",
+      "Food plant floors",
+      "Structural repair",
+      "Grouting",
+    ],
+    spec: [
+      ["Service temperature", "−20 to +70 °C"],
+      ["Cure mechanism", "Two-part reactive or hydraulic"],
+      ["Substrate", "Concrete and cementitious screed"],
+      ["Application", "Trowel, roller, squeegee, pour"],
+    ],
+  },
+  {
+    slug: "facade-silicones",
+    name: "Neutral-cure silicones for glass facades",
+    short: "Facade silicones",
+    family: "Facade and glazing",
+    range: "GE Momentive",
+    description:
+      "Structural glazing and weather sealing for curtain walls and glass towers. Neutral cure keeps coated glass, mirror backing and aluminium frames free of corrosion, and the bead has to hold through decades of UV, heat and wind load.",
+    uses: [
+      "Structural glazing",
+      "Curtain walls",
+      "Weather seals",
+      "Insulating glass units",
+      "Cladding joints",
+    ],
+    spec: [
+      ["Service temperature", "−50 to +150 °C"],
+      ["Cure mechanism", "Neutral moisture cure"],
+      ["Substrate", "Glass, anodised and coated aluminium"],
+      ["Application", "Cartridge, sausage, bulk pump"],
+    ],
+  },
+  {
+    slug: "pipe-cements",
+    name: "UPVC and CPVC solvent cements and sealants",
+    short: "Pipe cements",
+    family: "Plumbing and piping",
+    range: "EZ-Weld",
+    description:
+      "Solvent welding for pressure and drainage pipework, from domestic plumbing to irrigation and industrial lines. Pipe material, diameter and working pressure set the cement, and cure time before pressure testing sets the programme.",
+    uses: [
+      "Potable water lines",
+      "Hot and cold plumbing",
+      "Drainage and soil",
+      "Irrigation",
+      "Pool and process pipework",
+    ],
+    spec: [
+      ["Service temperature", "Up to +93 °C (CPVC)"],
+      ["Cure mechanism", "Solvent weld"],
+      ["Substrate", "UPVC, CPVC, ABS"],
+      ["Application", "Dauber, brush, primer then cement"],
+    ],
+  },
+  {
+    slug: "metal-treatment",
+    name: "Metal treatment chemicals",
+    short: "Metal treatment",
+    family: "Surface treatment",
+    range: "Bonderite",
+    description:
+      "Cleaners, conversion coatings, forming lubricants and machining fluids for the metal before it is painted, bonded or shipped. Each stage runs to a process window — concentration, temperature and dwell — that decides how long the finished coating lasts.",
+    uses: [
+      "Pretreatment before painting",
+      "Conversion coating",
+      "Industrial cleaning",
+      "Metal forming",
+      "Machining fluids",
+    ],
+    spec: [
+      ["Process temperature", "Ambient to +60 °C"],
+      ["Mechanism", "Chemical conversion"],
+      ["Substrate", "Steel, galvanised, aluminium"],
+      ["Application", "Spray, immersion, wipe"],
+    ],
+  },
+  {
+    slug: "oil-gas",
+    name: "Maintenance and repair for oil and gas",
+    short: "Oil and gas",
+    family: "Oil and gas",
+    range: "Loctite",
+    description:
+      "Threadlockers, gasketing, pipe repair composites and wear coatings that keep pumps, valves and pipelines running between shutdowns. Pressure, media and temperature rule out grades long before price does.",
+    uses: [
+      "Pipe and tank repair",
+      "Flange sealing",
+      "Pump and valve rebuilds",
+      "Wear and corrosion coatings",
+      "Threadlocking",
+    ],
+    spec: [
+      ["Service temperature", "−55 to +200 °C"],
+      ["Cure mechanism", "Anaerobic or two-part epoxy"],
+      ["Substrate", "Carbon and stainless steel, alloys"],
+      ["Application", "Bead, wrap, brush, trowel"],
+    ],
+  },
+  {
+    slug: "bus-body",
+    name: "Bus body and automotive bonding",
+    short: "Bus and automotive",
+    family: "Automotive and transport",
+    range: "Loctite",
+    description:
+      "Structural adhesives and sealants that replace rivets and welds on bus bodies, trailers and vehicle panels. Bonding spreads the load, stops corrosion at the joint and cuts weight; the grade turns on panel material and how much the body flexes.",
+    uses: [
+      "Panel bonding",
+      "Windscreen and glazing",
+      "Seam sealing",
+      "Floor and roof bonding",
+      "Threadlocking",
+    ],
+    spec: [
+      ["Service temperature", "−40 to +90 °C"],
+      ["Cure mechanism", "Moisture or two-part"],
+      ["Substrate", "Steel, aluminium, GRP, glass"],
+      ["Application", "Cartridge, dispensing gun, robot"],
+    ],
+  },
+  {
+    slug: "solar",
+    name: "PV and conductive adhesives for solar panels",
+    short: "Solar",
+    family: "Solar energy",
+    range: "Henkel",
+    description:
+      "Electrically conductive adhesives for cell interconnection, and sealants and potting compounds for frames and junction boxes. A module is expected to last twenty-five years outdoors, so resistance to heat cycling and damp heat leads the specification.",
+    uses: [
+      "Cell interconnection",
+      "Frame sealing",
+      "Junction box potting",
+      "Back-rail bonding",
+      "Module assembly",
+    ],
+    spec: [
+      ["Service temperature", "−40 to +85 °C"],
+      ["Cure mechanism", "Heat or moisture cure"],
+      ["Substrate", "Silicon cells, glass, aluminium"],
+      ["Application", "Printing, dispensing, bead"],
+    ],
+  },
+  {
+    slug: "mattress",
+    name: "Sprayable adhesives for mattresses",
+    short: "Mattress",
+    family: "Bedding and upholstery",
+    range: "Henkel",
+    description:
+      "Spray adhesives for foam lamination, pocket springs and quilted layers. The bond has to stay soft so the mattress does not feel it, set fast enough for the line, and keep emissions low for a product people sleep on.",
+    uses: [
+      "Foam to foam",
+      "Pocket spring bonding",
+      "Fabric lamination",
+      "Border panels",
+      "Upholstery",
+    ],
+    spec: [
+      ["Service temperature", "−10 to +70 °C"],
+      ["Cure mechanism", "Cooling or water evaporation"],
+      ["Substrate", "PU foam, latex, fabric, spring units"],
+      ["Application", "Spray gun, automated spray line"],
+    ],
+  },
+  {
+    slug: "safety-cutting",
+    name: "Safety gear and metal cutting discs",
+    short: "Safety and cutting",
+    family: "Site safety and metalworking",
+    range: "Würth",
+    description:
+      "Personal protective equipment for the site and the workshop, and cutting and grinding discs that stay true at speed. Each one is rated to its standard, so it is chosen by the hazard and the material, not by the catalogue page.",
+    uses: [
+      "Gloves and eye protection",
+      "Respiratory and hearing",
+      "Safety footwear and workwear",
+      "Cutting discs",
+      "Grinding and flap discs",
+    ],
+    spec: [
+      ["Standards", "EN 388, EN 166, EN 12413"],
+      ["Disc diameters", "115 to 230 mm"],
+      ["Materials cut", "Steel, stainless, aluminium"],
+      ["Supply", "Site, workshop and plant"],
+    ],
+  },
 ];
 
 /* ------------------------------------------------------------------ *
@@ -915,9 +1156,15 @@ export const applications = [
   "Concrete repair",
   "Pipe joining",
   "Sealing and glazing",
-  "Metal pretreatment",
+  "Building facades",
+  "Gypsum and drywall",
+  "Metal treatment",
   "Industrial assembly",
   "Fastening and tools",
+  "Food packaging",
+  "Dairy and beverages",
+  "Paper converting",
+  "Mattress manufacturing",
 ] as const;
 
 export const conditions = [
@@ -928,6 +1175,9 @@ export const conditions = [
   "High temperature",
   "Potable water contact",
   "Food contact",
+  "Dry interior",
+  "Chilled and frozen",
+  "High line speed",
 ] as const;
 
 export type Application = (typeof applications)[number];
@@ -1006,7 +1256,7 @@ export const applicationConditions: Record<Application, readonly Condition[]> = 
     "High temperature",
     "Food contact",
   ],
-  "Metal pretreatment": [
+  "Metal treatment": [
     "External exposed",
     "Internal wet",
     "High temperature",
@@ -1024,6 +1274,22 @@ export const applicationConditions: Record<Application, readonly Condition[]> = 
     "High traffic",
     "High temperature",
   ],
+  "Building facades": ["External exposed", "High temperature"],
+  "Gypsum and drywall": ["Dry interior", "Internal wet", "High traffic"],
+  "Food packaging": [
+    "Food contact",
+    "Chilled and frozen",
+    "High temperature",
+    "High line speed",
+  ],
+  "Dairy and beverages": [
+    "Food contact",
+    "Chilled and frozen",
+    "Internal wet",
+    "High line speed",
+  ],
+  "Paper converting": ["Food contact", "Internal wet", "High line speed"],
+  "Mattress manufacturing": ["Dry interior", "High temperature", "High line speed"],
 };
 
 export const systems: Record<Application, SystemBuildUp> = {
@@ -1219,7 +1485,7 @@ export const systems: Record<Application, SystemBuildUp> = {
       ),
     ],
   },
-  "Metal pretreatment": {
+  "Metal treatment": {
     standard: "ISO 12944",
     steps: [
       step(
@@ -1306,6 +1572,192 @@ export const systems: Record<Application, SystemBuildUp> = {
       ),
     ],
   },
+  "Building facades": {
+    standard: "ASTM C1184 / EN 15434",
+    steps: [
+      step(
+        "Cleaning",
+        "Solvent cleaner, two-cloth method",
+        "Würth",
+        "Leaves glass and frame free of film before bonding."
+      ),
+      step(
+        "Primer",
+        "GE silicone primer",
+        "GE Sealants",
+        "Promotes adhesion on coated and anodised aluminium."
+      ),
+      step(
+        "Structural glazing",
+        "GE neutral-cure structural silicone",
+        "GE Sealants",
+        "Bonds the glass to the frame and carries wind load."
+      ),
+      step(
+        "Backer",
+        "Closed cell backer rod",
+        "Würth",
+        "Sets the weather-seal depth and stops three-sided adhesion."
+      ),
+      step(
+        "Weather seal",
+        "GE neutral-cure weatherproofing silicone",
+        "GE Sealants",
+        "Seals the joints between panels against rain and UV."
+      ),
+    ],
+  },
+  "Gypsum and drywall": {
+    standard: "EN 13963 / EN 14496",
+    steps: [
+      step(
+        "Plaster and board",
+        "Sika gypsum additives",
+        "Sika",
+        "Controls set time and workability in gypsum plasters."
+      ),
+      step(
+        "Board fixing",
+        "Pattex construction adhesive",
+        "Henkel",
+        "Bonds plasterboard and cornices without mechanical fixings."
+      ),
+      step(
+        "Joints",
+        "Pattex acrylic sealant",
+        "Henkel",
+        "Fills paintable junctions at walls, ceilings and frames."
+      ),
+      step(
+        "Primer",
+        "Ceresit deep primer",
+        "Henkel",
+        "Evens out absorption before tiling or wallcovering."
+      ),
+      step(
+        "Finish",
+        "Metylan wallcovering adhesive",
+        "Henkel",
+        "Hangs paper and vinyl wallcoverings on the board."
+      ),
+    ],
+  },
+  "Food packaging": {
+    standard: "EU 10/2011 / FDA 21 CFR 175.105",
+    steps: [
+      step(
+        "Laminating",
+        "Loctite Liofol laminating adhesive",
+        "Henkel",
+        "Bonds film layers in flexible food packs."
+      ),
+      step(
+        "Carton forming",
+        "Technomelt hot melt",
+        "Henkel",
+        "Erects and closes cartons at line speed."
+      ),
+      step(
+        "Case and tray sealing",
+        "Technomelt Supra hot melt",
+        "Henkel",
+        "Seals shipping cases with low adhesive consumption."
+      ),
+      step(
+        "Labelling",
+        "Aquence water-based label adhesive",
+        "Henkel",
+        "Holds labels through handling and storage."
+      ),
+    ],
+  },
+  "Dairy and beverages": {
+    standard: "EU 10/2011 / NSF H1",
+    steps: [
+      step(
+        "Bottle labelling",
+        "Aquence cold-glue label adhesive",
+        "Henkel",
+        "Keeps labels on wet, cold and condensing bottles."
+      ),
+      step(
+        "Cartons and multipacks",
+        "Technomelt hot melt",
+        "Henkel",
+        "Closes cartons and wraps multipacks on the filler line."
+      ),
+      step(
+        "Line maintenance",
+        "Loctite food-grade threadlocker and lubricant",
+        "Henkel",
+        "Keeps fillers and conveyors running, safe for incidental contact."
+      ),
+      step(
+        "Hygienic joints",
+        "GE sanitary silicone",
+        "GE Sealants",
+        "Seals junctions in wash-down areas against mould."
+      ),
+    ],
+  },
+  "Paper converting": {
+    standard: "BfR XIV / FDA 21 CFR 175.105",
+    steps: [
+      step(
+        "Tube and core winding",
+        "Aquence water-based adhesive",
+        "Henkel",
+        "Builds spiral and parallel tubes and cores."
+      ),
+      step(
+        "Bag and sack making",
+        "Aquence starch and PVAc adhesives",
+        "Henkel",
+        "Forms side seams and bottoms on paper bags."
+      ),
+      step(
+        "Lamination",
+        "Loctite Liofol laminating adhesive",
+        "Henkel",
+        "Laminates paper to film and foil."
+      ),
+      step(
+        "Book and tissue",
+        "Technomelt hot melt",
+        "Henkel",
+        "Binds books and transfers tissue logs at speed."
+      ),
+    ],
+  },
+  "Mattress manufacturing": {
+    standard: "EN 16516 / CertiPUR",
+    steps: [
+      step(
+        "Foam lamination",
+        "Aquence water-based spray adhesive",
+        "Henkel",
+        "Bonds foam layers with a soft, low-odour glue line."
+      ),
+      step(
+        "Pocket springs",
+        "Technomelt pocket spring hot melt",
+        "Henkel",
+        "Joins spring strings into a unit at line speed."
+      ),
+      step(
+        "Fabric and quilting",
+        "Technomelt spray hot melt",
+        "Henkel",
+        "Laminates fabric and wadding without stiffening the cover."
+      ),
+      step(
+        "Packing",
+        "Technomelt case-sealing hot melt",
+        "Henkel",
+        "Closes roll-pack and boxed mattresses for shipping."
+      ),
+    ],
+  },
 };
 
 /** Reads back as "Waterproofing for externally exposed areas". */
@@ -1317,6 +1769,9 @@ export const conditionPhrases: Record<Condition, string> = {
   "High temperature": "high-temperature service",
   "Potable water contact": "potable water contact",
   "Food contact": "food-contact areas",
+  "Dry interior": "dry interior areas",
+  "Chilled and frozen": "chilled and frozen service",
+  "High line speed": "high-speed production lines",
 };
 
 export const conditionNotes: Record<Condition, string> = {
@@ -1334,6 +1789,12 @@ export const conditionNotes: Record<Condition, string> = {
     "Only the approved variants may be used. Certificates must accompany the delivery.",
   "Food contact":
     "Select the food-contact compliant grades and confirm the hygiene classification with the operator.",
+  "Dry interior":
+    "Standard grades apply. Confirm the substrate is dry and at room temperature before application.",
+  "Chilled and frozen":
+    "Specify the cold-flexible grade and test the bond at the lowest storage temperature, including condensation on removal.",
+  "High line speed":
+    "Match open and set time to the line speed and compression time, and confirm on a line trial before switching grades.",
 };
 
 /* ------------------------------------------------------------------ *
@@ -1779,6 +2240,39 @@ export const technicalSupport: Blurb[] = [
     title: "Toolbox talks",
     body: "Short site briefings on mixing ratios, overcoat windows and safe handling before each phase.",
   },
+];
+
+/* ------------------------------------------------------------------ *
+ * Power brands
+ * ------------------------------------------------------------------ */
+
+export type PowerBrand = {
+  name: string;
+  /** The principal the range is supplied through. */
+  principal: string;
+  /** What the range covers, in a few words. */
+  line: string;
+  /**
+   * Official mark in `public/images/logos`. Optional: the strip sets the name
+   * in type until the file is supplied.
+   */
+  logo?: string;
+  /** Optical correction against the shared logo box. Defaults to 1. */
+  logoScale?: number;
+};
+
+export const powerBrands: PowerBrand[] = [
+  { name: "Loctite", principal: "Henkel", line: "Industrial adhesives and sealants" },
+  { name: "Pattex", principal: "Henkel", line: "Trade and DIY bonding" },
+  { name: "Technomelt", principal: "Henkel", line: "Hot melt adhesives" },
+  { name: "Aquence", principal: "Henkel", line: "Water-based adhesives" },
+  { name: "Bonderite", principal: "Henkel", line: "Metal treatment" },
+  { name: "Polybit", principal: "Henkel", line: "Waterproofing and construction" },
+  { name: "Tangit", principal: "Henkel", line: "PVC-U pipe cements" },
+  { name: "Metylan", principal: "Henkel", line: "Wallcovering adhesives" },
+  { name: "EZ-Weld", principal: "Weld-On", line: "UPVC and CPVC solvent cements" },
+  { name: "Master Builders", principal: "Sika", line: "Flooring and concrete repair" },
+  { name: "Sika", principal: "Sika", line: "Construction chemicals" },
 ];
 
 export type Customer = {
