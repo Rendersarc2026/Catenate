@@ -8,7 +8,7 @@ import { TechnologyShowcase } from "@/components/site/technologies/technology-sh
 export const metadata: Metadata = {
   title: "Technologies — Catenate",
   description:
-    "The chemistries and ranges we carry — from construction, facades and piping to oil and gas, solar, automotive and mattress manufacturing — each with the working rules, substrates and cure data a specification needs.",
+    "The four chemistries we carry, each with the working rules, substrates and cure data a specification needs.",
 };
 
 export default function TechnologiesPage() {

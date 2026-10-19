@@ -20,7 +20,7 @@ export function TechnologyShowcase() {
   const [active, setActive] = React.useState(0)
 
   /*
-   * One observer for every block, with a band across the middle of the
+   * One observer for the four blocks, with a band across the middle of the
    * viewport as its root: whichever block is crossing the middle owns the
    * picture. A plain threshold would hand it over the moment a block's top
    * edge appeared, well before the visitor was reading it.
@@ -94,7 +94,7 @@ function StickyStack({ active }: { active: number }) {
   return (
     <figure className="relative m-0">
       {/* Tall, but never taller than the space the pin leaves it — the ticks
-          below have to stay on screen for the picture to read as one of the set. */}
+          below have to stay on screen for the picture to read as one of four. */}
       <div className="relative aspect-[4/5] max-h-[calc(100svh-var(--nav-height)-150px)] w-full overflow-hidden rounded-[clamp(18px,2vw,28px)] bg-off shadow-[0_20px_60px_-24px_rgb(26_29_46/0.45)]">
         {technologies.map((tech, index) => (
           <Image
@@ -139,7 +139,7 @@ function StickyStack({ active }: { active: number }) {
         </figcaption>
       </div>
 
-      {/* Progress ticks — where you are in the set. */}
+      {/* Progress ticks — where you are in the four. */}
       <div
         className="mt-[clamp(26px,3vw,40px)] flex items-center gap-2"
         aria-hidden="true"
@@ -221,10 +221,6 @@ function TechnologyBlock({ tech, index, isActive, ref }: BlockProps) {
         <h3 className="mt-5 text-[clamp(1.35rem,2.1vw,1.9rem)] leading-[1.25] font-normal tracking-[-0.015em] text-balance">
           {tech.name}
         </h3>
-
-        <p className="mt-2 text-[13.5px] text-grey">
-          From our {tech.range} {tech.range.includes(" and ") ? "ranges" : "range"}
-        </p>
 
         <p className="lead mt-4">{tech.description}</p>
       </Reveal>
