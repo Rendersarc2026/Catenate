@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { AboutFeature } from "@/components/site/about/about-feature";
 import { AboutGlobalChain } from "@/components/site/about/about-global-chain";
 import { AboutHero } from "@/components/site/about/about-hero";
 import { AboutNetworkTeam } from "@/components/site/about/about-network-team";
@@ -25,7 +24,6 @@ export default function AboutPage() {
         <AboutGlobalChain />
         <StrengthsSection />
         <AboutPowerBuild />
-        <AboutFeature />
         <AboutNetworkTeam />
       </main>
 
