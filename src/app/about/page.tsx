@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 
-import { AboutGlobalChain } from "@/components/site/about/about-global-chain";
+import { AboutCareers } from "@/components/site/about/about-careers";
+import { AboutCountries } from "@/components/site/about/about-countries";
 import { AboutHero } from "@/components/site/about/about-hero";
-import { AboutNetworkTeam } from "@/components/site/about/about-network-team";
-import { AboutPowerBuild } from "@/components/site/about/about-power-build";
+import { AboutIndustries } from "@/components/site/about/about-industries";
+import { AboutStatement } from "@/components/site/about/about-statement";
+import { AboutTeam } from "@/components/site/about/about-team";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { StrengthsSection } from "@/components/site/strengths-section";
@@ -19,12 +21,14 @@ export default function AboutPage() {
     <>
       <SiteHeader />
 
-      <main id="content" className="bg-black">
+      <main id="content" className="bg-white">
         <AboutHero />
-        <AboutGlobalChain />
+        <AboutStatement />
         <StrengthsSection />
-        <AboutPowerBuild />
-        <AboutNetworkTeam />
+        <AboutCountries />
+        <AboutIndustries />
+        <AboutTeam />
+        <AboutCareers />
       </main>
 
       <SiteFooter />
