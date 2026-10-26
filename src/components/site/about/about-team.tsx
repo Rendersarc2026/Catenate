@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { Reveal } from "@/components/site/reveal";
 
 /** How the team shows up for a project — the three standing commitments. */
@@ -72,6 +74,16 @@ export function AboutTeam() {
       {/* Team body */}
       <section className="section bg-white text-ink">
         <div className="mx-auto max-w-[var(--content-max)]">
+          <Reveal className="relative mb-[clamp(48px,7vw,88px)] aspect-16/9 w-full overflow-hidden rounded-[4px] bg-ink/5">
+            <Image
+              src="/images/about/team-catenate.jpeg"
+              alt="The Catenate team"
+              fill
+              sizes="(max-width: 1520px) 100vw, 1520px"
+              className="object-cover"
+            />
+          </Reveal>
+
           <Reveal className="mb-[clamp(40px,5vw,64px)] flex flex-wrap items-end justify-between gap-6">
             <div>
               <span className="eyebrow text-blue">How we work</span>
@@ -115,6 +127,20 @@ export function AboutTeam() {
           </Reveal>
         </div>
       </section>
+
+      {/* Wide on-site footage */}
+      <video
+        src="/videos/about.webm"
+        width={2880}
+        height={1234}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden="true"
+        className="block aspect-[2880/1234] h-auto w-full"
+      />
     </>
   );
 }
