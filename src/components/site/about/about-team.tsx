@@ -61,11 +61,14 @@ export function AboutTeam() {
               id="team-title"
               className="max-w-[16ch] text-balance text-[clamp(2.2rem,6vw,4.4rem)] leading-[1] font-medium tracking-[-0.02em]"
             >
-              Experienced people. Proven expertise.
+              Expertise that sets the standard.
             </h2>
-            <p className="mt-5 max-w-[48ch] text-[clamp(16px,1.3vw,18px)] leading-[1.6] text-white/70">
-              Our engineers, specialists and account teams bring deep product
-              knowledge and stay accountable from specification to completion.
+            <p className="mt-5 max-w-[56ch] text-[clamp(16px,1.3vw,18px)] leading-[1.6] text-white/70">
+              Our engineers, technical specialists and account teams bring deep
+              product knowledge, application expertise and a commitment to
+              performance. From specification to completion, we deliver the
+              technical confidence and dependable support that complex projects
+              demand.
             </p>
           </Reveal>
         </div>

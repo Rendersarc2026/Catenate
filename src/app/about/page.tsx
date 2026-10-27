@@ -24,8 +24,8 @@ export default function AboutPage() {
       <main id="content" className="bg-white">
         <AboutHero />
         <AboutStatement />
-        <StrengthsSection />
         <AboutCountries />
+        <StrengthsSection />
         <AboutIndustries />
         <AboutTeam />
         <AboutCareers />
