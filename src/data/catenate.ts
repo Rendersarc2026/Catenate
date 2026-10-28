@@ -905,6 +905,151 @@ export const technologies: Technology[] = [
 ];
 
 /* ------------------------------------------------------------------ *
+ * Technologies page: one portfolio across industries
+ * ------------------------------------------------------------------ */
+
+export type TechnologyIndustry = {
+  title: string;
+  /** Principal shown on the photo's corner tag. */
+  principal: string;
+  /** Range line under the title. */
+  range: string;
+  body: string;
+  uses: string[];
+  /** Photo in `public/images/technologies`. */
+  image: string;
+};
+
+const technologyImage = (file: string) => `/images/technologies/${file}`;
+
+export const technologyIndustries: TechnologyIndustry[] = [
+  {
+    title: "High-quality safety gear and metal cutting discs",
+    principal: "Würth",
+    range: "Würth range",
+    body: "Gloves, eyewear, hearing protection and workwear, with cutting and grinding discs for steel, stainless and aluminium. Supplied to fabrication shops, shipyards and site crews.",
+    uses: [
+      "Cutting discs",
+      "Grinding and flap discs",
+      "Cut-resistant gloves",
+      "Eye and face protection",
+      "Workwear",
+    ],
+    image: technologyImage("safety-cutting.jpg"),
+  },
+  {
+    title: "Metal treatment chemicals",
+    principal: "Henkel",
+    range: "Bonderite range",
+    body: "Cleaners, conversion coatings and process chemistry that prepare steel, galvanised and aluminium surfaces for painting, powder coating and bonding.",
+    uses: [
+      "Alkaline cleaning",
+      "Conversion coating",
+      "Powder coating lines",
+      "Coil and extrusion",
+      "Appliance manufacturing",
+    ],
+    image: technologyImage("metal-treatment.jpg"),
+  },
+  {
+    title: "UPVC and CPVC plumbing and piping adhesives and sealants",
+    principal: "Weld-On",
+    range: "EZ-Weld range",
+    body: "Solvent cements, primers and cleaners for pressure and drainage pipework, from hot and cold water distribution to irrigation and industrial process lines.",
+    uses: [
+      "Hot and cold water",
+      "Drainage and waste",
+      "Irrigation",
+      "Process pipework",
+      "Pools and spas",
+    ],
+    image: technologyImage("plumbing-piping.jpg"),
+  },
+  {
+    title: "Epoxy flooring and construction repair chemistries",
+    principal: "Master Builders / Henkel",
+    range: "Master Builders and Polybit ranges",
+    body: "Seamless epoxy and polyurethane floors for factories, warehouses and car parks, with repair mortars and protective coatings that return damaged concrete to service.",
+    uses: [
+      "Factory and warehouse floors",
+      "Car park decks",
+      "Food and pharma areas",
+      "Structural repair",
+      "Concrete protection",
+    ],
+    image: technologyImage("epoxy-flooring.jpg"),
+  },
+  {
+    title: "Neutral silicones for glass facade buildings",
+    principal: "GE Sealants",
+    range: "GE Momentive range",
+    body: "Neutral-cure structural glazing and weatherseal silicones for curtain walls, unitised panels and high-rise glazing, with lasting adhesion to glass, aluminium and coated metal.",
+    uses: [
+      "Structural glazing",
+      "Weathersealing",
+      "Unitised curtain wall",
+      "Insulated glass",
+      "Skylights",
+    ],
+    image: technologyImage("glass-facade.jpg"),
+  },
+  {
+    title: "Oil and gas",
+    principal: "Henkel",
+    range: "Loctite range",
+    body: "Thread sealants, retaining compounds, gasketing, wear protection and composite repair systems that keep pumps, valves, pipelines and tanks in service, onshore and offshore.",
+    uses: [
+      "Thread sealing",
+      "Flange gasketing",
+      "Pipe and tank repair",
+      "Wear protection",
+      "Pump and valve maintenance",
+    ],
+    image: technologyImage("oil-gas.jpg"),
+  },
+  {
+    title: "Mattress",
+    principal: "Henkel",
+    range: "Henkel sprayable adhesives",
+    body: "Sprayable hot melt and water-based adhesives for foam lamination, spring units, toppers and borders, with fast set for high-output lines.",
+    uses: [
+      "Foam lamination",
+      "Pocket spring units",
+      "Toppers and pillows",
+      "Upholstered furniture",
+    ],
+    image: technologyImage("mattress.jpg"),
+  },
+  {
+    title: "Solar panels",
+    principal: "Henkel",
+    range: "Henkel PV and conductive adhesives",
+    body: "Electrically conductive adhesives for cell interconnection, with sealants and potting compounds for frames and junction boxes, built for years of heat, UV and thermal cycling.",
+    uses: [
+      "Cell interconnection",
+      "Shingled modules",
+      "Frame bonding",
+      "Junction box potting",
+    ],
+    image: technologyImage("solar-panels.jpg"),
+  },
+  {
+    title: "Bus body and automotive",
+    principal: "Henkel",
+    range: "Loctite range",
+    body: "Structural adhesives, threadlockers and panel bonding systems for bus bodies, coaches and commercial vehicles, reducing weight and adding stiffness over welds and rivets.",
+    uses: [
+      "Panel bonding",
+      "Windscreen bonding",
+      "Threadlocking",
+      "Seam sealing",
+      "Body repair",
+    ],
+    image: technologyImage("bus-automotive.jpg"),
+  },
+];
+
+/* ------------------------------------------------------------------ *
  * Solutions finder
  * ------------------------------------------------------------------ */
 
