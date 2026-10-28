@@ -1060,9 +1060,15 @@ export const applications = [
   "Concrete repair",
   "Pipe joining",
   "Sealing and glazing",
-  "Metal pretreatment",
+  "Metal treatment",
   "Industrial assembly",
   "Fastening and tools",
+  "Building facade",
+  "Food packaging",
+  "Dairy and beverages",
+  "Paper converting",
+  "Mattress",
+  "Gypsum",
 ] as const;
 
 export const conditions = [
@@ -1073,6 +1079,8 @@ export const conditions = [
   "High temperature",
   "Potable water contact",
   "Food contact",
+  "High line speed",
+  "Low emission",
 ] as const;
 
 export type Application = (typeof applications)[number];
@@ -1151,7 +1159,7 @@ export const applicationConditions: Record<Application, readonly Condition[]> = 
     "High temperature",
     "Food contact",
   ],
-  "Metal pretreatment": [
+  "Metal treatment": [
     "External exposed",
     "Internal wet",
     "High temperature",
@@ -1169,6 +1177,23 @@ export const applicationConditions: Record<Application, readonly Condition[]> = 
     "High traffic",
     "High temperature",
   ],
+  "Building facade": ["External exposed", "High temperature", "Internal wet"],
+  "Food packaging": [
+    "Food contact",
+    "High line speed",
+    "High temperature",
+    "Internal wet",
+  ],
+  "Dairy and beverages": [
+    "Food contact",
+    "Internal wet",
+    "High traffic",
+    "High temperature",
+    "High line speed",
+  ],
+  "Paper converting": ["High line speed", "Food contact", "Low emission"],
+  Mattress: ["High line speed", "Low emission"],
+  Gypsum: ["Internal wet", "High traffic"],
 };
 
 export const systems: Record<Application, SystemBuildUp> = {
@@ -1364,7 +1389,7 @@ export const systems: Record<Application, SystemBuildUp> = {
       ),
     ],
   },
-  "Metal pretreatment": {
+  "Metal treatment": {
     standard: "ISO 12944",
     steps: [
       step(
@@ -1451,6 +1476,186 @@ export const systems: Record<Application, SystemBuildUp> = {
       ),
     ],
   },
+  "Building facade": {
+    standard: "ETAG 002 / ASTM C1184 / ASTM C920",
+    steps: [
+      step(
+        "Cleaning",
+        "Surface cleaner and activator",
+        "Würth",
+        "Prepares glass and frame faces for adhesion."
+      ),
+      step(
+        "Structural glazing",
+        "GE UltraGlaze neutral silicone",
+        "GE Sealants",
+        "Bonds the glass to the frame and carries wind load."
+      ),
+      step(
+        "Weatherseal",
+        "GE SilPruf neutral silicone",
+        "GE Sealants",
+        "Seals the joints between panels against weather."
+      ),
+      step(
+        "Backer",
+        "Closed cell backer rod",
+        "Würth",
+        "Sets the joint depth and stops three-sided adhesion."
+      ),
+      step(
+        "Fixing",
+        "Würth facade anchors",
+        "Würth",
+        "Fixes brackets and frames back to the structure."
+      ),
+    ],
+  },
+  "Food packaging": {
+    standard: "FDA 21 CFR 175.105 / EU 10/2011",
+    steps: [
+      step(
+        "Case and carton sealing",
+        "Technomelt hot melt",
+        "Henkel",
+        "Closes cases and cartons at line speed."
+      ),
+      step(
+        "Flexible laminates",
+        "Loctite Liofol laminating adhesive",
+        "Henkel",
+        "Bonds films and foils in pouches and wraps."
+      ),
+      step(
+        "Labelling",
+        "Aquence labelling adhesive",
+        "Henkel",
+        "Holds labels through chilling and condensation."
+      ),
+      step(
+        "Line maintenance",
+        "Loctite threadlocker",
+        "Henkel",
+        "Keeps fillers and conveyors tight under vibration."
+      ),
+    ],
+  },
+  "Dairy and beverages": {
+    standard: "FDA 21 CFR 175.105 / EN 13813",
+    steps: [
+      step(
+        "Bottle labelling",
+        "Aquence cold glue labelling adhesive",
+        "Henkel",
+        "Holds labels on wet, chilled glass and PET."
+      ),
+      step(
+        "Multipacks and cartons",
+        "Technomelt hot melt",
+        "Henkel",
+        "Seals cartons, trays and shrink packs on the line."
+      ),
+      step(
+        "Process floors",
+        "Polybit resin flooring system",
+        "Henkel",
+        "Stands up to hot washdown, acids and traffic."
+      ),
+      step(
+        "Hygienic joints",
+        "GE sanitary silicone",
+        "GE Sealants",
+        "Seals junctions in washdown areas."
+      ),
+    ],
+  },
+  "Paper converting": {
+    standard: "FDA 21 CFR 175.105",
+    steps: [
+      step(
+        "Tube and core winding",
+        "Aquence water-based adhesive",
+        "Henkel",
+        "Bonds paper plies into strong tubes and cores."
+      ),
+      step(
+        "Bags and sacks",
+        "Aquence water-based adhesive",
+        "Henkel",
+        "Forms seams and bottoms on paper bags and sacks."
+      ),
+      step(
+        "Bookbinding",
+        "Technomelt PUR hot melt",
+        "Henkel",
+        "Binds spines that open flat and stay bound."
+      ),
+      step(
+        "Lamination",
+        "Loctite Liofol laminating adhesive",
+        "Henkel",
+        "Bonds paper to film and foil."
+      ),
+    ],
+  },
+  Mattress: {
+    standard: "Solvent-free, low-VOC grades",
+    steps: [
+      step(
+        "Foam lamination",
+        "Aquence water-based spray adhesive",
+        "Henkel",
+        "Bonds foam layers with a soft, flexible glue line."
+      ),
+      step(
+        "Spring units",
+        "Technomelt spray hot melt",
+        "Henkel",
+        "Fixes pocket springs and foam at line speed."
+      ),
+      step(
+        "Toppers and borders",
+        "Technomelt pressure-sensitive hot melt",
+        "Henkel",
+        "Holds toppers, borders and fabric in place."
+      ),
+    ],
+  },
+  Gypsum: {
+    standard: "EN 520 / EN 13963",
+    steps: [
+      step(
+        "Fixing",
+        "Würth drywall screws and cavity anchors",
+        "Würth",
+        "Fixes boards to studs and loads to the board."
+      ),
+      step(
+        "Bonding",
+        "Pattex mounting adhesive",
+        "Henkel",
+        "Bonds boards and trims without mechanical fixings."
+      ),
+      step(
+        "Priming",
+        "Ceresit primer",
+        "Henkel",
+        "Seals the board so finishes bond evenly."
+      ),
+      step(
+        "Tiling on board",
+        "Ceresit CM flexible adhesive",
+        "Henkel",
+        "Holds tiles on gypsum boards in wet areas."
+      ),
+      step(
+        "Perimeter seal",
+        "GE sealant",
+        "GE Sealants",
+        "Closes gaps at ceilings, frames and service runs."
+      ),
+    ],
+  },
 };
 
 /** Reads back as "Waterproofing for externally exposed areas". */
@@ -1462,6 +1667,8 @@ export const conditionPhrases: Record<Condition, string> = {
   "High temperature": "high-temperature service",
   "Potable water contact": "potable water contact",
   "Food contact": "food-contact areas",
+  "High line speed": "high-speed production lines",
+  "Low emission": "low-emission products",
 };
 
 export const conditionNotes: Record<Condition, string> = {
@@ -1479,6 +1686,10 @@ export const conditionNotes: Record<Condition, string> = {
     "Only the approved variants may be used. Certificates must accompany the delivery.",
   "Food contact":
     "Select the food-contact compliant grades and confirm the hygiene classification with the operator.",
+  "High line speed":
+    "Match open time and set time to the line speed, and trial on the production substrate before changeover.",
+  "Low emission":
+    "Specify the solvent-free, low-VOC grades and request emission test data for the finished product.",
 };
 
 /* ------------------------------------------------------------------ *
