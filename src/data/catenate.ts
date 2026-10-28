@@ -1784,8 +1784,11 @@ export const technicalSupport: Blurb[] = [
 export type Customer = {
   sector: string;
   name: string;
-  /** Wordmark in `public/images/logos`. */
-  logo: string;
+  /**
+   * Wordmark in `public/images/logos`. Optional: without one the wall sets
+   * the name in type, so the logo appears as soon as the asset is added.
+   */
+  logo?: string;
   /**
    * Optical correction for the logo wall. Every mark is fitted to the same
    * box, which leaves square lockups reading smaller than wide wordmarks;
@@ -1853,6 +1856,69 @@ export const customers: Customer[] = [
     name: "IFFCO Group",
     logo: logo("iffco.svg"),
     logoScale: 0.95,
+  },
+  {
+    sector: "Pipe-joining adhesives",
+    name: "Tangit",
+    logo: logo("tangit.png"),
+    logoScale: 1.15,
+  },
+  {
+    sector: "Adhesives and sealants",
+    name: "Pattex",
+    logo: logo("pattex.svg"),
+    logoScale: 1.1,
+  },
+  {
+    sector: "Hot melt adhesives",
+    name: "Technomelt",
+    logo: logo("technomelt.png"),
+    logoScale: 1.15,
+  },
+  {
+    sector: "Water-based adhesives",
+    name: "Aquence",
+    logo: logo("aquence.png"),
+    logoScale: 1.05,
+  },
+  {
+    sector: "Engineering adhesives",
+    name: "Loctite",
+    logo: logo("loctite.svg"),
+  },
+  {
+    sector: "Waterproofing",
+    name: "Polybit",
+    logo: logo("polybit.png"),
+  },
+  {
+    sector: "Wallcovering adhesives",
+    name: "Metylan",
+    logo: logo("metylan.png"),
+    logoScale: 1.1,
+  },
+  {
+    // No logo asset yet: the wall sets the name in type until one is added.
+    sector: "Solvent cements",
+    name: "EZ Weld",
+  },
+  {
+    sector: "Construction chemicals",
+    name: "Master Builders Solutions",
+    logo: logo("master-builders.svg"),
+    logoScale: 1.1,
+  },
+  {
+    sector: "Surface treatment",
+    name: "Bonderite",
+    logo: logo("bonderite.png"),
+    logoScale: 1.1,
+  },
+  {
+    sector: "Construction chemicals",
+    name: "Sika",
+    logo: logo("sika.svg"),
+    logoScale: 1.25,
   },
 ];
 

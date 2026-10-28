@@ -24,7 +24,7 @@ export function TrustedBySection() {
       <Reveal
         stagger
         step={60}
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 [&>*:nth-child(-n+2)]:border-t-0 sm:[&>*:nth-child(3)]:border-t-0 lg:[&>*:nth-child(4)]:border-t-0 lg:[&>*:nth-child(5)]:border-t-0"
+        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 [&>*:nth-child(-n+2)]:border-t-0 sm:[&>*:nth-child(3)]:border-t-0 lg:[&>*:nth-child(-n+7)]:border-t-0"
       >
         {customers.map((customer) => (
           <div
@@ -32,35 +32,34 @@ export function TrustedBySection() {
             title={`${customer.name} — ${customer.sector}`}
             className="flex items-center justify-center border-t border-ink/10 px-3 py-[clamp(22px,2.6vw,34px)]"
           >
-            <span
-              style={
-                { "--logo-scale": customer.logoScale ?? 1 } as CSSProperties
-              }
-              className="relative block h-[calc(clamp(28px,3vw,38px)*var(--logo-scale))] w-full max-w-[calc(clamp(104px,12vw,150px)*var(--logo-scale))] opacity-90 transition-opacity duration-300 ease-expo hover:opacity-100"
-            >
-              <Image
-                src={customer.logo}
-                alt={`${customer.name} logo`}
-                fill
-                sizes="150px"
-                className="object-contain"
-              />
-            </span>
+            {customer.logo ? (
+              <span
+                style={
+                  { "--logo-scale": customer.logoScale ?? 1 } as CSSProperties
+                }
+                className="relative block h-[calc(clamp(28px,3vw,38px)*var(--logo-scale))] w-full max-w-[calc(clamp(104px,12vw,150px)*var(--logo-scale))] opacity-90 transition-opacity duration-300 ease-expo hover:opacity-100"
+              >
+                <Image
+                  src={customer.logo}
+                  alt={`${customer.name} logo`}
+                  fill
+                  sizes="150px"
+                  className="object-contain"
+                />
+              </span>
+            ) : (
+              <span className="text-[clamp(15px,1.5vw,20px)] font-semibold whitespace-nowrap text-ink/80">
+                {customer.name}
+              </span>
+            )}
           </div>
         ))}
 
         {/*
-         * Ten logos leave the three-column row short; these carry its rule
-         * across the full width without adding a row at the other counts.
+         * Twenty-one logos fill the three- and seven-column rows exactly but
+         * leave the two-column row short; this carries its rule across.
          */}
-        <div
-          aria-hidden
-          className="hidden border-t border-ink/10 sm:block lg:hidden"
-        />
-        <div
-          aria-hidden
-          className="hidden border-t border-ink/10 sm:block lg:hidden"
-        />
+        <div aria-hidden className="border-t border-ink/10 sm:hidden" />
       </Reveal>
     </section>
   );
