@@ -2222,7 +2222,8 @@ export const customers: Customer[] = [
   {
     sector: "Construction",
     name: "Al Tasnim Enterprises LLC",
-    logo: logo("al-tasnim.svg"),
+    logo: logo("al-tasnim.png"),
+    logoScale: 1.45,
   },
   {
     sector: "Trading",
@@ -2257,8 +2258,8 @@ export const customers: Customer[] = [
   {
     sector: "Energy",
     name: "TotalEnergies Marketing Oman",
-    logo: logo("totalenergies.png"),
-    logoScale: 0.95,
+    logo: logo("totalenergies-transparent.png"),
+    logoScale: 1.5,
   },
   {
     sector: "Packaging",
@@ -2274,7 +2275,7 @@ export const customers: Customer[] = [
   {
     sector: "Packaging",
     name: "Falcon Pack LLC",
-    logo: logo("falcon-pack.webp"),
+    logo: logo("falcon-pack-color.png"),
   },
   {
     sector: "Printing",
