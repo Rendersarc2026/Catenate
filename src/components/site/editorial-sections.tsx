@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 
 import { Reveal } from "@/components/site/reveal";
 import { TechnicalSupportAccordion } from "@/components/site/technical-support-accordion";
@@ -8,9 +8,6 @@ import { customers, technicalSupport } from "@/data/catenate";
 export { StrengthsSection } from "./strengths-section";
 
 export function TrustedBySection() {
-  const row1 = customers.slice(0, 6);
-  const row2 = customers.slice(6);
-
   const renderLogo = (customer: (typeof customers)[number]) => (
     <div
       key={customer.name}
@@ -40,6 +37,15 @@ export function TrustedBySection() {
     </div>
   );
 
+  /*
+   * Rows of six balanced cells, with a hairline rule between rows. Any count
+   * flows; a short final row is centred, exactly like the old two-row layout.
+   */
+  const rows: Array<Array<(typeof customers)[number]>> = [];
+  for (let i = 0; i < customers.length; i += 6) {
+    rows.push(customers.slice(i, i + 6));
+  }
+
   return (
     <section id="customers" className="section bg-white">
       <Reveal className="mb-[clamp(28px,4vw,52px)] text-center">
@@ -48,19 +54,20 @@ export function TrustedBySection() {
         </h2>
       </Reveal>
 
-      {/* Desktop view (lg and above): two balanced rows (6 + 5 centered) with a full hairline rule */}
+      {/* Desktop view (lg and above): rows of six over full hairline rules */}
       <div className="hidden lg:block">
-        <Reveal stagger step={60} className="grid grid-cols-6">
-          {row1.map(renderLogo)}
-        </Reveal>
-        <div className="border-t border-ink/10" />
-        <Reveal stagger step={60} className="flex justify-center items-center">
-          {row2.map((c) => (
-            <div key={c.name} className="w-1/6">
-              {renderLogo(c)}
-            </div>
-          ))}
-        </Reveal>
+        {rows.map((row, rowIndex) => (
+          <Fragment key={rowIndex}>
+            {rowIndex > 0 && <div className="border-t border-ink/10" />}
+            <Reveal stagger step={60} className="flex justify-center items-center">
+              {row.map((c) => (
+                <div key={c.name} className="w-1/6">
+                  {renderLogo(c)}
+                </div>
+              ))}
+            </Reveal>
+          </Fragment>
+        ))}
       </div>
 
       {/* Mobile and tablet view (< lg): responsive multi-column grid */}

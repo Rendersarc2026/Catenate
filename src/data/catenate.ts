@@ -2219,6 +2219,68 @@ export const customers: Customer[] = [
     logo: logo("iffco.svg"),
     logoScale: 0.95,
   },
+  {
+    sector: "Construction",
+    name: "Al Tasnim Enterprises LLC",
+    logo: logo("al-tasnim.svg"),
+  },
+  {
+    sector: "Trading",
+    name: "W. J. Towell & Co. LLC",
+    logo: logo("towell.png"),
+  },
+  {
+    sector: "Contracting",
+    name: "Al Adrak Trading & Contracting LLC",
+    logo: logo("al-adrak.png"),
+  },
+  {
+    sector: "Contracting",
+    name: "Sarooj Construction Company LLC",
+    logo: logo("sarooj.png"),
+  },
+  {
+    sector: "Food and beverage",
+    name: "Mazoon Dairy Company",
+    logo: logo("mazoon-dairy.png"),
+  },
+  {
+    sector: "Food and beverage",
+    name: "Areej Vegetable Oils & Derivatives SAOC",
+    logo: logo("areej.png"),
+  },
+  {
+    sector: "Food and beverage",
+    name: "A'Saffa Foods SAOC",
+    logo: logo("asaffa.png"),
+  },
+  {
+    sector: "Energy",
+    name: "TotalEnergies Marketing Oman",
+    logo: logo("totalenergies.png"),
+    logoScale: 0.95,
+  },
+  {
+    sector: "Packaging",
+    name: "Hotpack Global",
+    logo: logo("hotpack.png"),
+  },
+  {
+    sector: "FMCG",
+    name: "Alokozay Group of Companies",
+    logo: logo("alokozay.png"),
+    logoScale: 1.1,
+  },
+  {
+    sector: "Packaging",
+    name: "Falcon Pack LLC",
+    logo: logo("falcon-pack.webp"),
+  },
+  {
+    sector: "Printing",
+    name: "Emirates Printing Press LLC",
+    logo: logo("emirates-printing-press.png"),
+  },
 ];
 
 export const contactCards = [
