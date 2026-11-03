@@ -233,7 +233,8 @@ export function Hero() {
 
       {/* 3. Stats row, sat in the dark band above the limb rather than on it.
           Same vw sizing as the headline, so the numbers hold their size under
-          browser zoom; the max-[720px] overrides keep the old phone sizes. */}
+          browser zoom; the max-[720px] overrides keep the old phone sizes.
+          The labels alone sit 1.5x their original size, by design. */}
       <div
         className="hero-fade relative z-10 mx-auto grid w-full max-w-[1220px] shrink-0 grid-cols-4 max-[720px]:grid-cols-2 max-[720px]:gap-y-5"
         style={{ marginBottom: "calc(var(--earth-arc) + 4.5vh)" }}
@@ -246,7 +247,7 @@ export function Hero() {
             <b className="tnum block font-heading text-[clamp(1.25rem,1.575vw,2.1rem)] max-[720px]:text-[2.1rem] leading-none font-light tracking-[-0.03em] text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)]">
               {stat.value}
             </b>
-            <span className="mt-2 block text-[clamp(7px,0.47vw,10px)] max-[720px]:text-[10px] tracking-[0.18em] text-white/50 uppercase font-normal [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
+            <span className="mt-2 block text-[clamp(7px,0.705vw,15px)] max-[720px]:text-[10px] tracking-[0.18em] text-white/50 uppercase font-normal [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
               {stat.label}
             </span>
           </div>
