@@ -19,9 +19,9 @@ const PARALLAX_Y = 10;
  * anchored to the bottom edge, so the planet sits along the foot of the window
  * and the sky above it is carried on by the star field below.
  */
-const IMG_W = 3762;
-const IMG_H = 1672;
-const CROWN = 0.2398;
+const IMG_W = 1880;
+const IMG_H = 837;
+const CROWN = 0.398;
 
 /*
  * Height of the crown above the bottom of the section. The picture is held by
@@ -229,7 +229,7 @@ export function Hero() {
       {/* 3. Stats row, sat in the dark band above the limb rather than on it. */}
       <div
         className="hero-fade relative z-10 mx-auto grid w-full max-w-[1220px] shrink-0 grid-cols-4 max-[720px]:grid-cols-2 max-[720px]:gap-y-5"
-        style={{ marginBottom: "calc(var(--earth-arc) + 3vh)" }}
+        style={{ marginBottom: "calc(var(--earth-arc) + 4.5vh)" }}
       >
         {hero.stats.map((stat) => (
           <div
