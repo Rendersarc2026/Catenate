@@ -209,11 +209,11 @@ export function Hero() {
       {/* 2. Eyebrow and headline, centred in the open sky above the limb. */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center">
         <div ref={mouseParallaxRef} className="will-change-transform">
-          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-center text-[10px] sm:text-[11px] font-normal tracking-[0.18em] uppercase text-white/55 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
+          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-center text-[11px] font-normal tracking-[0.18em] uppercase text-white/55 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
             {hero.eyebrow}
           </p>
 
-          <h1 className="mx-auto text-[clamp(2rem,4vw,3.5rem)] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.7),0_6px_38px_rgba(0,0,0,0.8)]">
+          <h1 className="mx-auto text-[2rem] sm:text-[3.5rem] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.7),0_6px_38px_rgba(0,0,0,0.8)]">
             {hero.headlineLines.map((line) => (
               <span
                 key={line}
@@ -236,7 +236,7 @@ export function Hero() {
             key={stat.label}
             className="border-l border-white/12 px-4 py-1 text-center first:border-l-0 max-[720px]:nth-3:border-l-0"
           >
-            <b className="tnum block font-heading text-[clamp(1.5rem,2.6vw,2.1rem)] leading-none font-light tracking-[-0.03em] text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)]">
+            <b className="tnum block font-heading text-[2.1rem] leading-none font-light tracking-[-0.03em] text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)]">
               {stat.value}
             </b>
             <span className="mt-2 block text-[10px] tracking-[0.18em] text-white/50 uppercase font-normal [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
