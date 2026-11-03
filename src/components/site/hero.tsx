@@ -206,14 +206,19 @@ export function Hero() {
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/80 via-black/25 to-transparent" />
       </div>
 
-      {/* 2. Eyebrow and headline, centred in the open sky above the limb. */}
+      {/* 2. Eyebrow and headline, centred in the open sky above the limb.
+          Both are sized in vw, not rem: page zoom multiplies rem/px text by
+          the zoom factor while vw text keeps the same physical size at every
+          zoom level. The fractions are the hero's sizes on a 1920px window;
+          the clamp floors/ceilings are the old mobile and wide-screen sizes,
+          so only the desktop middle becomes zoom-constant. */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center">
         <div ref={mouseParallaxRef} className="will-change-transform">
-          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-center text-[11px] font-normal tracking-[0.18em] uppercase text-white/55 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
+          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-center text-[clamp(8px,0.52vw,11px)] font-normal tracking-[0.18em] uppercase text-white/55 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
             {hero.eyebrow}
           </p>
 
-          <h1 className="mx-auto text-[2rem] sm:text-[3.5rem] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.7),0_6px_38px_rgba(0,0,0,0.8)]">
+          <h1 className="mx-auto text-[clamp(2rem,2.625vw,3.5rem)] leading-[1.18] font-light tracking-[-0.022em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.7),0_6px_38px_rgba(0,0,0,0.8)]">
             {hero.headlineLines.map((line) => (
               <span
                 key={line}
@@ -226,7 +231,9 @@ export function Hero() {
         </div>
       </div>
 
-      {/* 3. Stats row, sat in the dark band above the limb rather than on it. */}
+      {/* 3. Stats row, sat in the dark band above the limb rather than on it.
+          Same vw sizing as the headline, so the numbers hold their size under
+          browser zoom; the max-[720px] overrides keep the old phone sizes. */}
       <div
         className="hero-fade relative z-10 mx-auto grid w-full max-w-[1220px] shrink-0 grid-cols-4 max-[720px]:grid-cols-2 max-[720px]:gap-y-5"
         style={{ marginBottom: "calc(var(--earth-arc) + 4.5vh)" }}
@@ -236,10 +243,10 @@ export function Hero() {
             key={stat.label}
             className="border-l border-white/12 px-4 py-1 text-center first:border-l-0 max-[720px]:nth-3:border-l-0"
           >
-            <b className="tnum block font-heading text-[2.1rem] leading-none font-light tracking-[-0.03em] text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)]">
+            <b className="tnum block font-heading text-[clamp(1.25rem,1.575vw,2.1rem)] max-[720px]:text-[2.1rem] leading-none font-light tracking-[-0.03em] text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)]">
               {stat.value}
             </b>
-            <span className="mt-2 block text-[10px] tracking-[0.18em] text-white/50 uppercase font-normal [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
+            <span className="mt-2 block text-[clamp(7px,0.47vw,10px)] max-[720px]:text-[10px] tracking-[0.18em] text-white/50 uppercase font-normal [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
               {stat.label}
             </span>
           </div>
