@@ -25,7 +25,7 @@ export const images = {
    * crown a little under halfway up — or the constants there have to move with
    * it.
    */
-  heroEarth: "/images/hero-earth.webp",
+  heroEarth: "/images/hero-earth-v2.webp",
   /** Sector photography, keyed by the slug on each `Industry`. */
   industry: (slug: string) => `/images/industries/${slug}.jpg`,
   project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),
