@@ -211,10 +211,11 @@ export function Hero() {
           the zoom factor while vw text keeps the same physical size at every
           zoom level. The fractions are the hero's sizes on a 1920px window;
           the clamp floors/ceilings are the old mobile and wide-screen sizes,
-          so only the desktop middle becomes zoom-constant. */}
+          so only the desktop middle becomes zoom-constant. The eyebrow alone
+          sits 1.5x its original size, by design. */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center">
         <div ref={mouseParallaxRef} className="will-change-transform">
-          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-center text-[clamp(8px,0.52vw,11px)] font-normal tracking-[0.18em] uppercase text-white/55 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
+          <p className="hero-fade mx-auto mb-5 max-w-[34ch] sm:max-w-none text-center text-[clamp(8px,0.78vw,16.5px)] font-normal tracking-[0.18em] uppercase text-white/55 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
             {hero.eyebrow}
           </p>
 
