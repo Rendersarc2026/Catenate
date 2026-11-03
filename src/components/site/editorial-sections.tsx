@@ -8,6 +8,38 @@ import { customers, technicalSupport } from "@/data/catenate";
 export { StrengthsSection } from "./strengths-section";
 
 export function TrustedBySection() {
+  const row1 = customers.slice(0, 6);
+  const row2 = customers.slice(6);
+
+  const renderLogo = (customer: (typeof customers)[number]) => (
+    <div
+      key={customer.name}
+      title={`${customer.name} — ${customer.sector}`}
+      className="flex items-center justify-center px-3 py-[clamp(22px,2.6vw,34px)]"
+    >
+      {customer.logo ? (
+        <span
+          style={
+            { "--logo-scale": customer.logoScale ?? 1 } as CSSProperties
+          }
+          className="relative block h-[calc(clamp(28px,3vw,38px)*var(--logo-scale))] w-full max-w-[calc(clamp(104px,12vw,150px)*var(--logo-scale))] opacity-90 transition-opacity duration-300 ease-expo hover:opacity-100"
+        >
+          <Image
+            src={customer.logo}
+            alt={`${customer.name} logo`}
+            fill
+            sizes="150px"
+            className="object-contain"
+          />
+        </span>
+      ) : (
+        <span className="text-[clamp(15px,1.5vw,20px)] font-semibold whitespace-nowrap text-ink/80">
+          {customer.name}
+        </span>
+      )}
+    </div>
+  );
+
   return (
     <section id="customers" className="section bg-white">
       <Reveal className="mb-[clamp(28px,4vw,52px)] text-center">
@@ -16,50 +48,32 @@ export function TrustedBySection() {
         </h2>
       </Reveal>
 
-      {/*
-       * Hairlines run between logo rows only; the first row of each
-       * breakpoint drops its rule. Column counts only ever grow with the
-       * viewport, so the exemptions stack rather than fight each other.
-       */}
+      {/* Desktop view (lg and above): two balanced rows (6 + 5 centered) with a full hairline rule */}
+      <div className="hidden lg:block">
+        <Reveal stagger step={60} className="grid grid-cols-6">
+          {row1.map(renderLogo)}
+        </Reveal>
+        <div className="border-t border-ink/10" />
+        <Reveal stagger step={60} className="flex justify-center items-center">
+          {row2.map((c) => (
+            <div key={c.name} className="w-1/6">
+              {renderLogo(c)}
+            </div>
+          ))}
+        </Reveal>
+      </div>
+
+      {/* Mobile and tablet view (< lg): responsive multi-column grid */}
       <Reveal
         stagger
         step={60}
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 [&>*:nth-child(-n+2)]:border-t-0 sm:[&>*:nth-child(3)]:border-t-0 lg:[&>*:nth-child(-n+7)]:border-t-0"
+        className="grid grid-cols-2 sm:grid-cols-3 lg:hidden [&>*:nth-child(-n+2)]:border-t-0 sm:[&>*:nth-child(3)]:border-t-0"
       >
         {customers.map((customer) => (
-          <div
-            key={customer.name}
-            title={`${customer.name} — ${customer.sector}`}
-            className="flex items-center justify-center border-t border-ink/10 px-3 py-[clamp(22px,2.6vw,34px)]"
-          >
-            {customer.logo ? (
-              <span
-                style={
-                  { "--logo-scale": customer.logoScale ?? 1 } as CSSProperties
-                }
-                className="relative block h-[calc(clamp(28px,3vw,38px)*var(--logo-scale))] w-full max-w-[calc(clamp(104px,12vw,150px)*var(--logo-scale))] opacity-90 transition-opacity duration-300 ease-expo hover:opacity-100"
-              >
-                <Image
-                  src={customer.logo}
-                  alt={`${customer.name} logo`}
-                  fill
-                  sizes="150px"
-                  className="object-contain"
-                />
-              </span>
-            ) : (
-              <span className="text-[clamp(15px,1.5vw,20px)] font-semibold whitespace-nowrap text-ink/80">
-                {customer.name}
-              </span>
-            )}
+          <div key={customer.name} className="border-t border-ink/10">
+            {renderLogo(customer)}
           </div>
         ))}
-
-        {/*
-         * Twenty-one logos fill the three- and seven-column rows exactly but
-         * leave the two-column row short; this carries its rule across.
-         */}
-        <div aria-hidden className="border-t border-ink/10 sm:hidden" />
       </Reveal>
     </section>
   );

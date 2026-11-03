@@ -2197,6 +2197,12 @@ export const customers: Customer[] = [
     logo: logo("oman-refreshment.png"),
   },
   {
+    sector: "Food and beverage",
+    name: "Oasis Water Company SAOC",
+    logo: logo("oman-oasis.png"),
+    logoScale: 1.15,
+  },
+  {
     sector: "Manufacturing",
     name: "Unilever Home & Personal Care Products Mfg LLC",
     logo: logo("unilever.svg"),
@@ -2212,69 +2218,6 @@ export const customers: Customer[] = [
     name: "IFFCO Group",
     logo: logo("iffco.svg"),
     logoScale: 0.95,
-  },
-  {
-    sector: "Pipe-joining adhesives",
-    name: "Tangit",
-    logo: logo("tangit.png"),
-    logoScale: 1.15,
-  },
-  {
-    sector: "Adhesives and sealants",
-    name: "Pattex",
-    logo: logo("pattex.svg"),
-    logoScale: 1.1,
-  },
-  {
-    sector: "Hot melt adhesives",
-    name: "Technomelt",
-    logo: logo("technomelt.png"),
-    logoScale: 1.15,
-  },
-  {
-    sector: "Water-based adhesives",
-    name: "Aquence",
-    logo: logo("aquence.png"),
-    logoScale: 1.05,
-  },
-  {
-    sector: "Engineering adhesives",
-    name: "Loctite",
-    logo: logo("loctite.svg"),
-  },
-  {
-    sector: "Waterproofing",
-    name: "Polybit",
-    logo: logo("polybit.png"),
-  },
-  {
-    sector: "Wallcovering adhesives",
-    name: "Metylan",
-    logo: logo("metylan.png"),
-    logoScale: 1.1,
-  },
-  {
-    // No logo asset yet: the wall sets the name in type until one is added.
-    sector: "Solvent cements",
-    name: "EZ Weld",
-  },
-  {
-    sector: "Construction chemicals",
-    name: "Master Builders Solutions",
-    logo: logo("master-builders.svg"),
-    logoScale: 1.1,
-  },
-  {
-    sector: "Surface treatment",
-    name: "Bonderite",
-    logo: logo("bonderite.png"),
-    logoScale: 1.1,
-  },
-  {
-    sector: "Construction chemicals",
-    name: "Sika",
-    logo: logo("sika.svg"),
-    logoScale: 1.25,
   },
 ];
 
