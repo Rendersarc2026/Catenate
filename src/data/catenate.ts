@@ -2244,11 +2244,13 @@ export const customers: Customer[] = [
     sector: "Food and beverage",
     name: "Mazoon Dairy Company",
     logo: logo("mazoon-dairy.png"),
+    logoScale: 1.5,
   },
   {
     sector: "Food and beverage",
     name: "Areej Vegetable Oils & Derivatives SAOC",
     logo: logo("areej.png"),
+    logoScale: 1.4,
   },
   {
     sector: "Food and beverage",
