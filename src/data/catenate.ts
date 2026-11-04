@@ -2272,7 +2272,7 @@ export const customers: Customer[] = [
     sector: "FMCG",
     name: "Alokozay Group of Companies",
     logo: logo("alokozay.png"),
-    logoScale: 1.8,
+    logoScale: 1.4,
   },
   {
     sector: "Packaging",
