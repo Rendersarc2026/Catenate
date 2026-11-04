@@ -19,7 +19,7 @@ export function TechnologyIndustries() {
       className="section scroll-mt-nav bg-white text-ink"
       aria-labelledby="industries-title"
     >
-      <Reveal className="mb-[clamp(28px,4vw,52px)] max-w-[46ch]">
+      <Reveal className="mx-auto mb-[clamp(28px,4vw,52px)] max-w-[46ch] text-center">
         <span className="eyebrow text-ink opacity-100">Across industries</span>
         <h2
           id="industries-title"
@@ -29,7 +29,7 @@ export function TechnologyIndustries() {
           <br />
           many industries.
         </h2>
-        <p className="lead mt-5 max-w-[42ch] leading-[1.6] max-md:text-[16px]">
+        <p className="lead mx-auto mt-5 max-w-[42ch] leading-[1.6] max-md:text-[16px]">
           From glass facades and oil fields to solar modules and bus bodies,
           our principals&apos; ranges are specified wherever performance
           matters.
