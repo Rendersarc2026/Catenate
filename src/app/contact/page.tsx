@@ -15,7 +15,7 @@ export default function ContactPage() {
     <>
       <SiteHeader />
 
-      <main id="content" className="pt-nav bg-white">
+      <main id="content" className="bg-white">
         <ContactPageView />
       </main>
 

@@ -4,6 +4,8 @@
 @import "lenis/dist/lenis.css";
 
 @custom-variant dark (&:is(.dark *));
+/* Screens big enough to show a section in one viewport (tablet portrait and up, not short landscape phones). */
+@custom-variant fit (@media (min-width: 48rem) and (min-height: 35rem));
 
 /* ============================================================
    CATENATE DESIGN TOKENS
@@ -161,6 +163,14 @@
       var(--section-pad),
       calc((100% - var(--content-max)) / 2)
     );
+  }
+
+  /* A section that fills exactly one screen on `fit` screens. vh first for browsers without dvh. */
+  @media (min-width: 48rem) and (min-height: 35rem) {
+    .screen-fit {
+      height: 100vh;
+      height: 100dvh;
+    }
   }
 
   .section {
