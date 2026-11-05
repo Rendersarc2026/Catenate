@@ -88,7 +88,10 @@ function BrandMark({
   open: boolean
   className?: string
 }) {
-  const source = brand.logoWhite ?? brand.logo
+  const source =
+    brand.slug === "wurth"
+      ? "/images/logos/wurth-dark.svg"
+      : (brand.logo ?? brand.logoWhite)
 
   if (!source) {
     return (

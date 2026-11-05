@@ -21,9 +21,10 @@ type MarkProps = React.ComponentProps<"svg"> & {
 export function BrandMark({ tone = "color", className, ...props }: MarkProps) {
   /* Gradient ids are document-wide, so each instance needs its own. */
   const id = React.useId()
-  const crescent = `${id}-crescent`
-  const sheen = `${id}-sheen`
-  const inner = `${id}-inner`
+  const safeId = id.replace(/[^a-zA-Z0-9_-]/g, "") || "brand-mark"
+  const crescent = `${safeId}-crescent`
+  const sheen = `${safeId}-sheen`
+  const inner = `${safeId}-inner`
   const mono = tone === "mono"
 
   return (

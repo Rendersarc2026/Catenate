@@ -150,8 +150,7 @@ export function SiteHeader() {
               isDarkNav && !open ? "text-white" : "text-ink"
             )}
           >
-            {/* Over the dark hero the gradient mark loses its deep blues, so it goes one-colour. */}
-            <BrandLogo tone={isDarkNav && !open ? "mono" : "color"} />
+            <BrandLogo tone="color" />
           </Link>
         </div>
 

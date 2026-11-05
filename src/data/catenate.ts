@@ -139,6 +139,12 @@ export const megaMenu: MegaSection[] = [
       "Become a partner",
     ],
   },
+  {
+    key: "contact",
+    navLabel: "Contact",
+    label: "Contact Us",
+    href: "/contact",
+  },
 ];
 
 /* ------------------------------------------------------------------ *

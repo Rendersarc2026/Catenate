@@ -68,7 +68,7 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
          */}
         <article className="content-pad pt-[clamp(36px,5vw,72px)] pb-[clamp(64px,8vw,120px)]">
           <div className="grid grid-cols-1 gap-x-[clamp(32px,5vw,80px)] md:grid-cols-2">
-            <Reveal className="md:col-start-2">
+            <Reveal className="md:col-span-2">
               <Link
                 href="/projects"
                 className="inline-flex items-center gap-1.5 text-[12px] text-grey transition-colors hover:text-ink"
