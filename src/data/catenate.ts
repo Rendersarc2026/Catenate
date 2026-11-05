@@ -2130,6 +2130,10 @@ export const technicalSupport: Blurb[] = [
     body: "Substrate moisture, pull-off and surface profile readings taken before a system is confirmed.",
   },
   {
+    title: "Expert solution consulting",
+    body: "Tailored technical guidance to identify the right products and systems for each project's specific requirements, ensuring performance, compatibility and long-term reliability.",
+  },
+  {
     title: "System specification",
     body: "Written build-ups with product references, consumption rates and sequence for the main contractor.",
   },

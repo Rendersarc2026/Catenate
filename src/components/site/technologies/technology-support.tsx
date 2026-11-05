@@ -36,7 +36,7 @@ export function TechnologySupport() {
 
           {/* Stacked, each item sets its number in a gutter beside the copy so
               the list reads as one column of rows rather than loose blocks. */}
-          <div className="mt-[clamp(28px,4vw,52px)] grid gap-x-9 sm:grid-cols-2 sm:gap-y-8 lg:grid-cols-4">
+          <div className="mt-[clamp(28px,4vw,52px)] grid gap-x-9 sm:grid-cols-2 sm:gap-y-8 md:grid-cols-3 lg:grid-cols-5">
             {technicalSupport.map((item, index) => (
               <Reveal
                 key={item.title}

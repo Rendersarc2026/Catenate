@@ -18,7 +18,7 @@ interface TechnicalSupportAccordionProps {
 
 /**
  * Dropdown disclosure for "What comes with the delivery."
- * Clicking the header or arrow toggles the 4 delivery values into view.
+ * Clicking the header or arrow toggles the delivery values into view.
  * Each item inside then serves as its own disclosure for detailed scope notes.
  */
 export function TechnicalSupportAccordion({
