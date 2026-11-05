@@ -133,7 +133,7 @@ export function ContactPageView() {
   }, [activeBranch]);
 
   const selectLocationAndBranch = React.useCallback(
-    (locId: string, branchId?: string, scrollToFinder = false) => {
+    (locId: string, branchId?: string) => {
       const loc = CONTACT_LOCATIONS.find((l) => l.id === locId);
       if (!loc) return;
       setSelectedLocId(locId);
@@ -142,10 +142,8 @@ export function ContactPageView() {
           ? selectedBranchId
           : loc.branches[0].id);
       setSelectedBranchId(targetBranchId);
-
-      if (scrollToFinder) scrollToBranches();
     },
-    [selectedBranchId, scrollToBranches]
+    [selectedBranchId]
   );
 
   // Keyboard navigation for tabs
@@ -534,41 +532,6 @@ export function ContactPageView() {
             )}
           </div>
         </div>
-      </section>
-
-      {/* NETWORK STRIP */}
-      <section className="w-full border-t border-[#E3E6EF] bg-[#FAFAFC]">
-        <nav
-          aria-label="All locations"
-          className="content-pad grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {CONTACT_LOCATIONS.map((loc, idx) => {
-            const isSelected = loc.id === selectedLocId;
-            const uniqueCities = Array.from(new Set(loc.branches.map((b) => b.city))).join(", ");
-
-            return (
-              <button
-                key={loc.id}
-                type="button"
-                onClick={() => selectLocationAndBranch(loc.id, undefined, true)}
-                className={`py-8 sm:py-9 px-4 sm:px-6 md:px-8 text-left transition cursor-pointer border-b sm:border-b-0 border-[#E3E6EF] lg:border-r last:border-r-0 hover:bg-[#F4F5F9] focus-visible:outline-3 focus-visible:outline-[#F2A541] ${
-                  isSelected ? "bg-white sm:bg-white shadow-sm" : "bg-transparent"
-                }`}
-              >
-                <span className="block text-[12px] font-semibold tracking-[0.1em] text-[#5D6382]">
-                  0{idx + 1} · {loc.region}
-                </span>
-                <strong className="mt-1.5 mb-0.5 block text-[20px] font-semibold tracking-[-0.01em] text-[#1B2A7A]">
-                  {loc.country === "United Arab Emirates" ? "UAE" : loc.country}
-                </strong>
-                <span className="block text-[13px] text-[#5D6382]">
-                  {uniqueCities}
-                  {loc.branches.length > 1 ? ` · ${loc.branches.length} branches` : ""}
-                </span>
-              </button>
-            );
-          })}
-        </nav>
       </section>
 
       {/* ENQUIRY SECTION */}
