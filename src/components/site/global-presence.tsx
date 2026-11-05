@@ -8,25 +8,24 @@ import { presence, regions } from "@/data/catenate"
 
 export function GlobalPresence() {
   /*
-   * The region slider renders with consistent margins and rounded corners.
-   * The foot repeats the slider's own side gutter step for step, so the
-   * picture sits in an even margin rather than trailing a wide white band.
+   * The section fits exactly inside one viewport height (100dvh / 100vh)
+   * arranged in a vertical flex column: the heading block clears the fixed
+   * navbar and takes its natural height, while the region card flexes to fill
+   * the exact remaining height without overflowing or requiring inner scroll.
    */
   return (
     <section
       id="presence"
-      className="section section-flush !pt-0 !pb-4 sm:!pb-6 md:!pb-8 lg:!pb-10 bg-white text-ink overflow-hidden"
+      className="relative box-border flex h-screen h-[100dvh] w-full flex-col overflow-hidden bg-white text-ink snap-start !scroll-mt-0"
     >
-      <Reveal className="content-pad flex flex-col items-start py-[clamp(56px,6.5vw,88px)] text-left">
+      <Reveal className="content-pad flex flex-none flex-col items-start pt-[calc(var(--nav-height)+clamp(4px,0.8vh,12px))] pb-[clamp(6px,1.2vh,14px)] text-left">
         <span className="eyebrow">{presence.eyebrow}</span>
-        <h2 className="max-w-[32ch] text-balance text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.2] font-medium tracking-[-0.015em] text-ink">
+        <h2 className="max-w-none text-balance text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.18] font-medium tracking-[-0.015em] text-ink">
           {presence.heading}
         </h2>
       </Reveal>
 
-      <Reveal className="px-4 sm:px-6 md:px-8 lg:px-10">
-        {/* The figures ride the foot of the picture rather than sitting under
-            it, so the stage reads as one frame. */}
+      <Reveal className="content-pad flex flex-1 min-h-0 w-full flex-col pb-[clamp(10px,1.6vh,24px)]">
         <RegionSlider
           regions={regions}
           footer={presence.stats.map((stat) => (
