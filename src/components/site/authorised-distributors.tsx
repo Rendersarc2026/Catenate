@@ -5,7 +5,6 @@ import Link from "next/link"
 import * as React from "react"
 
 import { brands, type Brand } from "@/data/catenate"
-import { jumpTo } from "@/lib/scroll-jump"
 import { createScrollTrack } from "@/lib/scroll-track"
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
@@ -14,70 +13,51 @@ import { cn } from "@/lib/utils"
  * Authorised distributors — the principals read as one row of marks on a dark
  * field.
  *
- * The section is pinned while it is read:
- * 1. The heading rises into the field.
+ * 1. As the section scrolls into view, the heading rises into the field.
  * 2. The marks arrive one after another, left to right.
- * 3. Once the last one has landed, the row is armed: one column is always
- *    open, and its detail hangs underneath the mark it belongs to.
- * 4. The rest of the track walks the open column across every mark in turn,
- *    so the section only lets go once each principal has been read.
+ * 3. Once the last one has landed, the row is armed: hovering (or focusing, or
+ *    tapping) a mark opens its detail underneath it.
+ *
+ * Nothing is pinned — the arrival plays over the scroll that brings the section
+ * in, and the reader moves straight on once it has.
  */
 
-/** Viewport heights of scroll for the arrival, and for each mark after it. */
-const INTRO_VH = 100
-const STEP_VH = 60
-const TRACK_VH = INTRO_VH + STEP_VH * brands.length
-/** Share of the track spent on the arrival; the rest steps through the marks. */
-const INTRO = INTRO_VH / TRACK_VH
+/*
+ * The arrival runs while the section's top travels from ARRIVE_START_VH down
+ * the viewport to ARRIVE_END_VH — so it plays where the content can be seen,
+ * and has finished once the section fills the screen. The scroll track
+ * measures progress through a tall element, so an invisible span covering
+ * exactly that stretch stands in for one: it sits ARRIVE_START_VH above the
+ * section and is as tall as the scroll the arrival takes plus one viewport.
+ */
+const ARRIVE_START_VH = 80
+const ARRIVE_END_VH = 0
+const PROBE_TOP_VH = -ARRIVE_START_VH
+const PROBE_HEIGHT_VH = 100 + ARRIVE_START_VH - ARRIVE_END_VH
 
-/* The arrival beats below are fractions of the intro, not of the whole track. */
+/* The arrival beats below are fractions of that stretch. */
 
 /** Where the heading has fully arrived. */
 const HEAD_IN = 0.3
 /** Where the first mark starts arriving. */
 const MARKS_START = 0.2
-/** Share of the intro between one mark arriving and the next. */
+/** Share of the arrival between one mark arriving and the next. */
 const MARK_STAGGER = 0.1
 /** How long a single mark takes to land. */
 const MARK_SPAN = 0.3
-/** Intro progress past which the row is settled enough to accept the pointer. */
+/** Progress past which the row is settled enough to accept the pointer. */
 const ARM_AT = MARKS_START + MARK_STAGGER * (brands.length - 1) + MARK_SPAN
 
-/** Track progress at the middle of a column's stretch of scroll. */
-const progressFor = (index: number) =>
-  INTRO + ((index + 0.5) / brands.length) * (1 - INTRO)
+const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 
-/** The column the scroll has reached, once the intro is over. */
-const stepAt = (p: number) =>
-  Math.min(
-    Math.floor((Math.max(p - INTRO, 0) / (1 - INTRO)) * brands.length),
-    brands.length - 1
-  )
-
-/** The column that is open before the scroll reaches the marks. */
-const DEFAULT_OPEN = 0
-
-/*
- * The section's anchor does not sit at its top. The track opens on 100vh of
- * arrival — a heading and five marks at opacity 0 — so a link to the top of it
- * lands on an empty black field and the reader has to scroll before anything
- * is there. The anchor is placed at the point the row is armed and the first
- * mark is open instead, which is what a link to this section means. The
- * scrollable part of the track is TRACK_VH tall, so a child at this offset
- * scrolls to the same place `pick(0)` jumps to.
- */
-const ANCHOR_VH = TRACK_VH * (INTRO + (0.5 / brands.length) * (1 - INTRO))
+/** easeOutCubic — for arriving elements to decelerate into place. */
+const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 
 /*
  * How much larger the open mark stands against its neighbours. Stacked rows
  * sit closer together, so the lift is held back until the row is one line.
  */
 const OPEN_SCALE = "scale-[1.35] md:scale-[1.8]"
-
-const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
-
-/** easeOutCubic — for arriving elements to decelerate into place. */
-const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 
 function BrandMark({
   brand,
@@ -118,11 +98,8 @@ function BrandMark({
 }
 
 /*
- * Group rows the pinned column has room for before it has to summarise. The
- * panel hangs off the row on `absolute top-full`, so nothing in the layout can
- * bound it: on a short viewport the section's own `h-dvh` clip is all that
- * stops it, and it would run under the section below. Four rows plus the tail
- * clear the shortest viewport the row itself is shown on.
+ * Group rows the panel shows before it summarises. The panel hangs off the row
+ * on `absolute top-full`, so the section reserves room for this many rows.
  */
 const DETAIL_ROWS = 4
 
@@ -154,11 +131,10 @@ function BrandDetail({ brand }: { brand: Brand }) {
       </ul>
 
       {/*
-       * The column is pinned, so every principal has to cost the same height
-       * however deep its portfolio runs. The rest of the families — and the
-       * markets they are qualified for — are on the principal's own page,
-       * which is also the only way into the detail from a phone, where the
-       * list above is not shown at all.
+       * Every principal costs the same height however deep its portfolio
+       * runs. The rest of the families are on the principal's own page, which
+       * is also the only way into them from a phone, where the list above is
+       * not shown at all.
        */}
       <Link
         href={`/brands/${brand.slug}`}
@@ -180,33 +156,19 @@ function BrandDetail({ brand }: { brand: Brand }) {
 type FieldProps = {
   /** Set until the marks have landed, so the row ignores the pointer. */
   idle?: boolean
-  /** The column the scroll has opened. */
-  step?: number
-  /**
-   * Moves the scroll to a column, so reading carries on from the one picked.
-   * Left out where nothing is pinned, and the row keeps its own pick instead.
-   */
-  onPick?: (index: number) => void
   headingRef?: React.Ref<HTMLHeadingElement>
   columnRef?: (index: number) => (element: HTMLDivElement | null) => void
 }
 
-function Field({
-  idle = false,
-  step,
-  onPick,
-  headingRef,
-  columnRef,
-}: FieldProps) {
-  const [picked, setPicked] = React.useState(DEFAULT_OPEN)
-  const open = step ?? picked
-  const setOpen = onPick ?? setPicked
+function Field({ idle = false, headingRef, columnRef }: FieldProps) {
+  /** The mark whose detail is open on a wide screen; none until one is hovered. */
+  const [active, setActive] = React.useState<number | null>(null)
+  /** The mark on stage on a phone. */
+  const [picked, setPicked] = React.useState(0)
   const last = brands.length - 1
 
   return (
-    <div
-      className={cn("content-pad w-full", idle && "pointer-events-none")}
-    >
+    <div className={cn("content-pad w-full", idle && "pointer-events-none")}>
       <h2
         ref={headingRef}
         className="text-center text-balance text-[clamp(1.8rem,3.8vw,3.4rem)] leading-[1.1] font-light tracking-[-0.03em] will-change-[opacity,transform]"
@@ -214,22 +176,32 @@ function Field({
         Authorised Distributor of
       </h2>
 
-      <div className="mx-auto mt-[clamp(56px,16vh,200px)] flex items-center justify-center gap-[clamp(20px,8vw,140px)] max-md:hidden">
+      {/* The bottom padding is the room the open panel hangs into. */}
+      <div
+        className="mx-auto mt-[clamp(56px,12vh,160px)] flex items-center justify-center gap-[clamp(20px,8vw,140px)] pb-[clamp(300px,38vh,340px)] max-md:hidden"
+        onMouseLeave={() => setActive(null)}
+      >
         {brands.map((brand, index) => {
-          const isOpen = !idle && open === index
+          const isOpen = !idle && active === index
 
           return (
             <div
               key={brand.name}
               ref={columnRef?.(index)}
               className="relative flex flex-col items-center will-change-[opacity,transform]"
+              onMouseEnter={() => setActive(index)}
+              onFocus={() => setActive(index)}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) {
+                  setActive((current) => (current === index ? null : current))
+                }
+              }}
             >
               <button
                 type="button"
                 aria-expanded={isOpen}
-                onFocus={() => setOpen(index)}
-                /* Focus lands first on a tap, so a toggle here would undo it. */
-                onClick={() => setOpen(index)}
+                /* Touch has no hover, so a tap opens the panel. */
+                onClick={() => setActive(index)}
                 className={cn(
                   "block cursor-pointer transition-[scale] duration-700 ease-expo motion-reduce:transition-none",
                   isOpen ? OPEN_SCALE : "scale-100"
@@ -240,25 +212,24 @@ function Field({
 
               {/*
                * The detail hangs off the row rather than sitting in it, so no
-               * column moves as the reader crosses the marks. The outer two
-               * anchor to their own edge so a long panel cannot run off the
-               * side of the section; once the row is wide enough every panel
-               * centres under its own mark. It leaves quicker than it arrives,
-               * so two panels are never readable at once on the way between
-               * marks.
+               * column moves as the pointer crosses the marks. Its top gap is
+               * padding, not margin, so the pointer can travel from the mark
+               * down to the link without leaving the column. The outer two
+               * anchor to their own edge so a panel cannot run off the side;
+               * once the row is wide enough every panel centres under its mark.
                */}
               <div
                 inert={!isOpen}
                 className={cn(
-                  "absolute top-full z-1 mt-[clamp(28px,4vw,56px)] w-[min(330px,64vw)] text-left transition-[opacity,translate] ease-expo max-md:hidden",
+                  "absolute top-full z-1 w-[min(330px,64vw)] pt-[clamp(28px,4vw,56px)] text-left transition-[opacity,translate] ease-expo motion-reduce:transition-none",
                   index === 0
                     ? "left-0 xl:left-1/2 xl:-translate-x-1/2"
                     : index === last
                       ? "right-0 xl:right-auto xl:left-1/2 xl:-translate-x-1/2"
                       : "left-1/2 -translate-x-1/2",
                   isOpen
-                    ? "translate-y-0 opacity-100 duration-700"
-                    : "translate-y-3 opacity-0 duration-200"
+                    ? "translate-y-0 opacity-100 duration-500"
+                    : "pointer-events-none translate-y-3 opacity-0 duration-200"
                 )}
               >
                 <BrandDetail brand={brand} />
@@ -270,9 +241,7 @@ function Field({
 
       {/*
        * Phones have no room for the row, so the principals take the stage one
-       * at a time: the scroll that walks the open column across the row on a
-       * wide screen swaps the single mark here, the outgoing one lifting away
-       * as the next rises into its place.
+       * at a time, picked from the dots underneath.
        */}
       <div
         className={cn(
@@ -284,12 +253,12 @@ function Field({
           {brands.map((brand, index) => (
             <div
               key={brand.name}
-              aria-hidden={index !== open}
+              aria-hidden={index !== picked}
               className={cn(
                 "absolute inset-0 grid place-items-center transition-[opacity,translate,scale] duration-700 ease-expo motion-reduce:transition-none",
-                index === open
+                index === picked
                   ? "translate-y-0 scale-100 opacity-100"
-                  : index < open
+                  : index < picked
                     ? "-translate-y-8 scale-95 opacity-0"
                     : "translate-y-8 scale-95 opacity-0"
               )}
@@ -313,15 +282,15 @@ function Field({
               key={brand.name}
               type="button"
               role="tab"
-              aria-selected={index === open}
+              aria-selected={index === picked}
               aria-label={brand.name}
-              onClick={() => setOpen(index)}
+              onClick={() => setPicked(index)}
               className="grid h-6 cursor-pointer place-items-center px-0.5"
             >
               <span
                 className={cn(
                   "block h-1.5 rounded-full transition-[width,background-color] duration-500 ease-expo",
-                  index === open ? "w-6 bg-white" : "w-1.5 bg-white/30"
+                  index === picked ? "w-6 bg-white" : "w-1.5 bg-white/30"
                 )}
               />
             </button>
@@ -329,10 +298,10 @@ function Field({
         </div>
 
         <div
-          key={open}
+          key={picked}
           className="mx-auto mt-[clamp(24px,4vh,36px)] w-full max-w-[340px] animate-in text-center duration-500 ease-expo fade-in slide-in-from-bottom-2"
         >
-          <BrandDetail brand={brands[open]} />
+          <BrandDetail brand={brands[picked]} />
         </div>
       </div>
     </div>
@@ -352,13 +321,10 @@ function Backdrop() {
 export function AuthorisedDistributors() {
   const reducedMotion = usePrefersReducedMotion()
 
-  const trackRef = React.useRef<HTMLElement>(null)
+  const probeRef = React.useRef<HTMLSpanElement>(null)
   const headingRef = React.useRef<HTMLHeadingElement>(null)
   const columns = React.useRef<(HTMLDivElement | null)[]>([])
   const [armed, setArmed] = React.useState(false)
-  const [step, setStep] = React.useState(DEFAULT_OPEN)
-  /** A column picked by hand, held open while the smoothed scroll catches up. */
-  const pending = React.useRef<number | null>(null)
 
   const columnRef = React.useCallback(
     (index: number) => (element: HTMLDivElement | null) => {
@@ -370,17 +336,14 @@ export function AuthorisedDistributors() {
   React.useEffect(() => {
     if (reducedMotion) return
 
-    const track = trackRef.current
-    if (!track) return
+    const probe = probeRef.current
+    if (!probe) return
 
     let live = false
-    let current = DEFAULT_OPEN
 
     const paint = (p: number) => {
-      const intro = clamp01(p / INTRO)
-
       // 1. The heading rises into the field.
-      const heading = easeOut(clamp01(intro / HEAD_IN))
+      const heading = easeOut(clamp01(p / HEAD_IN))
       if (headingRef.current) {
         headingRef.current.style.opacity = heading.toFixed(3)
         headingRef.current.style.transform = `translate3d(0, ${((1 - heading) * 44).toFixed(1)}px, 0)`
@@ -390,82 +353,40 @@ export function AuthorisedDistributors() {
       columns.current.forEach((column, index) => {
         if (!column) return
         const at = easeOut(
-          clamp01((intro - (MARKS_START + index * MARK_STAGGER)) / MARK_SPAN)
+          clamp01((p - (MARKS_START + index * MARK_STAGGER)) / MARK_SPAN)
         )
         column.style.opacity = at.toFixed(3)
         column.style.transform = `translate3d(0, ${((1 - at) * 60).toFixed(1)}px, 0)`
       })
 
       // 3. Settled, so the row can be read with the pointer.
-      const settled = intro >= ARM_AT
+      const settled = p >= ARM_AT
       if (settled !== live) {
         live = settled
         setArmed(settled)
       }
-
-      // 4. The open column follows the scroll across the row. A jump to a
-      //    picked column sweeps past the ones between, so those are skipped.
-      const next = stepAt(p)
-      if (pending.current !== null) {
-        if (next !== pending.current) return
-        pending.current = null
-      }
-      if (next !== current) {
-        current = next
-        setStep(next)
-      }
     }
 
-    return createScrollTrack({ element: track, paint, smoothing: 0.09 })
+    return createScrollTrack({ element: probe, paint, smoothing: 0.09 })
   }, [reducedMotion])
-
-  const pick = React.useCallback((index: number) => {
-    const track = trackRef.current
-    if (!track) return
-
-    pending.current = index
-    setStep(index)
-
-    const top = track.getBoundingClientRect().top + window.scrollY
-    const scrollable = track.offsetHeight - window.innerHeight
-    jumpTo(Math.round(top + scrollable * progressFor(index)))
-  }, [])
-
-  if (reducedMotion) {
-    return (
-      <section
-        id="authorised-distributors"
-        className="on-blue relative isolate flex min-h-dvh w-full flex-col justify-center overflow-hidden bg-[#0a0a0b] py-[clamp(64px,10vh,120px)] text-white"
-      >
-        <Backdrop />
-        <Field />
-      </section>
-    )
-  }
 
   return (
     <section
-      ref={trackRef}
-      className="on-blue relative isolate w-full bg-[#0a0a0b] text-white"
-      style={{ minHeight: `${TRACK_VH + 100}vh` }}
+      id="authorised-distributors"
+      className="on-blue relative isolate flex w-full flex-col justify-center overflow-hidden bg-[#0a0a0b] py-[clamp(64px,10vh,120px)] text-white md:min-h-dvh"
     >
       <span
-        id="authorised-distributors"
+        ref={probeRef}
         aria-hidden="true"
         className="pointer-events-none absolute left-0 w-px"
-        style={{ top: `${ANCHOR_VH}vh` }}
+        style={{ top: `${PROBE_TOP_VH}vh`, height: `${PROBE_HEIGHT_VH}vh` }}
       />
-
-      <div className="sticky top-0 flex h-dvh w-full flex-col overflow-hidden pt-[clamp(72px,18vh,200px)] [contain:layout_paint]">
-        <Backdrop />
-        <Field
-          idle={!armed}
-          step={step}
-          onPick={pick}
-          headingRef={headingRef}
-          columnRef={columnRef}
-        />
-      </div>
+      <Backdrop />
+      <Field
+        idle={!reducedMotion && !armed}
+        headingRef={headingRef}
+        columnRef={columnRef}
+      />
     </section>
   )
 }
