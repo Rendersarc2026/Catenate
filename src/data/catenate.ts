@@ -2306,16 +2306,10 @@ export const contactCards = [
   },
   {
     title: "Looking where to buy? Let us help you with that",
-    cta: "Find a channel partner",
-    href: "/about",
-    action: "navigate",
     image: images.contactBg,
   },
   {
     title: "Channel Partner Network to serve your needs",
-    cta: "Find out more",
-    href: "/technologies",
-    action: "navigate",
     image: images.contactBg,
   },
 ] as const;

@@ -60,6 +60,8 @@ function DialogContent({
           tabIndex={-1}
           initialFocus={panelRef}
           data-slot="dialog-content"
+          /* Lenis hijacks the wheel; let the panel scroll natively. */
+          data-lenis-prevent
           className={cn(
             "pointer-events-auto outline-none bg-clip-padding text-sm text-popover-foreground shadow-[0_50px_140px_-20px_rgb(13_15_21/0.5),0_0_0_1px_rgb(255_255_255/0.6)] transition-[opacity,scale,translate] duration-[620ms] ease-[cubic-bezier(0.22,1.24,0.36,1)] will-change-transform",
             "data-starting-style:translate-y-7 data-starting-style:scale-[0.84] data-starting-style:opacity-0",

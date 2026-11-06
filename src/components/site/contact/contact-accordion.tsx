@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
 export interface ContactCardItem {
   readonly title: string;
-  readonly cta: string;
-  readonly href: string;
+  /** Only the enquiry row has a CTA; the rest are headings with no link. */
+  readonly cta?: string;
+  readonly href?: string;
   readonly action?: string;
   readonly image?: string;
 }
@@ -34,6 +34,7 @@ export function ContactAccordion({
     >
       {items.map((item, idx) => {
         const isExpanded = activeIndex === idx;
+        const hasCta = item.action === "enquiry" && Boolean(item.cta);
         const isLast = idx === items.length - 1;
 
         return (
@@ -51,8 +52,8 @@ export function ContactAccordion({
               type="button"
               onClick={() => setActiveIndex(isExpanded ? null : idx)}
               onFocus={() => setActiveIndex(idx)}
-              aria-expanded={isExpanded}
-              aria-controls={`contact-panel-${idx}`}
+              aria-expanded={hasCta ? isExpanded : undefined}
+              aria-controls={hasCta ? `contact-panel-${idx}` : undefined}
               id={`contact-header-${idx}`}
               className="flex w-full cursor-pointer flex-col text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50"
             >
@@ -70,19 +71,19 @@ export function ContactAccordion({
             </button>
 
             {/* Smooth Expandable CTA Sub-row */}
-            <div
-              id={`contact-panel-${idx}`}
-              role="region"
-              aria-labelledby={`contact-header-${idx}`}
-              className={cn(
-                "grid transition-all duration-200 ease-out",
-                isExpanded
-                  ? "grid-rows-[1fr] opacity-100 pt-2"
-                  : "grid-rows-[0fr] opacity-0 pt-0"
-              )}
-            >
-              <div className="overflow-hidden">
-                {item.action === "enquiry" ? (
+            {hasCta && (
+              <div
+                id={`contact-panel-${idx}`}
+                role="region"
+                aria-labelledby={`contact-header-${idx}`}
+                className={cn(
+                  "grid transition-all duration-200 ease-out",
+                  isExpanded
+                    ? "grid-rows-[1fr] opacity-100 pt-2"
+                    : "grid-rows-[0fr] opacity-0 pt-0"
+                )}
+              >
+                <div className="overflow-hidden">
                   <button
                     type="button"
                     onClick={(e) => {
@@ -99,23 +100,9 @@ export function ContactAccordion({
                       &gt;
                     </span>
                   </button>
-                ) : (
-                  <Link
-                    href={item.href}
-                    onClick={(e) => e.stopPropagation()}
-                    className="group/cta inline-flex cursor-pointer items-center text-[clamp(12px,0.85vw,15px)] font-light leading-none text-white/85 transition-colors duration-150 hover:text-white focus-visible:underline focus-visible:outline-none"
-                  >
-                    <span>{item.cta}</span>
-                    <span
-                      aria-hidden="true"
-                      className="ml-1.5 inline-block transition-transform duration-150 ease-out group-hover/cta:translate-x-1"
-                    >
-                      &gt;
-                    </span>
-                  </Link>
-                )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         );
       })}
