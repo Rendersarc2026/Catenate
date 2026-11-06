@@ -56,7 +56,9 @@ function DetailRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`grid grid-cols-[32px_minmax(0,1fr)] items-start gap-3 ${className}`}>
+    <div
+      className={`grid grid-cols-[32px_minmax(0,1fr)] items-start gap-3 ${className}`}
+    >
       <span className="grid size-8 place-items-center rounded-full bg-white/10 text-white">
         <svg
           viewBox="0 0 24 24"
@@ -70,7 +72,9 @@ function DetailRow({
         <small className="block text-[11px] tracking-[0.08em] uppercase text-white/60">
           {label}
         </small>
-        <div className="text-[clamp(14px,1.1vw,16px)] leading-snug text-white">{children}</div>
+        <div className="text-[clamp(14px,1.1vw,16px)] leading-snug text-white">
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -78,7 +82,8 @@ function DetailRow({
 
 export function ContactPageView() {
   const [selectedLocId, setSelectedLocId] = React.useState<string>("uae");
-  const [selectedBranchId, setSelectedBranchId] = React.useState<string>("dubai-1");
+  const [selectedBranchId, setSelectedBranchId] =
+    React.useState<string>("dubai-1");
 
   // Form states
   const [formName, setFormName] = React.useState("");
@@ -86,7 +91,9 @@ export function ContactPageView() {
   const [formEmail, setFormEmail] = React.useState("");
   const [formPhone, setFormPhone] = React.useState("");
   const [formMessage, setFormMessage] = React.useState("");
-  const [submitFeedback, setSubmitFeedback] = React.useState<string | null>(null);
+  const [submitFeedback, setSubmitFeedback] = React.useState<string | null>(
+    null,
+  );
   const [isError, setIsError] = React.useState(false);
 
   const branchesRef = React.useRef<HTMLElement>(null);
@@ -114,7 +121,11 @@ export function ContactPageView() {
     const el = branchesRef.current;
     if (!el) return;
     const navHeight =
-      parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-height")) || 84;
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue(
+          "--nav-height",
+        ),
+      ) || 84;
     const offset = window.matchMedia(FIT_QUERY).matches ? 0 : navHeight;
     glideTo(el.getBoundingClientRect().top + window.scrollY - offset);
   }, []);
@@ -138,19 +149,22 @@ export function ContactPageView() {
       if (!loc) return;
       setSelectedLocId(locId);
       const targetBranchId =
-        branchId ?? (loc.branches.some((b) => b.id === selectedBranchId)
+        branchId ??
+        (loc.branches.some((b) => b.id === selectedBranchId)
           ? selectedBranchId
           : loc.branches[0].id);
       setSelectedBranchId(targetBranchId);
     },
-    [selectedBranchId]
+    [selectedBranchId],
   );
 
   // Keyboard navigation for tabs
   const handleTabsKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
     e.preventDefault();
-    const currentIndex = CONTACT_LOCATIONS.findIndex((l) => l.id === selectedLocId);
+    const currentIndex = CONTACT_LOCATIONS.findIndex(
+      (l) => l.id === selectedLocId,
+    );
     const n = CONTACT_LOCATIONS.length;
     let nextIndex = currentIndex;
 
@@ -177,7 +191,7 @@ export function ContactPageView() {
 
     setIsError(false);
     setSubmitFeedback(
-      `Thank you, ${formName.trim()}. Your enquiry has been received and forwarded to our ${activeBranch.name.replace("Catenate — ", "")} team.`
+      `Thank you, ${formName.trim()}. Your enquiry has been received and forwarded to our ${activeBranch.name.replace("Catenate — ", "")} team.`,
     );
     setFormName("");
     setFormCompany("");
@@ -195,10 +209,6 @@ export function ContactPageView() {
       >
         <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-12">
           <div>
-            <span className="inline-flex items-center gap-2.5 text-[12px] font-semibold tracking-[0.16em] uppercase text-[#5D6382]">
-              <span className="size-2 rounded-full bg-[#F2A541]" />
-              Contact us
-            </span>
             <h1
               id="page-title"
               className="mt-4.5 mb-5 max-w-[13ch] text-[clamp(44px,min(6vw,11vh),96px)] font-semibold leading-[1.0] tracking-[-0.035em] text-[#1B2A7A]"
@@ -206,8 +216,8 @@ export function ContactPageView() {
               Talk to the branch nearest you.
             </h1>
             <p className="max-w-[52ch] text-[16px] sm:text-[18px] leading-relaxed text-[#5D6382]">
-              Every market we serve has its own branch, local stock and technical team.
-              Choose a location to reach them directly.
+              Every market we serve has its own branch, local stock and
+              technical team. Choose a location to reach them directly.
             </p>
           </div>
 
@@ -372,7 +382,11 @@ export function ContactPageView() {
 
               {/* Information Rows: address full width, the rest in two columns when there's room */}
               <div className="grid grid-cols-1 gap-x-5 gap-y-[clamp(10px,1.6vh,16px)] @sm:grid-cols-2">
-                <DetailRow label="Address" className="@sm:col-span-2" icon={ICONS.address}>
+                <DetailRow
+                  label="Address"
+                  className="@sm:col-span-2"
+                  icon={ICONS.address}
+                >
                   {activeBranch.address.map((line, idx) => (
                     <span key={idx} className="block">
                       {line}
@@ -381,7 +395,10 @@ export function ContactPageView() {
                 </DetailRow>
 
                 <DetailRow label="Phone" icon={ICONS.phone}>
-                  <a href={formatTel(activeBranch.phone)} className={DETAIL_LINK}>
+                  <a
+                    href={formatTel(activeBranch.phone)}
+                    className={DETAIL_LINK}
+                  >
                     {activeBranch.phone}
                   </a>
                 </DetailRow>
@@ -398,7 +415,10 @@ export function ContactPageView() {
                 </DetailRow>
 
                 <DetailRow label="Email" icon={ICONS.email}>
-                  <a href={`mailto:${activeBranch.email}`} className={DETAIL_LINK}>
+                  <a
+                    href={`mailto:${activeBranch.email}`}
+                    className={DETAIL_LINK}
+                  >
                     {activeBranch.email}
                   </a>
                 </DetailRow>
@@ -515,7 +535,9 @@ export function ContactPageView() {
                           <strong className="block text-[15px] font-semibold leading-snug text-[#121633]">
                             {b.name.replace("Catenate — ", "")}
                           </strong>
-                          <span className="block text-[13px] leading-snug text-[#5D6382]">{b.tag}</span>
+                          <span className="block text-[13px] leading-snug text-[#5D6382]">
+                            {b.tag}
+                          </span>
                         </div>
                         <span
                           className={`size-2.5 shrink-0 rounded-full border-2 ${
@@ -554,8 +576,8 @@ export function ContactPageView() {
               Tell us about the project.
             </h2>
             <p className="max-w-[48ch] text-[16px] leading-relaxed text-white/75">
-              Your enquiry goes straight to the branch you choose, and a technical specialist will
-              respond within one working day.
+              Your enquiry goes straight to the branch you choose, and a
+              technical specialist will respond within one working day.
             </p>
 
             <ul className="mt-8 grid gap-3 list-none">
@@ -581,7 +603,10 @@ export function ContactPageView() {
             className="grid grid-cols-1 gap-4 rounded-[22px] bg-white p-6 sm:p-9 text-[#121633] shadow-xl sm:grid-cols-2"
           >
             <div className="grid gap-1.5">
-              <label htmlFor="f-name" className="text-[13px] font-semibold text-[#121633]">
+              <label
+                htmlFor="f-name"
+                className="text-[13px] font-semibold text-[#121633]"
+              >
                 Name *
               </label>
               <input
@@ -597,7 +622,10 @@ export function ContactPageView() {
             </div>
 
             <div className="grid gap-1.5">
-              <label htmlFor="f-company" className="text-[13px] font-semibold text-[#121633]">
+              <label
+                htmlFor="f-company"
+                className="text-[13px] font-semibold text-[#121633]"
+              >
                 Company
               </label>
               <input
@@ -612,7 +640,10 @@ export function ContactPageView() {
             </div>
 
             <div className="grid gap-1.5">
-              <label htmlFor="f-email" className="text-[13px] font-semibold text-[#121633]">
+              <label
+                htmlFor="f-email"
+                className="text-[13px] font-semibold text-[#121633]"
+              >
                 Email *
               </label>
               <input
@@ -629,7 +660,10 @@ export function ContactPageView() {
             </div>
 
             <div className="grid gap-1.5">
-              <label htmlFor="f-phone" className="text-[13px] font-semibold text-[#121633]">
+              <label
+                htmlFor="f-phone"
+                className="text-[13px] font-semibold text-[#121633]"
+              >
                 Phone
               </label>
               <input
@@ -645,7 +679,10 @@ export function ContactPageView() {
             </div>
 
             <div className="grid gap-1.5 sm:col-span-2">
-              <label htmlFor="f-branch" className="text-[13px] font-semibold text-[#121633]">
+              <label
+                htmlFor="f-branch"
+                className="text-[13px] font-semibold text-[#121633]"
+              >
                 Nearest branch
               </label>
               <select
@@ -655,7 +692,7 @@ export function ContactPageView() {
                 onChange={(e) => {
                   const bId = e.target.value;
                   const loc = CONTACT_LOCATIONS.find((l) =>
-                    l.branches.some((b) => b.id === bId)
+                    l.branches.some((b) => b.id === bId),
                   );
                   if (loc) {
                     setSelectedLocId(loc.id);
@@ -677,7 +714,10 @@ export function ContactPageView() {
             </div>
 
             <div className="grid gap-1.5 sm:col-span-2">
-              <label htmlFor="f-msg" className="text-[13px] font-semibold text-[#121633]">
+              <label
+                htmlFor="f-msg"
+                className="text-[13px] font-semibold text-[#121633]"
+              >
                 Message
               </label>
               <textarea
