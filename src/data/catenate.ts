@@ -2320,9 +2320,11 @@ export const contactCards = [
 
 export const company = {
   address: [
-    "Head office and central warehouse",
-    "Industrial Area 12, Plot 44",
-    "Regional branches in four territories",
+    "Gulf Modern Projects & Supplies Co. LLC",
+    "106, 1st Floor, Muscat Residence Building",
+    "Al Seeb Street",
+    "PO Box 378, PC 124",
+    "Muscat, Oman",
   ],
   phone: "+000 0000 0000",
   email: "specification@catenate.com",
