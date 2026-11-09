@@ -1427,9 +1427,9 @@ body:has(.site-header.-translate-y-full) .finder-rail {
 }
 
 /*
- * Trusted-by marquee: each track holds its logos twice, so sliding it by half
- * its width lands on an identical frame and the loop has no seam. The second
- * row runs the same animation in reverse. Hovering pauses that row.
+ * Trusted-by marquee: each track repeats its logo set, so sliding it by half
+ * its width lands on an identical frame and the loop has no seam. Alternate
+ * rows run the same animation in reverse. Hovering pauses that row.
  */
 .logo-marquee {
   mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
