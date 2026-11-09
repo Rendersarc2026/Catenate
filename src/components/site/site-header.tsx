@@ -130,13 +130,21 @@ export function SiteHeader() {
       className={cn(
         "site-header sticky top-0 z-120 -mb-nav h-nav",
         isHidden ? "-translate-y-full pointer-events-none" : "translate-y-0 pointer-events-auto",
+        /*
+         * A backdrop blur on a fixed bar is re-rendered on every scroll frame,
+         * and browsers keep paying for it even once the bar has slid off
+         * screen — measured, it was the largest single cost of scrolling the
+         * home page. So the light bar is near-opaque instead of frosted, and
+         * the dark one, over the hero only, drops its blur while hidden.
+         */
         isDarkNav &&
           scrolled &&
           !open &&
-          "bg-black/60 shadow-[0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-[16px]",
+          "bg-black/60 shadow-[0_1px_0_rgba(255,255,255,0.08)]",
+        isDarkNav && scrolled && !open && !isHidden && "backdrop-blur-[16px]",
         !isDarkNav &&
           !open &&
-          "bg-white/88 shadow-[0_1px_0_rgb(26_29_46/0.08)] backdrop-blur-[18px]",
+          "bg-white/96 shadow-[0_1px_0_rgb(26_29_46/0.08)]",
         open && "bg-white"
       )}
     >

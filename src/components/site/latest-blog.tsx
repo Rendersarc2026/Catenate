@@ -1,10 +1,10 @@
-import Image from "next/image"
-import Link from "next/link"
+import Image from "next/image";
+import Link from "next/link";
 
-import { ArrowButton } from "@/components/site/arrow-button"
-import { PostCard } from "@/components/site/blog/post-card"
-import { Reveal } from "@/components/site/reveal"
-import { blogPosts, companyUpdates, type CompanyUpdate } from "@/data/catenate"
+import { ArrowButton } from "@/components/site/arrow-button";
+import { PostCard } from "@/components/site/blog/post-card";
+import { Reveal } from "@/components/site/reveal";
+import { blogPosts, companyUpdates, type CompanyUpdate } from "@/data/catenate";
 
 function SectionHeading({
   eyebrow,
@@ -12,18 +12,18 @@ function SectionHeading({
   href,
   cta,
 }: {
-  eyebrow: string
-  title: string
-  href: string
-  cta: string
+  eyebrow: string;
+  title: string;
+  href: string;
+  cta: string;
 }) {
   return (
-    <Reveal className="mb-[clamp(24px,3vw,40px)] flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
+    <Reveal className="mb-[clamp(16px,2.6svh,40px)] flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
       <div>
-        <span className="mb-[clamp(10px,1.2vw,16px)] block text-[clamp(11px,0.95vw,14px)] font-semibold tracking-[0.24em] text-ink uppercase">
+        <span className="mb-[clamp(8px,1.2svh,16px)] block text-[clamp(11px,0.95vw,14px)] font-semibold tracking-[0.24em] text-ink uppercase">
           {eyebrow}
         </span>
-        <h2 className="text-[clamp(2rem,4vw,3.6rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-ink">
+        <h2 className="text-[clamp(2rem,4vw,3.6rem)] leading-[1.05] lg:text-[clamp(2rem,min(3.4vw,4.8svh),3.4rem)] font-semibold tracking-[-0.035em] text-ink">
           {title}
         </h2>
       </div>
@@ -31,7 +31,7 @@ function SectionHeading({
         {cta}
       </ArrowButton>
     </Reveal>
-  )
+  );
 }
 
 /* A company update: image on the left, category, title and arrow on the right. */
@@ -39,9 +39,9 @@ function UpdateCard({ update }: { update: CompanyUpdate }) {
   return (
     <Link
       href={update.href}
-      className="group/update flex min-h-[148px] overflow-hidden rounded-[14px] border border-ink/8 bg-[#f4f5f8] transition-colors duration-300 hover:bg-[#eceef3]"
+      className="group/update flex min-h-[148px] overflow-hidden lg:min-h-[clamp(116px,15svh,160px)] rounded-[14px] border border-ink/8 bg-[#f4f5f8] transition-colors duration-300 hover:bg-[#eceef3]"
     >
-      <div className="relative w-1/2 shrink-0 overflow-hidden bg-[#e6e7ec]">
+      <div className="relative w-1/2 shrink-0 lg:w-[42%] overflow-hidden bg-[#e6e7ec]">
         <Image
           src={update.image}
           alt=""
@@ -61,22 +61,29 @@ function UpdateCard({ update }: { update: CompanyUpdate }) {
           aria-hidden="true"
           className="mt-auto grid size-7 place-items-center rounded-full text-ink shadow-[inset_0_0_0_1px_rgb(26_29_46/0.3)] transition-[transform,background-color] duration-250 ease-expo group-hover/update:rotate-45 group-hover/update:bg-ink/5"
         >
-          <svg viewBox="0 0 24 24" className="size-3 fill-none stroke-current stroke-[1.8]">
+          <svg
+            viewBox="0 0 24 24"
+            className="size-3 fill-none stroke-current stroke-[1.8]"
+          >
             <path d="M5 12h14M13 6l6 6-6 6" />
           </svg>
         </span>
       </div>
     </Link>
-  )
+  );
 }
 
 /*
  * "Latest blog" — the three newest articles, then "Inside Catenate": company
- * news, events and partnerships.
+ * news, events and partnerships. On desktop, spacing and image heights scale
+ * with viewport height so both blocks fit on one screen.
  */
 export function LatestBlog() {
   return (
-    <section id="blog" className="section bg-white">
+    <section
+      id="blog"
+      className="section bg-white lg:py-[clamp(32px,4.5svh,72px)]"
+    >
       <SectionHeading
         eyebrow="Insights & Expertise"
         title="The Catenate Perspective."
@@ -94,7 +101,7 @@ export function LatestBlog() {
         ))}
       </Reveal>
 
-      <div className="my-[clamp(32px,3.6vw,52px)] border-t border-ink/10" />
+      <div className="my-[clamp(32px,3.6vw,52px)] border-t border-ink/10 lg:my-[clamp(22px,3.4svh,52px)]" />
 
       <SectionHeading
         eyebrow="Our World"
@@ -113,5 +120,5 @@ export function LatestBlog() {
         ))}
       </Reveal>
     </section>
-  )
+  );
 }

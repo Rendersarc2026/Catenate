@@ -1,8 +1,8 @@
-import Image from "next/image"
-import Link from "next/link"
+import Image from "next/image";
+import Link from "next/link";
 
-import { formatPostDate, type BlogPost } from "@/data/catenate"
-import { cn } from "@/lib/utils"
+import { formatPostDate, type BlogPost } from "@/data/catenate";
+import { cn } from "@/lib/utils";
 
 /*
  * One article as an image-led card, linking to its full page. `compact` drops
@@ -12,8 +12,8 @@ export function PostCard({
   post,
   compact = false,
 }: {
-  post: BlogPost
-  compact?: boolean
+  post: BlogPost;
+  compact?: boolean;
 }) {
   return (
     <article className="group/post">
@@ -21,7 +21,9 @@ export function PostCard({
         <div
           className={cn(
             "relative overflow-hidden rounded-[18px] bg-[#e6e7ec]",
-            compact ? "aspect-[16/9]" : "aspect-[4/3]"
+            compact
+              ? "aspect-[16/9] lg:aspect-auto lg:h-[clamp(140px,22svh,260px)]"
+              : "aspect-[4/3]",
           )}
         >
           <Image
@@ -36,7 +38,12 @@ export function PostCard({
           </span>
         </div>
 
-        <p className="mt-5 text-[12px] tracking-[0.08em] text-ink/55 uppercase">
+        <p
+          className={cn(
+            "text-[12px] tracking-[0.08em] text-ink/55 uppercase",
+            compact ? "mt-4" : "mt-5",
+          )}
+        >
           <time dateTime={post.date}>{formatPostDate(post.date)}</time>
           <span aria-hidden="true"> · </span>
           {post.readTime}
@@ -51,5 +58,5 @@ export function PostCard({
         )}
       </Link>
     </article>
-  )
+  );
 }

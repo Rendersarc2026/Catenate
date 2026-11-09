@@ -1433,6 +1433,9 @@ body:has(.site-header.-translate-y-full) .finder-rail {
  */
 .logo-marquee {
   mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  /* Off screen the row is neither drawn nor animated; it keeps its last height. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 120px;
 }
 
 .logo-marquee-track {
