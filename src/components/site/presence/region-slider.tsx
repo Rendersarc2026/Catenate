@@ -45,6 +45,10 @@ function src(id: string, width: number, quality = 78) {
   return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=${quality}`
 }
 
+/** Hands a frame its photograph, under the scrim layers the CSS adds. */
+const photoStyle = (id: string) =>
+  ({ "--region-photo": `url("${src(id, 1920)}")` }) as React.CSSProperties
+
 /** How long each region holds before the slider moves on, in ms. */
 const DWELL = 6000
 
@@ -124,10 +128,13 @@ export function RegionSlider({
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      {/* The frame in view. Everything else is painted over it. */}
+      {/*
+        The frame in view, with the scrim drawn into it (see .region-frame).
+        Everything else is painted over it.
+      */}
       <div
         className="region-frame"
-        style={inView ? { backgroundImage: `url("${src(photo.id, 1920)}")` } : undefined}
+        style={inView ? photoStyle(photo.id) : undefined}
         role="img"
         aria-label={photo.alt}
       />
@@ -138,12 +145,10 @@ export function RegionSlider({
           key={fade.token}
           className="region-fade"
           aria-hidden="true"
-          style={{ backgroundImage: `url("${src(fade.photoId, 1920)}")` }}
+          style={photoStyle(fade.photoId)}
           onAnimationEnd={() => setFade(null)}
         />
       ) : null}
-
-      <div className="region-scrim" aria-hidden="true" />
 
       {/*
         Advancing by clicking the picture. It is a second route to the region

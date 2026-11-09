@@ -179,8 +179,12 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
      * Lerp mode chases a moving target and is scaled by real elapsed time, so
      * it tracks the wheel closely and behaves the same at 60Hz and 144Hz.
      */
+    /*
+     * 0.1 is Lenis' own default. Lower values (0.06 was tried) keep the page
+     * gliding for most of a second after the wheel stops, which reads as lag.
+     */
     const lenis = new Lenis({
-      lerp: 0.06,
+      lerp: 0.1,
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
