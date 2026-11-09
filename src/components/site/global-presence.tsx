@@ -18,7 +18,7 @@ export function GlobalPresence() {
       id="presence"
       className="relative box-border flex h-screen h-[100dvh] w-full flex-col overflow-hidden bg-white text-ink snap-start !scroll-mt-0"
     >
-      <Reveal className="content-pad flex flex-none flex-col items-start pt-[calc(var(--nav-height)+clamp(4px,0.8vh,12px))] pb-[clamp(6px,1.2vh,14px)] text-left">
+      <Reveal className="content-pad flex flex-none flex-col items-start pt-[clamp(28px,4.5vh,52px)] pb-[clamp(6px,1.2vh,14px)] text-left">
         <span className="eyebrow">{presence.eyebrow}</span>
         <h2 className="max-w-none text-balance text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.18] font-medium tracking-[-0.015em] text-ink">
           {presence.heading}

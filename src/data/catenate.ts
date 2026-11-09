@@ -2360,3 +2360,36 @@ export const footerColumns = [
     ],
   },
 ];
+
+/* ------------------------------------------------------------------ *
+ * Portfolio — the product brands carried under the principals
+ * ------------------------------------------------------------------ */
+
+export type PortfolioBrand = {
+  name: string;
+  /** What the range covers, in a line or two. */
+  use: string;
+  /** Wordmark in `public/images/logos`. Without one the name is set in type. */
+  logo?: string;
+  /** Optical correction against the shared logo box. Defaults to 1. */
+  logoScale?: number;
+};
+
+export const portfolio = {
+  eyebrow: "The Catenate portfolio",
+  heading: ["A world of products.", "One trusted source!"],
+  body: "Our portfolio brings together internationally recognised brands and proven material solutions, carefully represented to meet the technical demands of modern industries.",
+  brands: [
+    { name: "Loctite", use: "Threadlockers & specialty adhesives", logo: "/images/logos/loctite.svg" },
+    { name: "Pattex", use: "Construction adhesives & sealants", logo: "/images/logos/pattex.svg", logoScale: 1.3 },
+    { name: "Ceresit", use: "Tiling & flooring solutions" },
+    { name: "Polybit", use: "Waterproofing & concrete protection", logo: "/images/logos/polybit.png" },
+    { name: "Technomelt", use: "Hot melt adhesives", logo: "/images/logos/technomelt.png" },
+    { name: "Bonderite", use: "Metal surface treatment", logo: "/images/logos/bonderite.png" },
+    { name: "Aquence", use: "Water-based adhesives", logo: "/images/logos/aquence.png" },
+    { name: "Tangit", use: "PVC & ABS pipe adhesives", logo: "/images/logos/tangit.png", logoScale: 1.25 },
+    { name: "Metylan", use: "Wallpaper & wall-covering adhesives", logo: "/images/logos/metylan.png", logoScale: 1.25 },
+    { name: "EZ Weld", use: "UPVC & CPVC solvent cements" },
+    { name: "MBT", use: "Construction chemicals", logo: "/images/logos/master-builders.svg" },
+  ] satisfies PortfolioBrand[] as PortfolioBrand[],
+};
