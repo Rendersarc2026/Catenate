@@ -2627,6 +2627,45 @@ export const blogPosts: BlogPost[] = [
 export const blogPostBySlug = (slug: string): BlogPost | undefined =>
   blogPosts.find((post) => post.slug === slug);
 
+export type CompanyUpdate = {
+  category: string;
+  title: string;
+  image: string;
+  href: string;
+};
+
+/*
+ * "Inside Catenate" — company news on the home page. Images are placeholders
+ * until event and award photography is supplied; links point at existing
+ * pages until a news page exists.
+ */
+export const companyUpdates: CompanyUpdate[] = [
+  {
+    category: "Events",
+    title: "Catenate at Big 5 Global 2026",
+    image: "/images/about/team-catenate.jpeg",
+    href: "/about",
+  },
+  {
+    category: "Achievement",
+    title: "Recognised for Supply Excellence",
+    image: "/images/technologies/glass-facade.jpg",
+    href: "/about",
+  },
+  {
+    category: "News",
+    title: "New regional distribution hub in Oman",
+    image: "/images/about/hero-warehouse.jpg",
+    href: "/contact",
+  },
+  {
+    category: "Partnership",
+    title: "Strategic partnership to expand in MENA",
+    image: "/images/about/team-onsite.jpg",
+    href: "/about",
+  },
+];
+
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 /** "2026-11-04" → "4 Nov 2026". Built by hand so every runtime prints the same. */
