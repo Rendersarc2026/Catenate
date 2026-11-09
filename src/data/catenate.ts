@@ -2393,3 +2393,244 @@ export const portfolio = {
     { name: "MBT", use: "Construction chemicals", logo: "/images/logos/master-builders.svg" },
   ] satisfies PortfolioBrand[] as PortfolioBrand[],
 };
+
+/* ------------------------------------------------------------------ *
+ * Blog — placeholder posts until real articles are written
+ * ------------------------------------------------------------------ */
+
+export type BlogSection = {
+  heading?: string;
+  paragraphs: string[];
+};
+
+export type BlogPost = {
+  /** URL segment under /blog. */
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  /** ISO date, shown as e.g. "4 Nov 2026". */
+  date: string;
+  readTime: string;
+  author: string;
+  image: string;
+  body: BlogSection[];
+};
+
+/** Newest first — the home page shows the first three. */
+export const blogPosts: BlogPost[] = [
+  {
+    slug: "waterproofing-below-grade-high-water-table",
+    title: "Waterproofing below grade where the water table sits high",
+    excerpt:
+      "Why membrane choice, detailing and sequencing matter more than ever once the raft is poured.",
+    category: "Waterproofing",
+    date: "2026-11-04",
+    readTime: "6 min read",
+    author: "Catenate Technical Team",
+    image: "/images/technologies/epoxy-flooring.jpg",
+    body: [
+      {
+        paragraphs: [
+          "Below-grade waterproofing has no second chance. Once the raft is poured and the basement walls are backfilled, the membrane is unreachable for the life of the building. Where the water table sits high, the hydrostatic head is permanent, and every lap, penetration and construction joint is under constant pressure.",
+        ],
+      },
+      {
+        heading: "Start with the water, not the product",
+        paragraphs: [
+          "The right system depends on the head of water, the soil chemistry and the internal use of the space. A plant room can tolerate a different risk profile from a habitable basement. Establish the design grade first, then select the membrane — not the other way round.",
+          "Ground investigation data should tell you the expected water level, its seasonal range and whether sulphates or chlorides are present. Each of those changes what a membrane must resist over its service life.",
+        ],
+      },
+      {
+        heading: "Detailing is where systems fail",
+        paragraphs: [
+          "Most leaks start at junctions: wall-to-slab transitions, pile heads, service penetrations and construction joints. Specify the waterstops, injection hoses and pre-formed corners alongside the membrane, and make sure they are compatible with it.",
+          "Sequencing matters as much as material. A membrane that is trafficked, left exposed to UV or covered before it has cured will not perform as tested.",
+        ],
+      },
+      {
+        heading: "Plan for verification",
+        paragraphs: [
+          "Build inspection hold points into the programme, before each pour and before backfill. Our technical team can attend site to review substrate preparation and detailing, and supply the specification pack your consultant needs for sign-off.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "threadlockers-choosing-the-right-strength",
+    title: "Threadlockers explained: choosing the right strength",
+    excerpt:
+      "Low, medium or high — how to match a threadlocker to the fastener, the load and the next service.",
+    category: "Industrial",
+    date: "2026-10-21",
+    readTime: "4 min read",
+    author: "Catenate Technical Team",
+    image: "/images/technologies/plumbing-piping.jpg",
+    body: [
+      {
+        paragraphs: [
+          "Vibration, thermal cycling and shock loads all loosen threaded fasteners over time. A threadlocker fills the gaps between the threads and cures into a solid plastic that stops the fastener turning — but picking the wrong strength can make maintenance far harder than it needs to be.",
+        ],
+      },
+      {
+        heading: "Low strength",
+        paragraphs: [
+          "For small fasteners and adjustment screws that must come apart with ordinary hand tools. Ideal for calibration screws, meters and gauges where the setting must hold but will be revisited.",
+        ],
+      },
+      {
+        heading: "Medium strength",
+        paragraphs: [
+          "The general-purpose choice for most nuts and bolts up to around M36. It holds against vibration yet can still be removed with standard tools, which makes it the default for pumps, gearboxes and machine assemblies that are serviced on a schedule.",
+        ],
+      },
+      {
+        heading: "High strength",
+        paragraphs: [
+          "For permanent assemblies such as studs, frame bolts and suspension parts. Removal usually needs localised heat, so reserve it for joints that should never come apart in normal service.",
+          "If you are unsure, start with the service plan: how often will this joint be opened, and with what tools? Our team can recommend the grade and the surface primer for passive metals such as stainless steel.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "storing-adhesives-sealants-gulf-heat",
+    title: "Storing adhesives and sealants in Gulf heat",
+    excerpt:
+      "What shelf life really means at 45°C, and how stock is kept within spec from port to site.",
+    category: "Supply",
+    date: "2026-10-08",
+    readTime: "5 min read",
+    author: "Catenate Supply Team",
+    image: "/images/about/global-chain.webp",
+    body: [
+      {
+        paragraphs: [
+          "Shelf life on a datasheet is measured at a stated storage temperature, usually between 5 and 25°C. In the Gulf, a container on a quay or a site store in summer can sit well above that, and heat shortens the usable life of many adhesives and sealants.",
+        ],
+      },
+      {
+        heading: "Temperature-controlled from port to warehouse",
+        paragraphs: [
+          "Our stock moves from port to climate-controlled storage with minimal dwell time, and is held within the manufacturer's recommended range. Batch numbers and dates are tracked so that the oldest compliant stock ships first.",
+        ],
+      },
+      {
+        heading: "On site",
+        paragraphs: [
+          "Keep cartridges, sausages and drums out of direct sun, in a ventilated, shaded store. Only bring to the work face what will be used that shift, and never use material that has skinned, separated or thickened.",
+          "If in doubt about a batch, send us the batch number. We can confirm its date and storage history before it goes into the work.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "structural-glazing-sealant-selection",
+    title: "Structural glazing: what to check before you specify a sealant",
+    excerpt:
+      "Adhesion testing, compatibility and movement capability — the three questions every facade sealant must answer.",
+    category: "Sealants",
+    date: "2026-09-24",
+    readTime: "5 min read",
+    author: "Catenate Technical Team",
+    image: "/images/technologies/glass-facade.jpg",
+    body: [
+      {
+        paragraphs: [
+          "In a structurally glazed facade, the sealant is holding the glass to the frame. That makes sealant selection a structural decision, not a finishing one.",
+        ],
+      },
+      {
+        heading: "Adhesion to the actual substrates",
+        paragraphs: [
+          "Aluminium finishes, coatings and glass types vary between projects. Adhesion should be tested on samples of the real materials, with the specified cleaner and primer, before production starts.",
+        ],
+      },
+      {
+        heading: "Compatibility with everything it touches",
+        paragraphs: [
+          "Gaskets, spacers, setting blocks and insulating glass sealants can all react with a structural silicone. Compatibility testing avoids discolouration and adhesion loss years down the line.",
+        ],
+      },
+      {
+        heading: "Movement and climate",
+        paragraphs: [
+          "Thermal movement in the Gulf is significant. Joint dimensions must suit the sealant's movement capability, and the design should account for wind load and dead load. We can arrange testing and supply the documentation your facade engineer needs.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "bonding-in-vehicle-assembly",
+    title: "Why vehicle builders are replacing rivets with adhesives",
+    excerpt:
+      "Lighter bodies, quieter cabins and better crash performance — what structural bonding brings to the line.",
+    category: "Automotive",
+    date: "2026-09-10",
+    readTime: "4 min read",
+    author: "Catenate Technical Team",
+    image: "/images/technologies/bus-automotive.jpg",
+    body: [
+      {
+        paragraphs: [
+          "Bus, coach and specialist vehicle builders increasingly bond panels, glazing and floors rather than relying on mechanical fasteners alone. The reasons are practical: weight, noise, corrosion and stiffness.",
+        ],
+      },
+      {
+        heading: "Load spread across the whole joint",
+        paragraphs: [
+          "A rivet carries load at a point. A bonded joint spreads it along its full length, reducing stress concentrations and allowing thinner, lighter panels.",
+        ],
+      },
+      {
+        heading: "Sealing and damping in one step",
+        paragraphs: [
+          "Elastic adhesives seal the joint against water and dust while damping vibration, which means a quieter cabin and fewer corrosion points where dissimilar metals meet.",
+          "Getting the process right — surface preparation, open time, clamping and cure — is what makes bonding reliable on a production line. Our team supports line trials and operator training.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "protecting-assets-in-oil-and-gas",
+    title: "Protecting process equipment in oil and gas facilities",
+    excerpt:
+      "Repair compounds and coatings that restore pumps, pipes and tanks without hot work or long shutdowns.",
+    category: "Oil & Gas",
+    date: "2026-08-27",
+    readTime: "5 min read",
+    author: "Catenate Technical Team",
+    image: "/images/technologies/oil-gas.jpg",
+    body: [
+      {
+        paragraphs: [
+          "Erosion, corrosion and chemical attack wear down pumps, pipework and tanks. Replacing them means long lead times and shutdowns; welding repairs need hot-work permits that are often impractical in hazardous areas.",
+        ],
+      },
+      {
+        heading: "Cold repairs on live plant",
+        paragraphs: [
+          "Engineered repair compounds rebuild worn metal, seal leaks and restore surfaces without heat. Many can be applied during short maintenance windows and returned to service within hours.",
+        ],
+      },
+      {
+        heading: "Coatings that extend service life",
+        paragraphs: [
+          "Once repaired, a protective coating guards against further wear. Choosing the right one depends on temperature, chemical exposure and abrasion, so we review the operating conditions before recommending a system.",
+        ],
+      },
+    ],
+  },
+];
+
+export const blogPostBySlug = (slug: string): BlogPost | undefined =>
+  blogPosts.find((post) => post.slug === slug);
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "2026-11-04" → "4 Nov 2026". Built by hand so every runtime prints the same. */
+export const formatPostDate = (iso: string) => {
+  const [year, month, day] = iso.split("-").map(Number);
+  return `${day} ${MONTHS[month - 1]} ${year}`;
+};

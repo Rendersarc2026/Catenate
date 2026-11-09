@@ -9,6 +9,7 @@ import { GlobalPresence } from "@/components/site/global-presence";
 import { Hero } from "@/components/site/hero";
 import { HeroStatement } from "@/components/site/hero-statement";
 import { IndustriesSection } from "@/components/site/industries-section";
+import { LatestBlog } from "@/components/site/latest-blog";
 import { PortfolioSection } from "@/components/site/portfolio-section";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
@@ -30,6 +31,7 @@ export default function Home() {
         <IndustriesSection />
         <WhyCatenate />
         <TrustedBySection />
+        <LatestBlog />
         <TechnicalSupport />
         <SolutionsFinderTeaser />
         <ContactSection />
