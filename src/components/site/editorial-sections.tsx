@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Fragment, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
 import { Reveal } from "@/components/site/reveal";
 import { TechnicalSupportAccordion } from "@/components/site/technical-support-accordion";
@@ -7,18 +7,17 @@ import { customers, technicalSupport } from "@/data/catenate";
 
 export { StrengthsSection } from "./strengths-section";
 
-export function TrustedBySection() {
-  const renderLogo = (customer: (typeof customers)[number]) => (
+type Customer = (typeof customers)[number];
+
+function CustomerLogo({ customer }: { customer: Customer }) {
+  return (
     <div
-      key={customer.name}
       title={`${customer.name} — ${customer.sector}`}
-      className="flex items-center justify-center px-3 py-[clamp(22px,2.6vw,34px)]"
+      className="flex w-[clamp(150px,15vw,230px)] shrink-0 items-center justify-center px-[clamp(16px,2vw,32px)] py-[clamp(22px,2.6vw,34px)]"
     >
       {customer.logo ? (
         <span
-          style={
-            { "--logo-scale": customer.logoScale ?? 1 } as CSSProperties
-          }
+          style={{ "--logo-scale": customer.logoScale ?? 1 } as CSSProperties}
           className="relative block h-[calc(clamp(28px,3vw,38px)*var(--logo-scale))] w-full max-w-[calc(clamp(104px,12vw,150px)*var(--logo-scale))] opacity-90 transition-opacity duration-300 ease-expo hover:opacity-100"
         >
           <Image
@@ -36,15 +35,47 @@ export function TrustedBySection() {
       )}
     </div>
   );
+}
 
-  /*
-   * Rows of six balanced cells, with a hairline rule between rows. Any count
-   * flows; a short final row is centred, exactly like the old two-row layout.
-   */
-  const rows: Array<Array<(typeof customers)[number]>> = [];
-  for (let i = 0; i < customers.length; i += 6) {
-    rows.push(customers.slice(i, i + 6));
-  }
+/*
+ * One endless row of logos. The set is rendered twice so the track can slide
+ * by half its width and loop without a seam; the copy is hidden from screen
+ * readers so each customer is announced once.
+ */
+function LogoRow({
+  items,
+  direction,
+}: {
+  items: Customer[];
+  direction: "left" | "right";
+}) {
+  return (
+    <div className="logo-marquee overflow-hidden">
+      <div
+        className="logo-marquee-track"
+        data-direction={direction}
+        style={{ "--marquee-duration": `${items.length * 4.5}s` } as CSSProperties}
+      >
+        {[0, 1].map((copy) => (
+          <div
+            key={copy}
+            aria-hidden={copy === 1 || undefined}
+            className="flex shrink-0 items-center"
+          >
+            {items.map((customer) => (
+              <CustomerLogo key={customer.name} customer={customer} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function TrustedBySection() {
+  /* Two rows running in opposite directions, the first a logo longer when odd. */
+  const half = Math.ceil(customers.length / 2);
+  const rows = [customers.slice(0, half), customers.slice(half)];
 
   return (
     <section id="customers" className="section bg-white">
@@ -54,33 +85,10 @@ export function TrustedBySection() {
         </h2>
       </Reveal>
 
-      {/* Desktop view (lg and above): rows of six over full hairline rules */}
-      <div className="hidden lg:block">
-        {rows.map((row, rowIndex) => (
-          <Fragment key={rowIndex}>
-            {rowIndex > 0 && <div className="border-t border-ink/10" />}
-            <Reveal stagger step={60} className="flex justify-center items-center">
-              {row.map((c) => (
-                <div key={c.name} className="w-1/6">
-                  {renderLogo(c)}
-                </div>
-              ))}
-            </Reveal>
-          </Fragment>
-        ))}
-      </div>
-
-      {/* Mobile and tablet view (< lg): responsive multi-column grid */}
-      <Reveal
-        stagger
-        step={60}
-        className="grid grid-cols-2 sm:grid-cols-3 lg:hidden [&>*:nth-child(-n+2)]:border-t-0 sm:[&>*:nth-child(3)]:border-t-0"
-      >
-        {customers.map((customer) => (
-          <div key={customer.name} className="border-t border-ink/10">
-            {renderLogo(customer)}
-          </div>
-        ))}
+      <Reveal>
+        <LogoRow items={rows[0]} direction="left" />
+        <div className="border-t border-ink/10" />
+        <LogoRow items={rows[1]} direction="right" />
       </Reveal>
     </section>
   );
