@@ -84,9 +84,9 @@ export function TrustedBySection() {
   );
 
   return (
-    <section id="customers" className="section bg-white">
-      <Reveal className="mb-[clamp(28px,4vw,52px)] text-center">
-        <h2 className="eyebrow text-[22px] font-medium text-black opacity-100">
+    <section id="customers" className="section bg-white pt-[clamp(40px,4.5vw,72px)] pb-[clamp(8px,1vw,16px)]">
+      <Reveal className="mb-[clamp(12px,1.6vw,24px)] text-center">
+        <h2 className="eyebrow mb-0 text-[22px] font-medium text-black opacity-100">
           Trusted by
         </h2>
       </Reveal>
