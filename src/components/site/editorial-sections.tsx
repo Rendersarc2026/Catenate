@@ -38,10 +38,13 @@ function CustomerLogo({ customer }: { customer: Customer }) {
 }
 
 /*
- * One endless row of logos. The set is rendered twice so the track can slide
- * by half its width and loop without a seam; the copy is hidden from screen
- * readers so each customer is announced once.
+ * One endless row of logos. The set is rendered four times so a short row
+ * still spans wide screens; the track slides by half its width (two sets) and
+ * loops without a seam. Copies are hidden from screen readers so each customer
+ * is announced once.
  */
+const COPIES = 4;
+
 function LogoRow({
   items,
   direction,
@@ -54,12 +57,12 @@ function LogoRow({
       <div
         className="logo-marquee-track"
         data-direction={direction}
-        style={{ "--marquee-duration": `${items.length * 4.5}s` } as CSSProperties}
+        style={{ "--marquee-duration": `${items.length * 4.5 * (COPIES / 2)}s` } as CSSProperties}
       >
-        {[0, 1].map((copy) => (
+        {Array.from({ length: COPIES }, (_, copy) => (
           <div
             key={copy}
-            aria-hidden={copy === 1 || undefined}
+            aria-hidden={copy > 0 || undefined}
             className="flex shrink-0 items-center"
           >
             {items.map((customer) => (
@@ -73,9 +76,12 @@ function LogoRow({
 }
 
 export function TrustedBySection() {
-  /* Two rows running in opposite directions, the first a logo longer when odd. */
-  const half = Math.ceil(customers.length / 2);
-  const rows = [customers.slice(0, half), customers.slice(half)];
+  /* Three rows alternating direction; earlier rows take the extra logos. */
+  const ROW_COUNT = 3;
+  const perRow = Math.ceil(customers.length / ROW_COUNT);
+  const rows = Array.from({ length: ROW_COUNT }, (_, i) =>
+    customers.slice(i * perRow, (i + 1) * perRow),
+  );
 
   return (
     <section id="customers" className="section bg-white">
@@ -86,9 +92,11 @@ export function TrustedBySection() {
       </Reveal>
 
       <Reveal>
-        <LogoRow items={rows[0]} direction="left" />
-        <div className="border-t border-ink/10" />
-        <LogoRow items={rows[1]} direction="right" />
+        {rows.map((row, i) => (
+          <div key={i} className={i > 0 ? "border-t border-ink/10" : undefined}>
+            <LogoRow items={row} direction={i % 2 === 0 ? "left" : "right"} />
+          </div>
+        ))}
       </Reveal>
     </section>
   );
