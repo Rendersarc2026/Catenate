@@ -2390,7 +2390,7 @@ export const portfolio = {
     { name: "Tangit", use: "PVC & ABS pipe adhesives", logo: "/images/logos/tangit.png", logoScale: 1.25 },
     { name: "Metylan", use: "Wallpaper & wall-covering adhesives", logo: "/images/logos/metylan.png", logoScale: 1.25 },
     { name: "EZ Weld", use: "UPVC & CPVC solvent cements" },
-    { name: "MBT", use: "Construction chemicals", logo: "/images/logos/master-builders.svg" },
+    { name: "MBT", use: "Construction chemicals", logo: "/images/logos/mbt.png" },
   ] satisfies PortfolioBrand[] as PortfolioBrand[],
 };
 
