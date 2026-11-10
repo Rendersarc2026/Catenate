@@ -41,12 +41,14 @@ const PROBE_HEIGHT_VH = 100 + ARRIVE_START_VH - ARRIVE_END_VH
 const HEAD_IN = 0.3
 /** Where the first mark starts arriving. */
 const MARKS_START = 0.2
+/** Share of the arrival the marks spend arriving one after another. */
+const MARKS_SPREAD = 0.4
 /** Share of the arrival between one mark arriving and the next. */
-const MARK_STAGGER = 0.1
+const MARK_STAGGER = MARKS_SPREAD / Math.max(brands.length - 1, 1)
 /** How long a single mark takes to land. */
 const MARK_SPAN = 0.3
 /** Progress past which the row is settled enough to accept the pointer. */
-const ARM_AT = MARKS_START + MARK_STAGGER * (brands.length - 1) + MARK_SPAN
+const ARM_AT = MARKS_START + MARKS_SPREAD + MARK_SPAN
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 
@@ -178,7 +180,7 @@ function Field({ idle = false, headingRef, columnRef }: FieldProps) {
 
       {/* The bottom padding is the room the open panel hangs into. */}
       <div
-        className="mx-auto mt-[clamp(56px,12vh,160px)] flex items-center justify-center gap-[clamp(20px,8vw,140px)] pb-[clamp(300px,38vh,340px)] max-md:hidden"
+        className="mx-auto mt-[clamp(56px,12vh,160px)] flex items-center justify-center gap-[clamp(20px,5.6vw,108px)] pb-[clamp(300px,38vh,340px)] max-md:hidden"
         onMouseLeave={() => setActive(null)}
       >
         {brands.map((brand, index) => {

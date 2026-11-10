@@ -791,6 +791,43 @@ export const brands: Brand[] = [
       },
     ],
   },
+  /* Ranges are placeholders by system type until MBT's own list is supplied. */
+  {
+    slug: "mbt",
+    name: "MBT",
+    description:
+      "Construction chemicals for concrete, waterproofing, repair and flooring",
+    familyCount: "5 families",
+    wordmarkClass: "text-[#17479e]",
+    logo: "/images/logos/mbt.png",
+    logoScale: 1.1,
+    groups: [
+      {
+        title: "Concrete admixtures",
+        items: [
+          "Plasticisers and superplasticisers",
+          "Retarders and accelerators",
+          "Waterproofing admixtures",
+        ],
+      },
+      {
+        title: "Waterproofing",
+        items: ["Liquid membranes", "Cementitious coatings", "Joint sealants"],
+      },
+      {
+        title: "Concrete repair and protection",
+        items: ["Repair mortars", "Protective coatings", "Bonding agents"],
+      },
+      {
+        title: "Grouts and anchoring",
+        items: ["Cementitious grouts", "Epoxy grouts", "Chemical anchors"],
+      },
+      {
+        title: "Flooring",
+        items: ["Epoxy floors", "Polyurethane floors", "Floor hardeners"],
+      },
+    ],
+  },
 ];
 
 /** Look a principal up by its URL segment. */
@@ -973,8 +1010,8 @@ export const technologyIndustries: TechnologyIndustry[] = [
   },
   {
     title: "Epoxy flooring and construction repair chemistries",
-    principal: "Master Builders / Henkel",
-    range: "Master Builders and Polybit ranges",
+    principal: "MBT / Henkel",
+    range: "MBT and Polybit ranges",
     body: "Seamless epoxy and polyurethane floors for factories, warehouses and car parks, with repair mortars and protective coatings that return damaged concrete to service.",
     uses: [
       "Factory and warehouse floors",
@@ -2117,7 +2154,7 @@ export const whyCatenate: WhyCatenatePillar[] = [
   {
     title: "One Accountable Line",
     headline: "A single point of technical responsibility.",
-    body: "Direct responsibility across five world-class principals and thirty-one product families.",
+    body: "Direct responsibility across six world-class principals and thirty-six product families.",
     detail: "No finger-pointing between manufacturers when multiple chemistries intersect. Catenate acts as your single technical and commercial point of responsibility, guaranteeing cohesive performance from sub-grade foundations to the finished surface.",
     image: "/images/industries/oil-gas-petrochemical.jpg",
     tag: "Unified Warranty",
@@ -2390,7 +2427,6 @@ export const portfolio = {
     { name: "Tangit", use: "PVC & ABS pipe adhesives", logo: "/images/logos/tangit.png", logoScale: 1.25 },
     { name: "Metylan", use: "Wallpaper & wall-covering adhesives", logo: "/images/logos/metylan.png", logoScale: 1.25 },
     { name: "EZ Weld", use: "UPVC & CPVC solvent cements", logo: "/images/logos/ez-weld.png" },
-    { name: "MBT", use: "Construction chemicals", logo: "/images/logos/mbt.png" },
   ] satisfies PortfolioBrand[] as PortfolioBrand[],
 };
 

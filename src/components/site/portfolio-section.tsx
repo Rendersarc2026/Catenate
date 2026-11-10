@@ -43,7 +43,14 @@ function Mark({ brand }: { brand: PortfolioBrand }) {
 }
 
 export function PortfolioSection() {
-  const lastRow = portfolio.brands.length - 3
+  /*
+   * Rows of four, with the tail set three to a row so no row is left ragged:
+   * widen cards from the end, three at a time, until the rest divide by four.
+   */
+  const count = portfolio.brands.length
+  let wide = 0
+  while (wide < count && (count - wide) % 4 !== 0) wide += 3
+  const lastRow = count - wide
 
   return (
     <section id="portfolio" className="bg-[#fafafa]">
