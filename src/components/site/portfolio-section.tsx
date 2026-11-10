@@ -17,14 +17,6 @@ const WORDMARKS: Record<string, ReactNode> = {
       Ceresit
     </span>
   ),
-  "EZ Weld": (
-    <span className="flex items-center text-[17px] leading-none md:text-[22px] font-black tracking-[-0.02em]">
-      <span className="rounded-l-[4px] bg-black px-1.5 py-1 text-white">EZ</span>
-      <span className="rounded-r-[4px] border-2 border-black bg-[#1f6fd1] px-1.5 py-[2px] text-white">
-        WELD
-      </span>
-    </span>
-  ),
 }
 
 function Mark({ brand }: { brand: PortfolioBrand }) {

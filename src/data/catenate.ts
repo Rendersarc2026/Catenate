@@ -2389,7 +2389,7 @@ export const portfolio = {
     { name: "Aquence", use: "Water-based adhesives", logo: "/images/logos/aquence.png" },
     { name: "Tangit", use: "PVC & ABS pipe adhesives", logo: "/images/logos/tangit.png", logoScale: 1.25 },
     { name: "Metylan", use: "Wallpaper & wall-covering adhesives", logo: "/images/logos/metylan.png", logoScale: 1.25 },
-    { name: "EZ Weld", use: "UPVC & CPVC solvent cements" },
+    { name: "EZ Weld", use: "UPVC & CPVC solvent cements", logo: "/images/logos/ez-weld.png" },
     { name: "MBT", use: "Construction chemicals", logo: "/images/logos/mbt.png" },
   ] satisfies PortfolioBrand[] as PortfolioBrand[],
 };
