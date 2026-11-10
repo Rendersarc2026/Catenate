@@ -12,9 +12,9 @@ import { cn } from "@/lib/utils"
  *  - the wordmark is always a mask filled with `currentColor`, so the same
  *    lockup reads on light and dark grounds.
  */
-const MARK = "/images/brand-lockup-mark.png"
-const WORDMARK = "/images/brand-lockup-wordmark.png"
-const WIDTH = 367
+const MARK = "/images/catenate-logo-mark.png"
+const WORDMARK = "/images/catenate-logo-wordmark.png"
+const WIDTH = 363
 const HEIGHT = 480
 
 const mask = (src: string): CSSProperties => ({
