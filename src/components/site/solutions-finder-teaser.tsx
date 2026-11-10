@@ -16,7 +16,7 @@ export function SolutionsFinderTeaser() {
   return (
     <section
       id="solutions-finder-teaser"
-      className="relative isolate overflow-hidden -mt-[clamp(28px,4vw,56px)] pt-[clamp(28px,4vw,56px)]"
+      className="relative isolate overflow-hidden"
       style={{ backgroundColor: FIELD }}
     >
       <div

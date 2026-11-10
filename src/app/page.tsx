@@ -28,10 +28,10 @@ export default function Home() {
         <PortfolioSection />
         <GlobalPresence />
         <IndustriesSection />
+        <SolutionsFinderTeaser />
         <WhyCatenate />
         <TrustedBySection />
         <LatestBlog />
-        <SolutionsFinderTeaser />
         <ContactSection />
       </main>
 
