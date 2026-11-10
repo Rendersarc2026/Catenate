@@ -12,6 +12,21 @@ import { blogPostBySlug, blogPosts, formatPostDate } from "@/data/catenate"
 
 type BlogPostProps = { params: Promise<{ slug: string }> }
 
+/* A neutral silhouette until authors have photographs of their own. */
+function AuthorAvatar() {
+  return (
+    <svg
+      viewBox="0 0 80 80"
+      aria-hidden="true"
+      className="size-[clamp(56px,5.2vw,84px)] shrink-0 text-black"
+    >
+      <circle cx="40" cy="40" r="40" fill="currentColor" />
+      <circle cx="40" cy="31" r="14" fill="#fff" />
+      <path d="M14 70c4-13 14-20 26-20s22 7 26 20z" fill="#fff" />
+    </svg>
+  )
+}
+
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }))
 }
@@ -42,77 +57,103 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
     <>
       <SiteHeader />
 
-      <main className="pt-nav bg-white text-ink">
-        <article className="content-pad pt-[clamp(36px,5vw,72px)] pb-[clamp(64px,8vw,120px)]">
-          <Reveal className="mx-auto max-w-[760px]">
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-1.5 text-[12px] text-grey transition-colors hover:text-ink"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-                className="size-3 fill-none stroke-current stroke-[2]"
+      <main className="bg-white text-ink">
+        {/*
+         * Split article: on wide screens the title panel and photograph hold
+         * the left half of the screen while the writing scrolls on the right.
+         * On phones the three stack — title, photograph, then the text.
+         */}
+        <article className="lg:grid lg:grid-cols-2">
+          <div className="flex flex-col lg:sticky lg:top-0 lg:h-svh">
+            <Reveal className="bg-[#e7e6e2] px-[clamp(20px,4vw,64px)] pt-[calc(var(--nav-height)+clamp(28px,5vh,64px))] pb-[clamp(32px,6vh,72px)]">
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-1.5 text-[12px] text-ink/60 transition-colors hover:text-ink"
               >
-                <path d="M15 19l-7-7 7-7" />
-              </svg>
-              All posts
-            </Link>
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="size-3 fill-none stroke-current stroke-[2]"
+                >
+                  <path d="M15 19l-7-7 7-7" />
+                </svg>
+                All posts
+              </Link>
 
-            <p className="mt-7 text-[12px] tracking-[0.08em] text-ink/55 uppercase">
-              {post.category}
-              <span aria-hidden="true"> · </span>
-              <time dateTime={post.date}>{formatPostDate(post.date)}</time>
-              <span aria-hidden="true"> · </span>
-              {post.readTime}
-            </p>
-            <h1 className="mt-4 text-[clamp(2rem,3.6vw,3.2rem)] leading-[1.08] font-medium tracking-[-0.03em]">
-              {post.title}
-            </h1>
-            <p className="mt-5 text-[clamp(16px,1.25vw,20px)] leading-[1.55] text-ink/70">
-              {post.excerpt}
-            </p>
-            <p className="mt-6 text-[13px] text-grey">By {post.author}</p>
-          </Reveal>
+              <p className="mt-[clamp(20px,3.5vh,40px)] text-[12px] tracking-[0.12em] text-ink/60 uppercase">
+                {post.category}
+                <span aria-hidden="true"> · </span>
+                {post.readTime}
+              </p>
+              <h1 className="mt-3 text-balance text-[clamp(2.2rem,min(4.2vw,7vh),4.4rem)] leading-[1.04] font-medium tracking-[-0.03em] text-black">
+                {post.title}
+              </h1>
+            </Reveal>
 
-          <Reveal className="mx-auto mt-[clamp(32px,4vw,56px)] max-w-[1100px]">
-            <div className="relative aspect-16/9 w-full overflow-hidden rounded-[18px] bg-[#e6e7ec]">
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#e6e7ec] lg:aspect-auto lg:min-h-[30svh] lg:flex-1">
               <Image
                 src={post.image}
                 alt=""
                 fill
                 priority
-                sizes="(max-width: 1100px) 100vw, 1100px"
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>
-          </Reveal>
+          </div>
 
-          <Reveal className="mx-auto mt-[clamp(36px,5vw,72px)] flex max-w-[680px] flex-col gap-[1.15em]">
-            {post.body.map((section, index) => (
-              <div key={section.heading ?? index} className="flex flex-col gap-[1.15em]">
-                {section.heading ? (
-                  <h2 className="mt-[0.8em] text-[clamp(1.25rem,1.7vw,1.6rem)] leading-[1.25] font-medium tracking-[-0.02em]">
-                    {section.heading}
-                  </h2>
-                ) : null}
-                {section.paragraphs.map((paragraph) => (
-                  <p
-                    key={paragraph.slice(0, 40)}
-                    className="text-[clamp(16px,1.1vw,18px)] leading-[1.7] text-ink/75"
-                  >
-                    {paragraph}
+          <div className="px-[clamp(20px,5vw,96px)] pt-[clamp(40px,7vh,96px)] pb-[clamp(64px,10vh,128px)] lg:pt-[calc(var(--nav-height)+clamp(64px,18vh,200px))]">
+            <div className="mx-auto max-w-[580px] lg:mx-0">
+              <Reveal className="flex items-center gap-[clamp(14px,1.6vw,22px)]">
+                <AuthorAvatar />
+                <div>
+                  <p className="text-[clamp(18px,1.5vw,24px)] leading-tight font-semibold tracking-[-0.01em] text-ink">
+                    {post.author}
                   </p>
-                ))}
-              </div>
-            ))}
+                  <p className="mt-1 text-[clamp(14px,1.1vw,17px)] text-ink/70">
+                    <time dateTime={post.date}>{formatPostDate(post.date)}</time>
+                  </p>
+                </div>
+              </Reveal>
 
-            <div className="mt-[clamp(24px,3vw,40px)] border-t border-ink/10 pt-8">
-              <ArrowButton href="/#contact" variant="brand" size="pill">
-                Talk to our technical team
-              </ArrowButton>
+              {/*
+                Long-form copy fades in whole rather than line by line: the
+                line split measures breaks once, and a line that fits within a
+                pixel can wrap again afterwards, leaving a stray word alone.
+              */}
+              <Reveal
+                data-no-split
+                className="mt-[clamp(32px,6vh,64px)] flex flex-col gap-[1.1em]"
+              >
+                <p className="text-[clamp(17px,1.25vw,20px)] leading-[1.55] text-ink">
+                  {post.excerpt}
+                </p>
+                {post.body.map((section, index) => (
+                  <div key={section.heading ?? index} className="flex flex-col gap-[1.1em]">
+                    {section.heading ? (
+                      <h2 className="mt-[0.8em] text-[clamp(1.2rem,1.5vw,1.45rem)] leading-[1.25] font-medium tracking-[-0.02em]">
+                        {section.heading}
+                      </h2>
+                    ) : null}
+                    {section.paragraphs.map((paragraph) => (
+                      <p
+                        key={paragraph.slice(0, 40)}
+                        className="text-[clamp(15px,1.05vw,17px)] leading-[1.7] text-ink/75"
+                      >
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                ))}
+
+                <div className="mt-[clamp(24px,3vw,40px)] border-t border-ink/10 pt-8">
+                  <ArrowButton href="/#contact" variant="brand" size="pill">
+                    Talk to our technical team
+                  </ArrowButton>
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
+          </div>
         </article>
 
         {more.length ? (
