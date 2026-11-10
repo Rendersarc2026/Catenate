@@ -36,7 +36,7 @@ function SectionHeading({
 function UpdateCard({ update }: { update: CompanyUpdate }) {
   return (
     <Link
-      href={update.href}
+      href={`/updates/${update.slug}`}
       className="group/update flex min-h-[148px] overflow-hidden lg:min-h-[clamp(116px,15svh,160px)] rounded-[14px] border border-ink/8 bg-[#f4f5f8] transition-colors duration-300 hover:bg-[#eceef3]"
     >
       <div className="relative w-1/2 shrink-0 lg:w-[42%] overflow-hidden bg-[#e6e7ec]">
@@ -104,7 +104,7 @@ export function LatestBlog() {
       <SectionHeading
         eyebrow="Our World"
         title="Inside Catenate."
-        href="/about"
+        href="/updates"
         cta="View all updates"
       />
 
@@ -114,7 +114,7 @@ export function LatestBlog() {
         className="grid gap-[clamp(14px,1.6vw,24px)] sm:grid-cols-2 lg:grid-cols-4"
       >
         {companyUpdates.map((update) => (
-          <UpdateCard key={update.title} update={update} />
+          <UpdateCard key={update.slug} update={update} />
         ))}
       </Reveal>
     </section>

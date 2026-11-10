@@ -52,7 +52,7 @@ export function AboutTeam() {
         }}
         aria-labelledby="team-title"
       >
-        <div className="section mx-auto w-full max-w-[var(--content-max)] py-[clamp(48px,8vw,96px)]">
+        <div className="section w-full py-[clamp(48px,8vw,96px)]">
           <Reveal>
             <span className="eyebrow text-amber">Our team</span>
             <h2

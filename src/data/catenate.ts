@@ -2628,43 +2628,79 @@ export const blogPostBySlug = (slug: string): BlogPost | undefined =>
   blogPosts.find((post) => post.slug === slug);
 
 export type CompanyUpdate = {
+  /** URL segment under /updates. */
+  slug: string;
   category: string;
   title: string;
+  /** A sentence or two shown on the /updates page and under the title. */
+  summary: string;
   image: string;
-  href: string;
+  /** The update in full, one paragraph per entry. */
+  body: string[];
 };
 
 /*
- * "Inside Catenate" — company news on the home page. Images are placeholders
- * until event and award photography is supplied; links point at existing
- * pages until a news page exists.
+ * "Inside Catenate" — company news, shown as cards on the home page, listed on
+ * /updates and in full on /updates/[slug]. Images and copy are placeholders
+ * until event and award photography and the real announcements are supplied.
  */
 export const companyUpdates: CompanyUpdate[] = [
   {
+    slug: "big-5-global-2026",
     category: "Events",
     title: "Catenate at Big 5 Global 2026",
+    summary:
+      "Meet the team on the stand to walk through bonding, sealing and waterproofing systems for your next project.",
     image: "/images/about/team-catenate.jpeg",
-    href: "/about",
+    body: [
+      "Catenate will be at Big 5 Global 2026, with our technical and account teams on the stand throughout the show.",
+      "Bring your drawings or your problem substrate: we will walk through bonding, sealing, waterproofing and flooring systems from the brands we represent, and what each needs to perform on site.",
+      "To book time with a specialist ahead of the show, get in touch with the team.",
+    ],
   },
   {
+    slug: "supply-excellence",
     category: "Achievement",
     title: "Recognised for Supply Excellence",
+    summary:
+      "Recognition for dependable deliveries and technical follow-through across the region.",
     image: "/images/technologies/glass-facade.jpg",
-    href: "/about",
+    body: [
+      "Catenate has been recognised for supply excellence, reflecting dependable deliveries and technical follow-through across the region.",
+      "The recognition belongs to the people behind each order: the teams who hold stock locally, track every shipment from principal to site and stay with a project through application.",
+      "Thank you to the customers and brand partners who trust us with their programmes.",
+    ],
   },
   {
+    slug: "oman-distribution-hub",
     category: "News",
     title: "New regional distribution hub in Oman",
+    summary:
+      "A new hub brings stock closer to site, shortening lead times for contractors and manufacturers.",
     image: "/images/about/hero-warehouse.jpg",
-    href: "/contact",
+    body: [
+      "A new regional distribution hub in Oman brings stock closer to the projects and production lines that depend on it.",
+      "Holding the range locally shortens lead times, lets us release material in line with each project's schedule and keeps temperature-sensitive products in controlled storage until they are needed.",
+      "Contractors and manufacturers can speak to their account manager about availability from the new hub.",
+    ],
   },
   {
+    slug: "mena-partnership",
     category: "Partnership",
     title: "Strategic partnership to expand in MENA",
+    summary:
+      "A new partnership widens the range we carry and the markets we can serve.",
     image: "/images/about/team-onsite.jpg",
-    href: "/about",
+    body: [
+      "A new strategic partnership widens the range Catenate carries and the markets we can serve across the Middle East and North Africa.",
+      "For customers it means more systems available from one source, backed by the same technical support, specification help and site training.",
+      "More detail on the range and availability will follow.",
+    ],
   },
 ];
+
+export const companyUpdateBySlug = (slug: string): CompanyUpdate | undefined =>
+  companyUpdates.find((update) => update.slug === slug);
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
