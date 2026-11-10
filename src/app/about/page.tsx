@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { AboutCareers } from "@/components/site/about/about-careers";
-import { AboutCountries } from "@/components/site/about/about-countries";
 import { AboutHero } from "@/components/site/about/about-hero";
 import { AboutIndustries } from "@/components/site/about/about-industries";
 import { AboutStatement } from "@/components/site/about/about-statement";
@@ -24,7 +23,6 @@ export default function AboutPage() {
       <main id="content" className="bg-white">
         <AboutHero />
         <AboutStatement />
-        <AboutCountries />
         <StrengthsSection />
         <AboutIndustries />
         <AboutTeam />
