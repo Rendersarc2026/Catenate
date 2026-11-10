@@ -2,8 +2,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 
 import { Reveal } from "@/components/site/reveal";
-import { TechnicalSupportAccordion } from "@/components/site/technical-support-accordion";
-import { customers, technicalSupport } from "@/data/catenate";
+import { customers } from "@/data/catenate";
 
 export { StrengthsSection } from "./strengths-section";
 
@@ -111,17 +110,3 @@ export { WhyCatenate } from "./why-catenate-section";
  * into the home page's bundle for a section no page actually renders. Import it
  * from "./projects-rail" directly when something needs it.
  */
-
-export function TechnicalSupport() {
-  return (
-    <section className="section scroll-round-bottom relative z-10 overflow-clip border-t border-ink/10 bg-white">
-      <Reveal>
-        <span className="eyebrow">Technical support</span>
-        <TechnicalSupportAccordion items={technicalSupport} />
-      </Reveal>
-
-      {/* Drives the bottom-radius view timeline; see .scroll-round-bottom. */}
-      <span aria-hidden className="scroll-round-sentinel" />
-    </section>
-  );
-}

@@ -80,7 +80,7 @@ export function LatestBlog() {
   return (
     <section
       id="blog"
-      className="section bg-white lg:py-[clamp(32px,4.5svh,72px)]"
+      className="section scroll-round-bottom relative z-10 overflow-clip bg-white lg:py-[clamp(32px,4.5svh,72px)]"
     >
       <SectionHeading
         eyebrow="Insights & Expertise"
@@ -117,6 +117,9 @@ export function LatestBlog() {
           <UpdateCard key={update.title} update={update} />
         ))}
       </Reveal>
+
+      {/* Drives the bottom-radius view timeline; see .scroll-round-bottom. */}
+      <span aria-hidden className="scroll-round-sentinel" />
     </section>
   );
 }

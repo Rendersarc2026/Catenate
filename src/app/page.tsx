@@ -1,7 +1,6 @@
 import { AuthorisedDistributors } from "@/components/site/authorised-distributors";
 import { ContactSection } from "@/components/site/contact-section";
 import {
-  TechnicalSupport,
   TrustedBySection,
   WhyCatenate,
 } from "@/components/site/editorial-sections";
@@ -32,7 +31,6 @@ export default function Home() {
         <WhyCatenate />
         <TrustedBySection />
         <LatestBlog />
-        <TechnicalSupport />
         <SolutionsFinderTeaser />
         <ContactSection />
       </main>
