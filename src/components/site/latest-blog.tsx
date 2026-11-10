@@ -20,10 +20,8 @@ function SectionHeading({
   return (
     <Reveal className="mb-[clamp(16px,2.6svh,40px)] flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
       <div>
-        <span className="mb-[clamp(8px,1.2svh,16px)] block text-[clamp(11px,0.95vw,14px)] font-semibold tracking-[0.24em] text-ink uppercase">
-          {eyebrow}
-        </span>
-        <h2 className="text-[clamp(2rem,4vw,3.6rem)] leading-[1.05] lg:text-[clamp(2rem,min(3.4vw,4.8svh),3.4rem)] font-semibold tracking-[-0.035em] text-ink">
+        <span className="eyebrow">{eyebrow}</span>
+        <h2 className="text-balance text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.18] font-medium tracking-[-0.015em] text-ink">
           {title}
         </h2>
       </div>
@@ -51,7 +49,7 @@ function UpdateCard({ update }: { update: CompanyUpdate }) {
         />
       </div>
       <div className="flex flex-1 flex-col p-[clamp(12px,1.2vw,18px)]">
-        <span className="text-[10.5px] font-semibold tracking-[0.14em] text-ink uppercase">
+        <span className="text-[11px] font-medium tracking-[0.12em] text-ink/60 uppercase">
           {update.category}
         </span>
         <h3 className="mt-2 text-[clamp(14px,1.05vw,16px)] leading-[1.3] font-medium tracking-[-0.01em] text-ink">
