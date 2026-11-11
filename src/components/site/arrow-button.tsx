@@ -69,20 +69,3 @@ export function ArrowButton({
     </Button>
   )
 }
-
-/** The interlocking-links glyph used between partner wordmarks. */
-export function ChainGlyph({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className={cn(
-        "size-4 shrink-0 fill-none stroke-current stroke-[1.5] opacity-30",
-        className
-      )}
-    >
-      <path d="M9.5 14.5a3.5 3.5 0 0 1 0-5l2-2a3.5 3.5 0 0 1 5 5l-.8.8" />
-      <path d="M14.5 9.5a3.5 3.5 0 0 1 0 5l-2 2a3.5 3.5 0 0 1-5-5l.8-.8" />
-    </svg>
-  )
-}

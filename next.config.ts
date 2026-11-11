@@ -2,10 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // Placeholder photography. Replace with the real asset host.
+    // Regional photography in the presence slider. Replace with the real asset host.
     remotePatterns: [
-      { protocol: "https", hostname: "picsum.photos" },
-      { protocol: "https", hostname: "fastly.picsum.photos" },
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
     ],
     // Modern formats first; the site's photography is all large and decorative.

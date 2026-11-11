@@ -117,11 +117,3 @@ export function TrustedBySection() {
 }
 
 export { WhyCatenate } from "./why-catenate-section";
-
-/*
- * `ProjectsRail` is deliberately not re-exported here. This barrel is imported
- * by the home page, and re-exporting a client component pulled the rail, the
- * card it renders and the whole `projects` array — case-study prose and all —
- * into the home page's bundle for a section no page actually renders. Import it
- * from "./projects-rail" directly when something needs it.
- */

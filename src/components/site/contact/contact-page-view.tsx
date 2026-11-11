@@ -8,8 +8,6 @@ import {
   formatMapEmbed,
   formatTel,
   formatWhatsApp,
-  type ContactBranch,
-  type ContactLocation,
 } from "@/data/contact-data";
 import { glideTo } from "@/lib/scroll-jump";
 

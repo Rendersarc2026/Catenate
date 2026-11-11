@@ -2,16 +2,12 @@
  * Content model for the Catenate site.
  *
  * Every string a visitor reads lives here so the marketing copy can be edited
- * without touching a component. Imagery is centralised in `images` — those are
- * placeholder sources and are the first thing to swap for real photography.
+ * without touching a component. Shared imagery is centralised in `images`.
  */
 
 /* ------------------------------------------------------------------ *
  * Imagery
  * ------------------------------------------------------------------ */
-
-const placeholder = (seed: string, w: number, h: number, grayscale = false) =>
-  `https://picsum.photos/seed/${seed}/${w}/${h}${grayscale ? "?grayscale" : ""}`;
 
 export const images = {
   /*
@@ -28,40 +24,8 @@ export const images = {
   heroEarth: "/images/hero-earth-v2.webp",
   /** Sector photography, keyed by the slug on each `Industry`. */
   industry: (slug: string) => `/images/industries/${slug}.jpg`,
-  project: (index: number) => placeholder(`catenateproj${index}`, 600, 800),
-  contactInquiry: placeholder("catenatesupport", 700, 525),
-  contactChannel: placeholder("catenatechannel", 700, 525),
-  contactPartner: placeholder("catenatepartner", 700, 525),
   contactBg: "/images/contact-bg.jpeg",
-  /** Ground for the technologies page hero — chemistry, not cargo. */
-  technologiesHero: "/images/industries/laboratory-microscope.jpg",
-  /** Panel and inset detail for a chemistry, keyed by `Technology.slug`. */
-  technology: (slug: string) => technologyShots[slug] ?? technologyShots.membranes,
 } as const;
-
-/*
- * Chemistry photography. Stand-ins borrowed from the sector set until the
- * product shots land — `panel` is the large picture, `detail` the inset that
- * rides over its corner. Swapping them is a one-line change here.
- */
-const technologyShots: Record<string, { panel: string; detail: string }> = {
-  membranes: {
-    panel: "/images/industries/building-infrastructure.jpg",
-    detail: "/images/industries/water-wastewater.jpg",
-  },
-  sealants: {
-    panel: "/images/industries/retail-fit-out.jpg",
-    detail: "/images/industries/hvac-plumbing.jpg",
-  },
-  "instant-adhesives": {
-    panel: "/images/industries/electronics-assembly.jpg",
-    detail: "/images/industries/metals-fabrication.jpg",
-  },
-  "hot-melt": {
-    panel: "/images/industries/packaging-converting.jpg",
-    detail: "/images/industries/furniture-woodworking.jpg",
-  },
-};
 
 /* ------------------------------------------------------------------ *
  * Navigation
@@ -168,58 +132,8 @@ export const hero = {
 } as const;
 
 /* ------------------------------------------------------------------ *
- * About Hero
- * ------------------------------------------------------------------ */
-
-export const aboutHero = {
-  title: "About us",
-  subtitle: "Channel Partner Network to serve your needs",
-  image: "/images/about-hero.jpg",
-  stats: [
-    { value: "100K+", label: "Products distributed" },
-    { value: "100K+", label: "Square metres specified" },
-    { value: "100K+", label: "Channel network reach" },
-  ],
-} as const;
-
-/* ------------------------------------------------------------------ *
  * Global presence
  * ------------------------------------------------------------------ */
-
-/**
- * Dotted world map. Each row is a list of inclusive `[startColumn, endColumn]`
- * spans that carry land, rendered as a grid of dots.
- */
-export const landRows: [number, number][][] = [
-  [[10, 20], [24, 28], [44, 62]],
-  [[8, 20], [23, 28], [42, 62]],
-  [[3, 9], [9, 21], [23, 28], [33, 38], [38, 62]],
-  [[2, 9], [9, 22], [24, 27], [29, 30], [32, 38], [38, 63]],
-  [[2, 9], [9, 22], [32, 38], [38, 63]],
-  [[6, 22], [30, 31], [32, 40], [40, 62]],
-  [[6, 21], [30, 40], [40, 60]],
-  [[7, 20], [31, 40], [40, 58]],
-  [[7, 20], [30, 38], [38, 57]],
-  [[8, 20], [31, 38], [38, 44], [44, 57]],
-  [[9, 19], [30, 39], [39, 45], [45, 49], [49, 56]],
-  [[10, 17], [30, 40], [39, 45], [45, 49], [49, 55]],
-  [[11, 17], [30, 40], [40, 44], [45, 48], [49, 54]],
-  [[13, 18], [30, 41], [45, 48], [50, 54]],
-  [[14, 19], [31, 42], [50, 55]],
-  [[18, 22], [32, 43], [50, 56]],
-  [[18, 24], [33, 42], [51, 57]],
-  [[18, 25], [33, 41], [51, 57]],
-  [[18, 25], [34, 41], [52, 58]],
-  [[18, 25], [34, 40], [55, 60]],
-  [[19, 25], [34, 40], [54, 61]],
-  [[19, 24], [35, 39], [53, 61]],
-  [[19, 24], [35, 38], [53, 60]],
-  [[20, 23], [36, 38], [54, 59]],
-  [[20, 22], [61, 62]],
-  [[20, 22], [61, 62]],
-  [[20, 22]],
-  [[20, 21]],
-];
 
 export type Region = {
   name: string;
@@ -1734,146 +1648,6 @@ export const conditionNotes: Record<Condition, string> = {
   "Low emission":
     "Specify the solvent-free, low-VOC grades and request emission test data for the finished product.",
 };
-
-/* ------------------------------------------------------------------ *
- * Approvals
- * ------------------------------------------------------------------ */
-
-export type CertificateTier = "own" | "principal";
-
-export type Certificate = {
-  code: string;
-  name: string;
-  body: string;
-  scope: string;
-  validThrough: string;
-};
-
-export const certificatesOwn: Certificate[] = [
-  {
-    code: "ISO 9001:2015",
-    name: "Quality management system",
-    body: "Accredited certification body",
-    scope: "Sourcing, storage, distribution and technical support.",
-    validThrough: "2027",
-  },
-  {
-    code: "ISO 45001:2018",
-    name: "Occupational health and safety",
-    body: "Accredited certification body",
-    scope: "Warehouse, logistics and site attendance activities.",
-    validThrough: "2027",
-  },
-  {
-    code: "ISO 14001:2015",
-    name: "Environmental management",
-    body: "Accredited certification body",
-    scope: "Storage and handling of chemical products.",
-    validThrough: "2028",
-  },
-  {
-    code: "TL-000000",
-    name: "Trade licence",
-    body: "Local authority",
-    scope: "Trading in construction chemicals and industrial adhesives.",
-    validThrough: "Annual",
-  },
-  {
-    code: "AD-HENKEL",
-    name: "Authorised distributor",
-    body: "Henkel",
-    scope:
-      "Polybit, Ceresit, Loctite, Technomelt, Aquence, Bonderite, Pattex, Tangit, Metylan.",
-    validThrough: "2027",
-  },
-  {
-    code: "AD-WELDON",
-    name: "Authorised distributor",
-    body: "Weld-On",
-    scope: "EZ-Weld solvent cement range.",
-    validThrough: "2027",
-  },
-  {
-    code: "AD-WURTH",
-    name: "Authorised distributor",
-    body: "Würth",
-    scope: "Fixings, tools, building chemicals and safety.",
-    validThrough: "2027",
-  },
-  {
-    code: "AD-GE",
-    name: "Authorised distributor",
-    body: "GE Sealants",
-    scope: "Silicone and polyurethane sealant range.",
-    validThrough: "2027",
-  },
-  {
-    code: "AD-SIKA",
-    name: "Authorised distributor",
-    body: "Sika",
-    scope: "Concrete, waterproofing, flooring and facade systems.",
-    validThrough: "2027",
-  },
-];
-
-export const certificatesPrincipal: Certificate[] = [
-  {
-    code: "CD-APPROVED",
-    name: "Civil defence approval",
-    body: "Civil defence authority",
-    scope: "Waterproofing and fire-rated sealant systems.",
-    validThrough: "Under renewal",
-  },
-  {
-    code: "AGRÉMENT",
-    name: "Agrément certificate",
-    body: "Technical approvals body",
-    scope: "Liquid-applied and sheet membrane systems.",
-    validThrough: "2029",
-  },
-  {
-    code: "EN 13707",
-    name: "Sheet membrane performance",
-    body: "Notified body",
-    scope: "Reinforced bitumen membranes for roof waterproofing.",
-    validThrough: "Ongoing",
-  },
-  {
-    code: "EN 14891",
-    name: "Liquid membrane performance",
-    body: "Notified body",
-    scope: "Liquid-applied membranes under ceramic tiling.",
-    validThrough: "Ongoing",
-  },
-  {
-    code: "POTABLE",
-    name: "Potable water contact",
-    body: "Water regulatory body",
-    scope: "Pipe cements and coatings in contact with drinking water.",
-    validThrough: "2028",
-  },
-  {
-    code: "EN 13501-1",
-    name: "Reaction to fire",
-    body: "Notified body",
-    scope: "Classification of membranes and insulation build-ups.",
-    validThrough: "Ongoing",
-  },
-  {
-    code: "LOW-VOC",
-    name: "Low emission certification",
-    body: "Indoor air quality scheme",
-    scope: "Adhesives, sealants and flooring for occupied interiors.",
-    validThrough: "2027",
-  },
-  {
-    code: "FOOD-CONTACT",
-    name: "Food contact compliance",
-    body: "Regulatory framework",
-    scope: "Adhesives used in food packaging and processing areas.",
-    validThrough: "Ongoing",
-  },
-];
 
 /* ------------------------------------------------------------------ *
  * Projects

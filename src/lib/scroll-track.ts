@@ -210,8 +210,3 @@ export function createScrollTrack(options: ScrollTrackOptions) {
     unlisten()
   }
 }
-
-/** Re-measures every track on the next frame — after a layout-changing edit. */
-export function invalidateScrollTracks() {
-  onScroll()
-}

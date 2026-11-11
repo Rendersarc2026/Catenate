@@ -30,8 +30,8 @@ export default function AdminLoginPage() {
 
       router.push("/admin");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to login");
     } finally {
       setIsLoading(false);
     }

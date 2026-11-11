@@ -1,11 +1,13 @@
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
 
 const secretKey = process.env.JWT_SECRET || "fallback_secret_for_development";
 const key = new TextEncoder().encode(secretKey);
 
-export async function encrypt(payload: any) {
+/** What the admin session cookie carries. */
+export type AdminSession = JWTPayload & { adminId: string; email: string };
+
+export async function encrypt(payload: AdminSession) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -13,8 +15,8 @@ export async function encrypt(payload: any) {
     .sign(key);
 }
 
-export async function decrypt(input: string): Promise<any> {
-  const { payload } = await jwtVerify(input, key, {
+export async function decrypt(input: string): Promise<AdminSession> {
+  const { payload } = await jwtVerify<AdminSession>(input, key, {
     algorithms: ["HS256"],
   });
   return payload;
@@ -26,7 +28,7 @@ export async function getSession() {
   if (!session) return null;
   try {
     return await decrypt(session);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
