@@ -74,14 +74,32 @@ function LogoRow({
   );
 }
 
-export function TrustedBySection() {
-  /* Three rows alternating direction; earlier rows take the extra logos. */
-  const ROW_COUNT = 3;
-  const perRow = Math.ceil(customers.length / ROW_COUNT);
-  const rows = Array.from({ length: ROW_COUNT }, (_, i) =>
+/* Splits the customers into rows; earlier rows take the extra logos. */
+function splitRows(count: number) {
+  const perRow = Math.ceil(customers.length / count);
+  return Array.from({ length: count }, (_, i) =>
     customers.slice(i * perRow, (i + 1) * perRow),
   );
+}
 
+function LogoRows({ rows, className }: { rows: Customer[][]; className?: string }) {
+  return (
+    <div className={className}>
+      {rows.map((row, i) => (
+        <div key={i} className={i > 0 ? "border-t border-ink/10" : undefined}>
+          <LogoRow items={row} direction={i % 2 === 0 ? "left" : "right"} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function TrustedBySection() {
+  /*
+   * Rows alternate direction. A phone shows fewer logos across, so it takes
+   * four shorter rows; wider screens take three. The hidden set is
+   * `display: none`, so its lazy images never load and it is never announced.
+   */
   return (
     <section id="customers" className="section bg-white pt-[clamp(40px,4.5vw,72px)] pb-[clamp(8px,1vw,16px)]">
       <Reveal className="mb-[clamp(12px,1.6vw,24px)] text-center">
@@ -91,11 +109,8 @@ export function TrustedBySection() {
       </Reveal>
 
       <Reveal>
-        {rows.map((row, i) => (
-          <div key={i} className={i > 0 ? "border-t border-ink/10" : undefined}>
-            <LogoRow items={row} direction={i % 2 === 0 ? "left" : "right"} />
-          </div>
-        ))}
+        <LogoRows rows={splitRows(4)} className="md:hidden" />
+        <LogoRows rows={splitRows(3)} className="max-md:hidden" />
       </Reveal>
     </section>
   );

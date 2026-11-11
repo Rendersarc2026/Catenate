@@ -37,7 +37,7 @@ function UpdateCard({ update }: { update: CompanyUpdate }) {
   return (
     <Link
       href={`/updates/${update.slug}`}
-      className="group/update flex min-h-[148px] overflow-hidden lg:min-h-[clamp(116px,15svh,160px)] rounded-[14px] border border-ink/8 bg-[#f4f5f8] transition-colors duration-300 hover:bg-[#eceef3]"
+      className="group/update flex h-full min-h-[148px] overflow-hidden lg:min-h-[clamp(116px,15svh,160px)] rounded-[14px] border border-ink/8 bg-[#f4f5f8] transition-colors duration-300 hover:bg-[#eceef3]"
     >
       <div className="relative w-1/2 shrink-0 lg:w-[42%] overflow-hidden bg-[#e6e7ec]">
         <Image
@@ -92,10 +92,16 @@ export function LatestBlog() {
       <Reveal
         stagger
         step={90}
-        className="grid gap-x-[clamp(20px,2.4vw,36px)] gap-y-10 md:grid-cols-3"
+        /*
+         * A phone swipes through the posts, the next one peeking in from the
+         * edge; the rail bleeds to the screen edges and snaps to each card.
+         */
+        className="-mx-[var(--section-pad)] flex snap-x snap-mandatory scroll-px-[var(--section-pad)] gap-4 overflow-x-auto overscroll-x-contain px-[var(--section-pad)] [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-x-[clamp(20px,2.4vw,36px)] md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
       >
         {blogPosts.slice(0, 3).map((post) => (
-          <PostCard key={post.slug} post={post} compact />
+          <div key={post.slug} className="w-[84%] shrink-0 snap-start md:w-auto">
+            <PostCard post={post} compact />
+          </div>
         ))}
       </Reveal>
 
@@ -111,10 +117,13 @@ export function LatestBlog() {
       <Reveal
         stagger
         step={90}
-        className="grid gap-[clamp(14px,1.6vw,24px)] sm:grid-cols-2 lg:grid-cols-4"
+        /* Swiped on a phone, like the posts above. */
+        className="-mx-[var(--section-pad)] flex snap-x snap-mandatory scroll-px-[var(--section-pad)] gap-3 overflow-x-auto overscroll-x-contain px-[var(--section-pad)] [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-[clamp(14px,1.6vw,24px)] sm:overflow-visible sm:px-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden"
       >
         {companyUpdates.map((update) => (
-          <UpdateCard key={update.slug} update={update} />
+          <div key={update.slug} className="w-[84%] shrink-0 snap-start sm:w-auto">
+            <UpdateCard update={update} />
+          </div>
         ))}
       </Reveal>
     </section>

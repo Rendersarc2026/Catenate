@@ -88,7 +88,8 @@ export function PortfolioSection() {
                 key={brand.name}
                 className={cn(
                   index < lastRow ? "md:col-span-3" : "md:col-span-4",
-                  "max-md:last:col-span-2"
+                  /* Two to a row on a phone: an odd one out takes the full row. */
+                  count % 2 === 1 && "max-md:last:col-span-2"
                 )}
               >
                 <div className="flex h-full min-h-[clamp(132px,8.3vw,160px)] flex-col items-center justify-center rounded-[18px] border border-ink/8 bg-white px-3 py-4 text-center shadow-[0_1px_3px_rgba(26,29,46,0.05)] transition-[translate,box-shadow] duration-500 ease-expo hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(26,29,46,0.25)] md:px-4">

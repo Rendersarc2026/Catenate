@@ -42,7 +42,13 @@ export function ContactSection() {
          * the allowlist in `next.config.ts` is the default `[75]`, so it was
          * being coerced back down.
          */}
-        <div className="pointer-events-none absolute inset-0 select-none overflow-hidden" aria-hidden="true">
+        {/*
+         * Below `lg` the copy stacks down the left, and a narrow screen crops
+         * the picture's sides rather than its height, so `object-position`
+         * cannot move the horizon. The whole layer drops instead, letting the
+         * glow sit under the list rather than behind its last line.
+         */}
+        <div className="pointer-events-none absolute inset-0 select-none overflow-hidden max-lg:translate-y-[24%]" aria-hidden="true">
           <Image
             src={images.contactBg}
             alt=""

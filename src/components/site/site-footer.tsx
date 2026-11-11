@@ -6,8 +6,9 @@ import { company, footerColumns } from "@/data/catenate"
 export function SiteFooter() {
   return (
     <footer className="content-pad overflow-hidden bg-black pt-[clamp(40px,4.5vw,68px)] pb-[clamp(20px,2.5vw,40px)] text-white">
-      <div className="grid grid-cols-[1.3fr_repeat(3,1fr)] gap-8.5 border-b border-white/12 pb-13 max-lg:grid-cols-2">
-        <div>
+      <div className="grid grid-cols-[1.3fr_repeat(3,1fr)] gap-8.5 border-b border-white/12 pb-13 max-lg:grid-cols-2 max-sm:gap-x-6 max-sm:gap-y-10">
+        {/* A phone is too narrow to share a row with the address, so it takes the full width. */}
+        <div className="max-sm:col-span-2">
           <Link
             href="/"
             aria-label="Catenate Alliances — home"
