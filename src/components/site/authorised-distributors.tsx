@@ -169,8 +169,54 @@ function Field({ idle = false, headingRef, columnRef }: FieldProps) {
   const [picked, setPicked] = React.useState(0)
   const last = brands.length - 1
 
+  const trackRef = React.useRef<HTMLDivElement>(null)
+
+  /*
+   * The phone stage reveals on its own once it is well into the viewport. The
+   * scroll arrival that arms the wide row is tuned for a full-height section,
+   * and on a phone it would hold the stage back until the section has nearly
+   * left the top of the screen.
+   */
+  const stageRef = React.useRef<HTMLDivElement>(null)
+  const [staged, setStaged] = React.useState(false)
+
+  React.useEffect(() => {
+    const stage = stageRef.current
+    if (!stage) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setStaged(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: "0px 0px -20% 0px" }
+    )
+    observer.observe(stage)
+    return () => observer.disconnect()
+  }, [])
+
+  /* The slide nearest the track's centre is the one on stage. */
+  const onTrackScroll = () => {
+    const track = trackRef.current
+    if (!track || !track.clientWidth) return
+    const index = Math.round(track.scrollLeft / track.clientWidth)
+    setPicked(Math.min(Math.max(index, 0), last))
+  }
+
+  const goTo = (index: number) => {
+    const track = trackRef.current
+    if (!track) return
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    track.scrollTo({
+      left: index * track.clientWidth,
+      behavior: smooth ? "smooth" : "auto",
+    })
+    setPicked(index)
+  }
+
   return (
-    <div className={cn("content-pad w-full", idle && "pointer-events-none")}>
+    <div className="content-pad w-full">
       <h2
         ref={headingRef}
         className="text-center text-balance text-[clamp(1.8rem,3.8vw,3.4rem)] leading-[1.1] font-light tracking-[-0.03em] will-change-[opacity,transform]"
@@ -180,7 +226,10 @@ function Field({ idle = false, headingRef, columnRef }: FieldProps) {
 
       {/* The bottom padding is the room the open panel hangs into. */}
       <div
-        className="mx-auto mt-[clamp(56px,12vh,160px)] flex items-center justify-center gap-[clamp(20px,5.6vw,108px)] pb-[clamp(300px,38vh,340px)] max-md:hidden"
+        className={cn(
+          "mx-auto mt-[clamp(56px,12vh,160px)] flex items-center justify-center gap-[clamp(20px,5.6vw,108px)] pb-[clamp(300px,38vh,340px)] max-md:hidden",
+          idle && "pointer-events-none"
+        )}
         onMouseLeave={() => setActive(null)}
       >
         {brands.map((brand, index) => {
@@ -242,34 +291,44 @@ function Field({ idle = false, headingRef, columnRef }: FieldProps) {
       </div>
 
       {/*
-       * Phones have no room for the row, so the principals take the stage one
-       * at a time, picked from the dots underneath.
+       * Phones have no room for the row, so the principals sit on a track the
+       * reader swipes through one at a time. The dots follow the swipe and
+       * can also be tapped to jump to a principal.
        */}
       <div
+        ref={stageRef}
         className={cn(
-          "transition-opacity duration-700 ease-expo md:hidden",
-          idle ? "opacity-0" : "opacity-100"
+          "transition-[opacity,translate] duration-700 ease-expo motion-reduce:transition-none md:hidden",
+          staged ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
         )}
       >
-        <div className="relative mx-auto mt-[clamp(44px,9vh,80px)] h-[clamp(96px,15vh,132px)] w-full max-w-[260px]">
+        <div
+          ref={trackRef}
+          onScroll={onTrackScroll}
+          aria-roledescription="carousel"
+          aria-label="Authorised distributors"
+          className="-mx-[var(--section-pad)] mt-[clamp(44px,9vh,80px)] flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           {brands.map((brand, index) => (
             <div
               key={brand.name}
-              aria-hidden={index !== picked}
-              className={cn(
-                "absolute inset-0 grid place-items-center transition-[opacity,translate,scale] duration-700 ease-expo motion-reduce:transition-none",
-                index === picked
-                  ? "translate-y-0 scale-100 opacity-100"
-                  : index < picked
-                    ? "-translate-y-8 scale-95 opacity-0"
-                    : "translate-y-8 scale-95 opacity-0"
-              )}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} of ${brands.length}: ${brand.name}`}
+              inert={index !== picked}
+              className="flex w-full shrink-0 snap-center snap-always flex-col items-center px-[var(--section-pad)]"
             >
-              <BrandMark
-                brand={brand}
-                open
-                className="h-[clamp(64px,10vh,96px)] w-[min(240px,68vw)] text-[28px]"
-              />
+              <div className="grid h-[clamp(96px,15vh,132px)] w-full max-w-[260px] place-items-center">
+                <BrandMark
+                  brand={brand}
+                  open
+                  className="h-[clamp(64px,10vh,96px)] w-[min(240px,68vw)] text-[28px]"
+                />
+              </div>
+
+              <div className="mx-auto mt-[clamp(24px,4vh,36px)] w-full max-w-[340px] text-center">
+                <BrandDetail brand={brand} />
+              </div>
             </div>
           ))}
         </div>
@@ -286,7 +345,7 @@ function Field({ idle = false, headingRef, columnRef }: FieldProps) {
               role="tab"
               aria-selected={index === picked}
               aria-label={brand.name}
-              onClick={() => setPicked(index)}
+              onClick={() => goTo(index)}
               className="grid h-6 cursor-pointer place-items-center px-0.5"
             >
               <span
@@ -297,13 +356,6 @@ function Field({ idle = false, headingRef, columnRef }: FieldProps) {
               />
             </button>
           ))}
-        </div>
-
-        <div
-          key={picked}
-          className="mx-auto mt-[clamp(24px,4vh,36px)] w-full max-w-[340px] animate-in text-center duration-500 ease-expo fade-in slide-in-from-bottom-2"
-        >
-          <BrandDetail brand={brands[picked]} />
         </div>
       </div>
     </div>
