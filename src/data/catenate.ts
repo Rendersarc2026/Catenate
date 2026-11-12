@@ -2137,8 +2137,8 @@ export const company = {
     "PO Box 378, PC 124",
     "Muscat, Oman",
   ],
-  phone: "+000 0000 0000",
-  email: "specification@catenate.com",
+  phone: "+968 9133 8027",
+  email: "shinusam@gmpsco.com",
   legal: "Trade licence 000000 · ISO 9001:2015 · ISO 45001:2018",
 } as const;
 
