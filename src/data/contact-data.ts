@@ -7,7 +7,6 @@ export interface ContactBranch {
   phone: string;
   whatsapp: string;
   email: string;
-  hours: string;
   map: string;
 }
 
@@ -41,7 +40,6 @@ export const CONTACT_LOCATIONS: ContactLocation[] = [
         phone: "+968 9133 8027",
         whatsapp: "+968 9133 8027",
         email: "shinusam@gmpsco.com",
-        hours: "Sun – Thu · 8:00 – 18:00",
         map: "Muscat Residence Building, Al Seeb Street, Muscat, Oman",
       },
     ],
@@ -66,7 +64,6 @@ export const CONTACT_LOCATIONS: ContactLocation[] = [
         phone: "+971 56 993 6370",
         whatsapp: "+971 56 993 6370",
         email: "prasanth@gmpsco.com",
-        hours: "Mon – Sat · 8:00 – 18:00",
         map: "Arenco Building, Dubai Investment Park 1, Dubai",
       },
       {
@@ -81,7 +78,6 @@ export const CONTACT_LOCATIONS: ContactLocation[] = [
         phone: "+971 4 000 0000",
         whatsapp: "+971 50 000 0000",
         email: "dubai@catenate.com",
-        hours: "Mon – Sat · 7:30 – 17:30",
         map: "Jebel Ali Free Zone, Dubai",
       },
     ],
@@ -107,7 +103,6 @@ export const CONTACT_LOCATIONS: ContactLocation[] = [
         phone: "+971 56 993 6370",
         whatsapp: "+971 56 993 6370",
         email: "prasanth@gmpsco.com",
-        hours: "Sun – Thu · 7:00 – 11:30 & 13:30 – 16:00",
         map: "GWC Bu Sulba, Birkat Al Awamer, Doha, Qatar",
       },
     ],
@@ -127,7 +122,6 @@ export const CONTACT_LOCATIONS: ContactLocation[] = [
         phone: "+44 20 0000 0000",
         whatsapp: "+44 7000 000000",
         email: "uk@catenate.com",
-        hours: "Mon – Fri · 9:00 – 17:30",
         map: "London, United Kingdom",
       },
     ],
