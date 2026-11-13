@@ -58,7 +58,6 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
               </svg>
               All posts
             </Link>
-
             <p className="mt-7 text-[12px] tracking-[0.08em] text-ink/55 uppercase">
               {post.category}
               <span aria-hidden="true"> · </span>
