@@ -629,7 +629,7 @@ export const brands: Brand[] = [
     description: "Silicone and polyurethane sealing for envelope and interior",
     familyCount: "1 family",
     wordmarkClass: "text-[#3874c8]",
-    logo: "/images/logos/ge-sealants.png",
+    logo: "/images/logos/ge-sealants-color.png",
     logoWhite: "/images/logos/white/ge-sealants.png",
     logoScale: 1.3,
     groups: [
