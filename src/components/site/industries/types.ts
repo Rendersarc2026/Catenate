@@ -16,31 +16,40 @@ export const SECTOR_CATEGORIES: SectorCategory[] = [
     ],
   },
   {
-    id: "energy-marine",
-    label: "Energy, Marine & Metals",
+    id: "energy-chemicals",
+    label: "Energy, Chemicals & Metals",
     slugs: [
       "oil-gas-petrochemical",
-      "marine-offshore",
+      "lubricants-chemical",
+      "battery-manufacturing",
       "metals-fabrication",
     ],
   },
   {
     id: "manufacturing",
-    label: "Manufacturing & Mobility",
+    label: "Manufacturing",
     slugs: [
-      "automotive-transport",
-      "electronics-assembly",
-      "packaging-converting",
+      "tobacco-manufacturing",
       "furniture-woodworking",
+      "electronics-assembly",
       "footwear-leather",
     ],
   },
   {
-    id: "life-sciences",
-    label: "Life Sciences & Cleanrooms",
+    id: "packaging",
+    label: "Packaging & Paper",
     slugs: [
-      "healthcare-life-sciences",
+      "paper-packaging",
+      "packaging-converting",
+    ],
+  },
+  {
+    id: "life-sciences",
+    label: "Food, Water & Life Sciences",
+    slugs: [
       "food-beverage",
+      "bottled-water",
+      "healthcare-life-sciences",
     ],
   },
 ]

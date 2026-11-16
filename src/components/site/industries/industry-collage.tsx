@@ -31,7 +31,7 @@ export function IndustryCollage({
         className={cn(
           "flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
           "-mx-[var(--section-pad)] px-[var(--section-pad)] scroll-px-[var(--section-pad)]",
-          "sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:py-0 md:grid-cols-3 lg:grid-cols-5 lg:gap-5"
+          "sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:py-0 md:grid-cols-3 lg:grid-cols-4 lg:gap-5"
         )}
       >
         {industries.map((industry, index) => (

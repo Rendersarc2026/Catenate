@@ -174,7 +174,7 @@ export const presence = {
   heading: "Specified in 38 markets, across 4 regions.",
   stats: [
     { to: 38, suffix: "", label: "Markets served" },
-    { to: 14, suffix: "", label: "Industries supplied" },
+    { to: 17, suffix: "", label: "Industries supplied" },
     { to: 500, suffix: "+", label: "Product lines stocked" },
     { to: 1500, suffix: "+", label: "Satisfied customers" },
   ],
@@ -201,14 +201,6 @@ export const industries: Industry[] = [
       "Podium decks, basements, wet areas and facades under long warranty periods.",
     systems: ["Waterproofing systems", "Tiling and flooring", "Concrete repair", "Sealants"],
     reference: "Mixed-use podium, 42,000 m² deck",
-  },
-  {
-    name: "Marine and offshore",
-    slug: "marine-offshore",
-    challenge:
-      "Constant salt exposure, movement and coating windows measured in hours.",
-    systems: ["Metal pretreatment", "Structural adhesives", "PU sealants"],
-    reference: "Port container terminal, phase two",
   },
   {
     name: "Oil, gas and petrochemical",
@@ -241,14 +233,6 @@ export const industries: Industry[] = [
     reference: "Carton line changeover, three plants",
   },
   {
-    name: "Automotive and transport",
-    slug: "automotive-transport",
-    challenge:
-      "Bonded assemblies replacing mechanical fixing, with pretreatment to match.",
-    systems: ["Structural adhesives", "Metal pretreatment", "Threadlocking"],
-    reference: "Bus body assembly programme",
-  },
-  {
     name: "Metals and fabrication",
     slug: "metals-fabrication",
     challenge:
@@ -260,9 +244,9 @@ export const industries: Industry[] = [
     name: "Furniture and woodworking",
     slug: "furniture-woodworking",
     challenge:
-      "Edge, panel and assembly bonding with finish quality visible on day one.",
-    systems: ["Hot melt adhesives", "Water-based adhesives", "Construction adhesives"],
-    reference: "Contract furniture facility",
+      "Bed spring bonding and furniture assembly for mattress and bedding lines.",
+    systems: ["TECHNOMELT hot melt adhesives", "Bed spring bonding", "Furniture assembly"],
+    reference: "Sohar Poly Industries",
   },
   {
     name: "Electronics and assembly",
@@ -298,6 +282,44 @@ export const industries: Industry[] = [
     challenge: "Short programmes, fast cure and finishes that survive footfall.",
     systems: ["Tile adhesives", "Levelling compounds", "Construction adhesives"],
     reference: "Mall refurbishment, 60 units",
+  },
+  {
+    name: "Tobacco manufacturing",
+    slug: "tobacco-manufacturing",
+    challenge:
+      "Cigarette making, filter making and packaging at full machine speed.",
+    systems: ["TobaColl adhesives", "Hot melt adhesives", "Water-based adhesives"],
+    reference: "Oriental Tobacco · Intertabac, UAE · BMJ, UAE · Achakzai Group · Ora Tobacco",
+  },
+  {
+    name: "Battery manufacturing",
+    slug: "battery-manufacturing",
+    challenge: "Battery assembly, component bonding and packaging in one supply.",
+    systems: ["Battery assembly", "Component bonding", "Packaging adhesives"],
+    reference: "Reem Batteries & Power Appliances Co.",
+  },
+  {
+    name: "Lubricants and chemical manufacturing",
+    slug: "lubricants-chemical",
+    challenge: "Carton sealing that holds under heavy, oily fill weights.",
+    systems: ["TECHNOMELT hot melt adhesives", "Carton sealing"],
+    reference: "Middle East Lubricant Co. LLC · TotalEnergies · Gulf Oil Middle East",
+  },
+  {
+    name: "Paper products and corrugated packaging",
+    slug: "paper-packaging",
+    challenge:
+      "Box making, paper bag side-seam bonding and paper packaging at volume.",
+    systems: ["AQUENCE water-based adhesives", "TECHNOMELT hot melt adhesives", "Side-seam bonding"],
+    reference:
+      "Hotpack Packaging · Manchester Paper Bags · Falcon Pack · Al Bayader · Shuaiba Industrial Co. · Spot Printing & Packaging · Go Green Packaging",
+  },
+  {
+    name: "Bottled drinking water",
+    slug: "bottled-water",
+    challenge: "PET bottle labelling and secondary packaging on high-speed lines.",
+    systems: ["TECHNOMELT hot melt adhesives", "AQUENCE water-based adhesives", "Bottle labelling"],
+    reference: "Oasis Water Company SAOC · Barzman Mineral Water Co. · Sarooj Water, Oman",
   },
 ];
 
@@ -2201,6 +2223,7 @@ export const portfolio = {
     { name: "Tangit", use: "PVC & ABS pipe adhesives", logo: "/images/logos/tangit.png", logoScale: 1.25 },
     { name: "Metylan", use: "Wallpaper & wall-covering adhesives", logo: "/images/logos/metylan.png", logoScale: 1.25 },
     { name: "EZ Weld", use: "UPVC & CPVC solvent cements", logo: "/images/logos/ez-weld.png" },
+    { name: "TobaColl", use: "Tobacco industry adhesives", logo: "/images/logos/tobacoll.svg", logoScale: 1.15 },
   ] satisfies PortfolioBrand[] as PortfolioBrand[],
 };
 

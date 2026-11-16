@@ -10,7 +10,7 @@ import { IndustryDetailDialog } from "./industries/industry-detail-dialog";
 import { SECTOR_CATEGORIES as CATEGORIES } from "./industries/types";
 
 export function IndustriesSection() {
-  // Default to Manufacturing & Mobility (5 items) matching the mockup
+  // Default to Manufacturing
   const [activeCategory, setActiveCategory] = React.useState(
     CATEGORIES[2]?.id ?? CATEGORIES[0].id
   );

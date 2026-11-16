@@ -10,12 +10,12 @@ const FEATURE = bySlug("building-infrastructure");
 const TILES = [
   bySlug("oil-gas-petrochemical"),
   bySlug("water-wastewater"),
-  bySlug("marine-offshore"),
+  bySlug("tobacco-manufacturing"),
   bySlug("food-beverage"),
 ];
 /** A quieter row of sectors, shown as thumbnails rather than full panels. */
 const THUMBS = [
-  bySlug("automotive-transport"),
+  bySlug("paper-packaging"),
   bySlug("packaging-converting"),
   bySlug("metals-fabrication"),
   bySlug("hvac-plumbing"),
