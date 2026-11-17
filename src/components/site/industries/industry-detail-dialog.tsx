@@ -127,21 +127,23 @@ function SectorModalContent({ industry }: { industry: Industry }) {
         </ul>
 
         {/* Reference project callout */}
-        <div
-          {...rise(4 + industry.systems.length)}
-          className={cn(
-            rise(4 + industry.systems.length).className,
-            "mb-7 rounded-2xl border border-blue/15 bg-blue/5 p-4.5"
-          )}
-        >
-          <span className="mb-1 flex items-center gap-1.5 text-[11px] tracking-[0.16em] text-blue uppercase font-semibold">
-            <Building2 className="size-3.5" />
-            Documented Reference Project
-          </span>
-          <p className="text-[14px] leading-relaxed text-ink font-medium">
-            {industry.reference}
-          </p>
-        </div>
+        {industry.reference ? (
+          <div
+            {...rise(4 + industry.systems.length)}
+            className={cn(
+              rise(4 + industry.systems.length).className,
+              "mb-7 rounded-2xl border border-blue/15 bg-blue/5 p-4.5"
+            )}
+          >
+            <span className="mb-1 flex items-center gap-1.5 text-[11px] tracking-[0.16em] text-blue uppercase font-semibold">
+              <Building2 className="size-3.5" />
+              Documented Reference Project
+            </span>
+            <p className="text-[14px] leading-relaxed text-ink font-medium">
+              {industry.reference}
+            </p>
+          </div>
+        ) : null}
 
         <div {...rise(5 + industry.systems.length)}>
           <ArrowButton href="/#contact" className="w-full sm:w-auto">

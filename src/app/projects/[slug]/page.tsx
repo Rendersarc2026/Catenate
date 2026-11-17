@@ -90,6 +90,14 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
               <div className="mt-7 flex flex-wrap gap-x-10 gap-y-5">
                 {project.year ? <Meta label="Year">{project.year}</Meta> : null}
                 {project.role ? <Meta label="Role">{project.role}</Meta> : null}
+                {project.client ? (
+                  <Meta label="Client">{project.client}</Meta>
+                ) : null}
+                {project.partners?.map((partner) => (
+                  <Meta key={partner.label} label={partner.label}>
+                    {partner.name}
+                  </Meta>
+                ))}
                 {project.type ? <Meta label="Type">{project.type}</Meta> : null}
                 {project.location ? (
                   <Meta label="Location">{project.location}</Meta>

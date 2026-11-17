@@ -190,7 +190,8 @@ export type Industry = {
   slug: string;
   challenge: string;
   systems: string[];
-  reference: string;
+  /** Documented reference projects or accounts; omitted when none are on record. */
+  reference?: string;
 };
 
 export const industries: Industry[] = [
@@ -200,14 +201,14 @@ export const industries: Industry[] = [
     challenge:
       "Podium decks, basements, wet areas and facades under long warranty periods.",
     systems: ["Waterproofing systems", "Tiling and flooring", "Concrete repair", "Sealants"],
-    reference: "Mixed-use podium, 42,000 m² deck",
+    reference:
+      "Sayyid Tarik bin Taimur Cultural Complex · Sultan Haitham City – Work Package 12 · Hafeet Rail – Oman-UAE Rail · Residential Commercial Building, Bausher Al Azaiba",
   },
   {
     name: "Oil, gas and petrochemical",
     slug: "oil-gas-petrochemical",
     challenge: "Chemical attack, thermal cycling and permit-controlled application.",
     systems: ["Protective coatings", "Structural repair mortars", "Thread lockers"],
-    reference: "Tank farm bund lining refurbishment",
   },
   {
     name: "Water and wastewater",
@@ -215,7 +216,8 @@ export const industries: Industry[] = [
     challenge:
       "Potable contact approval and immersion performance are non-negotiable.",
     systems: ["Liquid membranes", "Pipe joining adhesives", "Repair mortars"],
-    reference: "Reservoir roof and joint replacement",
+    reference:
+      "Al Ghubra III IWP – RO Desalination Plant · Sewer Network for C3A & C3F Area in A'Seeb Catchment – Main Trunk Sewer & Pumping Station",
   },
   {
     name: "Food and beverage",
@@ -223,14 +225,16 @@ export const industries: Industry[] = [
     challenge:
       "Washdown temperatures, hygiene classification and food-contact compliance.",
     systems: ["Resin flooring", "Hygienic sealants", "Water-based adhesives"],
-    reference: "Dairy processing hall, 8,600 m²",
+    reference:
+      "AREEJ Vegetable Oils & Derivatives SAOC · Mazoon Dairy · Dhofar Foods & Investment SAOG · Oman Refreshment Company (Pepsi Oman) · A'Saffa Foods SAOG · Oman Milk Products (Dairy) Company SFZCO LLC · Foodstuff Factory LLC · Nestlé · IFFCO Group · Abu Dhabi Vegetable Oil Co. · Al Ghurair Foods · Delta Food · NutriDor Dairy Manufacturing LLC · Coca-Cola Al Ahlia Beverages Company LLC · Mai Dubai · Al Ain Food & Beverages · Arab Beverages · Zulal Water · International Beverage & Filling Industries · Unilever Home & Personal Care Products Mfg. LLC · Soaps & Chemicals Industrial & Trading Co. (Albatha Group)",
   },
   {
     name: "Packaging and converting",
     slug: "packaging-converting",
     challenge: "Line speed decides the adhesive before anything else does.",
     systems: ["Hot melt adhesives", "Water-based adhesives"],
-    reference: "Carton line changeover, three plants",
+    reference:
+      "Al Ahlia Converting Industries Co. SAOC · Sohar Paper Cores LLC · Omani Packaging Co. SAOG · Mazoon Printing, Publishing & Packaging LLC · Al Lub Paper Factory LLC · Oman Agro Industries LLC · Pride Packaging LLC · Oman Printers & Stationers Ltd. Co. SPC · Tatwer Invest · Heidelberg · Emirates Printing Press · Express Pack Print · Oriental Press Dubai",
   },
   {
     name: "Metals and fabrication",
@@ -238,7 +242,8 @@ export const industries: Industry[] = [
     challenge:
       "Cleaning, forming and coating handled as one sequence, not three purchases.",
     systems: ["Bonderite pretreatment", "Anaerobic adhesives", "Lubricants"],
-    reference: "Galvanising line pretreatment upgrade",
+    reference:
+      "OARC · ASSA ABLOY · QMI · Bin Ghurair · RAK Ceramics · Emarat Europe",
   },
   {
     name: "Furniture and woodworking",
@@ -253,35 +258,34 @@ export const industries: Industry[] = [
     slug: "electronics-assembly",
     challenge: "Small bond lines, fast fixture times and controlled outgassing.",
     systems: ["Cyanoacrylates", "Threadlockers", "Specialty adhesives"],
-    reference: "Control panel assembly line",
   },
   {
     name: "Footwear and leather",
     slug: "footwear-leather",
     challenge: "Flexibility and peel strength after thousands of cycles.",
     systems: ["Water-based adhesives", "Contact adhesives"],
-    reference: "Footwear plant bonding trial",
   },
   {
     name: "HVAC and plumbing",
     slug: "hvac-plumbing",
     challenge: "Pipe joining, pressure testing windows and potable water approval.",
     systems: ["Tangit solvent cement", "EZ-Weld cements", "Thread sealants"],
-    reference: "District cooling network extension",
+    reference:
+      "Bahanis Trading Company LLC · Gulftech Group, Salalah",
   },
   {
     name: "Healthcare and life sciences",
     slug: "healthcare-life-sciences",
     challenge: "Low emission, cleanable surfaces and documented compliance.",
     systems: ["Resin flooring", "Low-VOC sealants", "Hygienic systems"],
-    reference: "Hospital theatre block fit-out",
+    reference:
+      "Alokozay FZE · Al Nakheel Hygienic Paper Manufacturing LLC (Fine Tissue) · Hotpack Tissue · Soft and Hygienic Paper Manufacturing LLC · Al Mulla Paper Industries · Metropolic Paper Industries · Al Muqarram Hygienic Products Industry LLC · Chemex Hygiene Concepts LLC · Duracare LLC · Ziva Wet Wipes LLC",
   },
   {
     name: "Retail and fit-out",
     slug: "retail-fit-out",
     challenge: "Short programmes, fast cure and finishes that survive footfall.",
     systems: ["Tile adhesives", "Levelling compounds", "Construction adhesives"],
-    reference: "Mall refurbishment, 60 units",
   },
   {
     name: "Tobacco manufacturing",
@@ -1691,6 +1695,9 @@ export type Project = {
   /** Case-study meta row. */
   year?: string;
   role?: string;
+  client?: string;
+  /** Contractor, applicator and similar parties, shown in the meta row. */
+  partners?: { label: string; name: string }[];
   /** Short reading of the delivery, shown under `Type`. */
   type?: string;
   /** Trailing link in the meta row. */
@@ -1705,160 +1712,93 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "harbour-terminal-deck",
-    name: "Harbour terminal deck",
-    sector: "Marine and offshore",
-    scope: "Torch-applied membrane and protection build-up",
-    location: "Sultan Qaboos Port, Oman",
-    system: "SBS modified bituminous waterproofing & heavy-duty wearing layer",
-    challenge: "High saline exposure, tidal vibration, and direct heavy container transport loading.",
-    image: "/images/industries/marine-offshore.jpg",
-    year: "2024",
-    role: "Specification and site supervision",
-    type: "Waterproofing, Protection",
-    link: { label: "Request pack", href: "/#contact" },
-    story: [
-      "A container terminal deck sits in the hardest environment a waterproofing system can be asked to work in — salt spray on every tide, structural movement from berthing loads, and reach stackers running across the finished surface all day.",
-      "The specification started from the substrate rather than the product. We surveyed the deck with the contractor, recorded moisture content and surface tensile strength, and set the primer and build-up around what the concrete could actually carry rather than around a datasheet ideal.",
-      "The result was a torch-applied SBS modified bituminous system with a heavy-duty wearing layer over it, detailed at every upstand, drain, and movement joint before a single roll went down. Pull-off testing was carried out on site through the application programme, with results logged against the specification.",
-      "Catenate stayed on the project past handover: the maintenance team was trained on inspection intervals and on the repair detail for any local damage, so the deck can be kept in warranty without a specialist return visit.",
-    ],
-    stats: [
-      { value: "18,000 m²", label: "Deck area treated" },
-      { value: "1.4 N/mm²", label: "Mean pull-off result" },
-      { value: "10 yr", label: "System warranty" },
-    ],
-    gallery: ["/images/industries/oil-gas-petrochemical.jpg"],
-  },
-  {
-    slug: "dairy-processing-hall",
-    name: "Dairy processing hall",
-    sector: "Food and beverage",
-    scope: "Resin flooring with hygienic coving and sealants",
-    location: "Sohar Industrial City, Oman",
-    system: "Heavy-duty polyurethane resin screed & antimicrobial jointing",
-    challenge: "Thermal shock from boiling water washdowns, organic acids, and continuous wet processing.",
-    image: "/images/industries/food-beverage.jpg",
-    year: "2025",
-    role: "Specification and commissioning support",
-    type: "Resin flooring, Hygienic sealing",
-    link: { label: "Request pack", href: "/#contact" },
-    story: [
-      "A dairy hall is washed down with near-boiling water several times a day, then returned to production within the hour. The floor has to absorb that thermal cycle, shed lactic and citric acid, and leave nowhere for bacteria to sit.",
-      "We specified a heavy-duty polyurethane resin screed laid at a thickness matched to the shock loading in each zone — thicker under the filling lines and the CIP skids, lighter through the low-traffic corridors — rather than one blanket build-up across the hall.",
-      "Coving, drainage falls, and equipment plinths were detailed as part of the same pour so the floor turns up the wall in a continuous surface. Jointing was closed with an antimicrobial sealant approved for direct food-zone contact.",
-      "Phasing mattered as much as chemistry. The hall stayed partly in production throughout, so the programme was cut into bays that could be isolated, laid, cured, and returned to the client between shifts.",
-    ],
-    stats: [
-      { value: "6,200 m²", label: "Resin screed laid" },
-      { value: "9 mm", label: "Build-up at CIP zones" },
-      { value: "0", label: "Production days lost" },
-    ],
-    gallery: ["/images/industries/packaging-converting.jpg"],
-  },
-  {
-    slug: "mixed-use-podium",
-    name: "Mixed-use podium",
+    slug: "sayyid-tarik-bin-taimur-cultural-complex",
+    name: "Sayyid Tarik bin Taimur Cultural Complex",
     sector: "Building and infrastructure",
-    scope: "Fully bonded waterproofing across 42,000 m²",
-    location: "Downtown Dubai, UAE",
-    system: "Pre-applied fully bonded waterproofing membrane & expansion joints",
-    challenge: "High water table with extreme hydrostatic pressure and complex multi-level underground geometry.",
-    image: "/images/industries/building-infrastructure.jpg",
-    year: "2024",
-    role: "End to end specification",
-    type: "Waterproofing, Movement joints",
+    scope: "Waterproofing (Sub Structure)",
+    system:
+      "Self adhesive membrane system with Protection board 3.2 mm for vertical surfaces (Henkel Polybit – Bitustick XL 2.1 mm + Bituboard 3.2 mm)",
+    client: "Ministry of Culture, Sports and Youth",
+    partners: [{ label: "Applicator", name: "Al Tasnim" }],
+    type: "Waterproofing (Sub Structure)",
     link: { label: "Request pack", href: "/#contact" },
-    story: [
-      "Below-grade waterproofing in Downtown Dubai has no margin for error. The water table sits high, the hydrostatic head is permanent, and once the raft is poured the membrane is unreachable for the life of the building.",
-      "The podium was specified as a fully bonded pre-applied system, chosen so that any breach stays local instead of tracking between the membrane and the slab. That single decision is what makes a remedial injection viable years later.",
-      "Across 42,000 m² the difficult work was geometry, not area — pile heads, lift pits, transfer slabs, and a three-level basement that changes level repeatedly. Every one of those conditions was drawn as a detail and agreed with the consultant before it reached site.",
-      "Expansion joints were specified as part of the same system rather than bought separately, so the joint chemistry, the membrane, and the protection layer were compatible by design rather than by accident.",
-    ],
-    stats: [
-      { value: "42,000 m²", label: "Membrane specified" },
-      { value: "3", label: "Basement levels" },
-      { value: "14 m", label: "Hydrostatic head" },
-    ],
-    gallery: ["/images/industries/water-wastewater.jpg"],
+    stats: [{ value: "45,000 m²", label: "Area" }],
   },
   {
-    slug: "district-cooling-network",
-    name: "District cooling network",
-    sector: "HVAC and plumbing",
-    scope: "Solvent cement jointing and thread sealing",
-    location: "Lusail City, Qatar",
-    system: "Industrial CPVC solvent cements & anaerobic thread sealants",
-    challenge: "Continuous chilled water loop circulation under high operating pressures up to 16 bar.",
-    image: "/images/industries/hvac-plumbing.jpg",
-    year: "2023",
-    role: "Product specification and installer training",
-    type: "Jointing, Thread sealing",
+    slug: "sultan-haitham-city-work-package-12",
+    name: "Sultan Haitham City – Work Package 12",
+    sector: "Building and infrastructure",
+    scope:
+      "Construction of Primary Roads, Bridges, Underpasses and Utility Works for Sultan Haitham City – Work Package 12",
+    system:
+      "Two layers of self adhesive membrane system with Protection board 6 mm for vertical surfaces (Henkel Polybit – Bitustick XL 1.6 mm + Bituboard 6 mm)",
+    client: "Oman Ministry of Housing and Urban Planning (MoHUP)",
+    type: "Waterproofing",
     link: { label: "Request pack", href: "/#contact" },
-    story: [
-      "A district cooling loop is only as reliable as its weakest joint. At 16 bar and in continuous circulation, a joint that was cured five degrees too warm or clamped thirty seconds too early becomes a callout two years into operation.",
-      "We specified industrial CPVC solvent cements matched to pipe diameter and to the ambient conditions the crews were actually working in, along with anaerobic thread sealants for the mechanical connections at the plant room.",
-      "The larger part of the work was training. Catenate ran toolbox sessions with the installing teams on cut preparation, cement application window, set time against site temperature, and how to record each joint — so the method survived crew changes across the programme.",
-      "Joint records were handed over with the network. When the client later extended the loop, the same specification and the same record format carried straight into the new section.",
-    ],
-    stats: [
-      { value: "16 bar", label: "Operating pressure" },
-      { value: "4,800", label: "Recorded joints" },
-      { value: "60+", label: "Installers trained" },
-    ],
-    gallery: ["/images/industries/water-wastewater.jpg"],
+    stats: [{ value: "120,000 m²", label: "Area" }],
   },
   {
-    slug: "hospital-theatre-block",
-    name: "Hospital theatre block",
-    sector: "Healthcare",
-    scope: "Low-emission flooring and sealant package",
-    location: "London, United Kingdom",
-    system: "EC1 Plus certified conductive flooring adhesives & cleanroom silicone sealants",
-    challenge: "Zero VOC emission tolerance, electrostatic dissipation, and resistance to aggressive chemical disinfectants.",
-    image: "/images/industries/healthcare-life-sciences.jpg",
-    year: "2025",
-    role: "Specification and compliance documentation",
-    type: "Flooring adhesives, Cleanroom sealing",
+    slug: "hafeet-rail",
+    name: "Hafeet Rail – Oman-UAE Rail",
+    sector: "Building and infrastructure",
+    scope: "Substructure waterproofing",
+    location: "Sohar to Abu Dhabi",
+    system:
+      "Self adhesive membrane system with Protection board 4 mm for vertical surfaces (Henkel Polybit – Bitustick XL 2.1 mm + Bituboard 4 mm)",
+    type: "Substructure waterproofing",
     link: { label: "Request pack", href: "/#contact" },
     story: [
-      "An operating theatre asks three things of a floor at once: it must not off-gas, it must dissipate static, and it must survive disinfectants that would strip an ordinary finish inside a year.",
-      "The adhesive package was specified to EC1 Plus, the strictest emission class available, and paired with a conductive build-up that ties the floor covering into the theatre's earthing. Copper grid layout and resistance targets were agreed with the electrical consultant before installation.",
-      "Perimeter and penetration sealing used cleanroom-grade silicones chosen for their behaviour under repeated chemical disinfection rather than for their initial cure speed.",
-      "Because this was an NHS handover, documentation was part of the deliverable. Every product in the package arrived with emission certification, batch traceability, and a signed installation record that went into the building file.",
+      "Route length: 238 km (with total corridor/network elements spanning around 303 km connecting Sohar to Abu Dhabi).",
     ],
     stats: [
-      { value: "EC1 Plus", label: "Emission class" },
-      { value: "12", label: "Theatres fitted out" },
-      { value: "10⁶ Ω", label: "Resistance to earth" },
+      { value: "105,000 m²", label: "Area" },
+      { value: "238 km", label: "Route length" },
+      { value: "~303 km", label: "Total corridor/network" },
     ],
-    gallery: ["/images/industries/laboratory-microscope.jpg"],
   },
   {
-    slug: "galvanising-line",
-    name: "Galvanising line",
-    sector: "Metals and fabrication",
-    scope: "Bonderite pretreatment sequence",
-    location: "Abu Dhabi Industrial Zone, UAE",
-    system: "Henkel Bonderite conversion coating & chemical conversion wash",
-    challenge: "Rigorous corrosion prevention specification meeting 1,000-hour salt spray endurance standards.",
-    image: "/images/industries/metals-fabrication.jpg",
-    year: "2023",
-    role: "Process specification and line commissioning",
-    type: "Pretreatment, Corrosion protection",
+    slug: "bausher-al-azaiba-residential-commercial",
+    name: "Residential Commercial Building, Bausher Al Azaiba",
+    sector: "Building and infrastructure",
+    scope: "Substructure waterproofing",
+    location: "Bausher Al Azaiba",
+    system:
+      "Fully bonded FBS waterproofing system (Henkel Polybit – Polyproof Ultra System-FBS)",
+    client: "M/s. Future Prospects Development and Investment SPC",
+    partners: [
+      { label: "Contractor", name: "M/s. Al Mamuorah Projects & Services LLC" },
+    ],
+    type: "Substructure waterproofing",
+    link: { label: "Request pack", href: "/#contact" },
+    stats: [{ value: "5,000 m²", label: "Area" }],
+  },
+  {
+    slug: "al-ghubra-iii-iwp",
+    name: "Al Ghubra III IWP – RO Desalination Plant",
+    sector: "Water and wastewater",
+    scope: "Waterproofing (Sub Structure)",
+    system:
+      "Self adhesive membrane system with Protection board 3.2 mm for vertical surfaces (Bitustick XL 1.6 mm + Bituboard 4 mm)",
+    client: "Nama Power and Water Procurement Company (Nama PWP)",
+    type: "Waterproofing (Sub Structure)",
+    link: { label: "Request pack", href: "/#contact" },
+    stats: [{ value: "10,000 m²", label: "Area" }],
+  },
+  {
+    slug: "aseeb-main-trunk-sewer",
+    name: "Sewer Network for C3A & C3F Area in A'Seeb Catchment",
+    sector: "Water and wastewater",
+    scope:
+      "Internal protection of sewer manhole chambers against wastewater exposure and corrosion",
+    location: "A'Seeb Catchment",
+    system: "Henkel Polybit – Polypoxy CR + Polyprime EP",
+    client: "Nama Water Services",
+    type: "Epoxy protective coating / Concrete protection",
     link: { label: "Request pack", href: "/#contact" },
     story: [
-      "The client needed coated steel to clear 1,000 hours of neutral salt spray. That figure is decided in the pretreatment stages, long before any topcoat is applied.",
-      "Catenate specified a Henkel Bonderite conversion sequence and set the process window for each stage — bath concentration, temperature, dwell, and rinse quality — against the substrate mix actually running on the line.",
-      "Commissioning ran alongside the client's process engineers. Panels were pulled at intervals, coating weights checked, and the sequence tuned until the line held the specification at full production rate rather than only on a test run.",
-      "The bath control schedule handed over at the end is the part that keeps the result: titration intervals, top-up ratios, and the trigger points at which a bath is dumped rather than corrected.",
+      "Contract title: Construction of Sewer Network for C3A & C3F Area in A'Seeb Catchment – Main Trunk Sewer & Pumping Station.",
     ],
-    stats: [
-      { value: "1,000 hr", label: "Salt spray endurance" },
-      { value: "5", label: "Pretreatment stages" },
-      { value: "2 wk", label: "Line commissioning" },
-    ],
-    gallery: ["/images/industries/automotive-transport.jpg"],
+    stats: [{ value: "5,000 m²", label: "Area" }],
   },
 ];
 
@@ -2154,9 +2094,7 @@ export const contactCards = [
 export const company = {
   address: [
     "Gulf Modern Projects & Supplies Co. LLC",
-    "106, 1st Floor, Muscat Residence Building",
     "Al Seeb Street",
-    "PO Box 378, PC 124",
     "Muscat, Oman",
   ],
   phone: "+968 9133 8027",
