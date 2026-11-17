@@ -1126,3 +1126,84 @@ body:has(.site-header.-translate-y-full) .finder-rail {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Page loader
+ *
+ * The first-visit cover sits above everything, dialogs included, until the
+ * page has loaded. If its script never runs, the failsafe animation clears it
+ * after a few seconds so the page is never left hidden.
+ * ------------------------------------------------------------------------ */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  background: var(--background);
+  transition:
+    opacity 0.45s var(--ease-out-expo),
+    visibility 0.45s;
+  animation: page-loader-failsafe 0.45s ease 8s forwards;
+}
+
+.page-loader[data-state="leaving"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes page-loader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.loader-bar {
+  position: relative;
+  display: block;
+  width: 120px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgb(26 29 46 / 0.1);
+}
+
+.loader-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  border-radius: inherit;
+  background: var(--brand-ink);
+  animation: loader-bar 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes loader-bar {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    translate: 250% 0;
+  }
+}
+
+/* Without motion the bar breathes in place instead of sweeping. */
+@media (prefers-reduced-motion: reduce) {
+  .page-loader {
+    transition-duration: 0.01s;
+  }
+
+  .loader-bar::after {
+    width: 100%;
+    animation: loader-pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes loader-pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+}

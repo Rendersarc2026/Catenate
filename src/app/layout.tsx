@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Space_Grotesk } from "next/font/google";
 
+import { PageLoader } from "@/components/site/page-loader";
 import { ScrollArrows } from "@/components/site/scroll-arrows";
 import { SmoothScroll } from "@/components/site/smooth-scroll";
 import "./globals.css";
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
        * so it covers the body tag's own attributes and nothing inside it.
        */}
       <body suppressHydrationWarning>
+        <PageLoader />
         <SmoothScroll>{children}</SmoothScroll>
         <ScrollArrows />
       </body>
