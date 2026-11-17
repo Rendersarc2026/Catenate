@@ -1713,6 +1713,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "sayyid-tarik-bin-taimur-cultural-complex",
+    image: "/images/industries/building-infrastructure.jpg",
     name: "Sayyid Tarik bin Taimur Cultural Complex",
     sector: "Building and infrastructure",
     scope: "Waterproofing (Sub Structure)",
@@ -1726,6 +1727,7 @@ export const projects: Project[] = [
   },
   {
     slug: "sultan-haitham-city-work-package-12",
+    image: "/images/about/team-onsite.jpg",
     name: "Sultan Haitham City – Work Package 12",
     sector: "Building and infrastructure",
     scope:
@@ -1739,6 +1741,7 @@ export const projects: Project[] = [
   },
   {
     slug: "hafeet-rail",
+    image: "/images/about-hero.jpg",
     name: "Hafeet Rail – Oman-UAE Rail",
     sector: "Building and infrastructure",
     scope: "Substructure waterproofing",
@@ -1758,6 +1761,7 @@ export const projects: Project[] = [
   },
   {
     slug: "bausher-al-azaiba-residential-commercial",
+    image: "/images/technologies/glass-facade.jpg",
     name: "Residential Commercial Building, Bausher Al Azaiba",
     sector: "Building and infrastructure",
     scope: "Substructure waterproofing",
@@ -1774,6 +1778,7 @@ export const projects: Project[] = [
   },
   {
     slug: "al-ghubra-iii-iwp",
+    image: "/images/industries/water-wastewater.jpg",
     name: "Al Ghubra III IWP – RO Desalination Plant",
     sector: "Water and wastewater",
     scope: "Waterproofing (Sub Structure)",
@@ -1786,6 +1791,7 @@ export const projects: Project[] = [
   },
   {
     slug: "aseeb-main-trunk-sewer",
+    image: "/images/technologies/epoxy-flooring.jpg",
     name: "Sewer Network for C3A & C3F Area in A'Seeb Catchment",
     sector: "Water and wastewater",
     scope:
